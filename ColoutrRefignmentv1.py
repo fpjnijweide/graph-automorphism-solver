@@ -26,8 +26,8 @@ def CRefignment(G: Graph):
         v.label = v.colornum
     equal = False
     while not equal:
-        colorGraph(G)
         old_graph = copy.deepcopy(G)
+        colorGraph(G)
         equal = compare_graph_colors(G, old_graph)
     return G
 
