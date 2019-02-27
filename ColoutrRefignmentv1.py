@@ -73,6 +73,24 @@ def write_graph_to_dot_file(G: Graph, title: str):
     with open('graph' + title + '.dot', 'w') as f:
         write_dot(G, f)
 
+def PRefinement(g: Graph):
+    partitions = []
+    for i in len(g.vertices):
+        partitions.append([])
+    for v in g.vertices:
+        i = v.colornum
+        partitions[i].append(v)
+    return partitions
+
+
+def compare_partitions(g1: Graph, g2: Graph):
+    partition1 = PRefinement(g1)
+    partition2 = PRefinement(g2)
+    for i in range(0, len(partition1)):
+        if len(partition1[i]) != len(partition2[i]):
+            return False
+    return True
+
 if __name__=="__main__":
     # main method
     G1,G2 = load_graphs("graphs/colorref_smallexample_4_7.grl",1,3)
@@ -82,4 +100,3 @@ if __name__=="__main__":
     write_graph_to_dot_file(G2,"G2")
     result = compare_graph_colors(G1,G2)
     print(result)
-
