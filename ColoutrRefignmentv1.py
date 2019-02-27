@@ -5,8 +5,9 @@ compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
-        G1 = load_graph(f)[0][nr1]
-        G2 = load_graph(f)[0][nr2]
+        L=load_graph(f,read_list=True)
+        G1 = L[0][nr1]
+        G2 = L[0][nr2]
         return G1,G2
 
 def CRefignment(G: Graph):
@@ -78,3 +79,12 @@ def colorNeighbours(v: Vertex):
     for n in v.neighbours:
         colors.append(n.colornum)
     return sorted(colors)
+
+if __name__=="__main__":
+    # main method
+    G1,G2 = load_graphs("graphs/colorref_smallexample_4_7.grl",1,3)
+    G1 = CRefignment(G1)
+    G2 = CRefignment(G2)
+
+    result = compare_graph_colors(G1,G2)
+    print(result)
