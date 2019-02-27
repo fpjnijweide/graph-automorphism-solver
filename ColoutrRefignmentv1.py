@@ -27,7 +27,7 @@ def compare_two_graphs(G1: Graph, G2: Graph):
 
     return True
 
-def colorGraph(G):
+def colorGraph(G: Graph):
     old_graph = copy.deepcopy(G)
     verts = dict()
     for v in G.vertices:
@@ -36,7 +36,7 @@ def colorGraph(G):
         else:
             verts[v.colornum] = [v]
 
-def write_graph_to_dot_file(G):
+def write_graph_to_dot_file(G: Graph):
     with open('mygraph.dot', 'w') as f:
         write_dot(G, f)
 
@@ -51,7 +51,7 @@ if __name__=="__main__":
 
 
 
-def colorNeighbours(v):
+def colorNeighbours(v: Vertex):
     colors = []
     for n in v.neighbours:
         colors.append(n.colornum)
