@@ -13,6 +13,11 @@ def CRefignment(filename):
         for v in G.vertices:
             v.colornum = v.degree
 
+        old_graph = copy.deepcopy(G)
+        equal = False
+        while not equal:
+            colourGraph(G)
+        return G
 
 
 def compare_two_graphs(G1: Graph, G2: Graph):
@@ -20,6 +25,13 @@ def compare_two_graphs(G1: Graph, G2: Graph):
     #TODO implement
 
     return True
+def colourGraph(G):
+    verts = dict()
+    for v in G.vertices:
+        if v.colornum in verts:
+            verts[v.colornum] = verts.get(v.colournum).append(v)
+        else:
+            verts[v.colornum] = [v]
 
 def write_graph_to_dot_file(G):
     with open('mygraph.dot', 'w') as f:
