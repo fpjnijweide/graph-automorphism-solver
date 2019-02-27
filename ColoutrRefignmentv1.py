@@ -14,6 +14,8 @@ def CRefignment(G: Graph):
     equal = False
     while not equal:
         colorGraph(G)
+        old_graph=copy.deepcopy(G)
+        equal=compare_two_graphs(G, old_graph)
     return G
 
 
@@ -26,20 +28,20 @@ def compare_two_graphs(G1: Graph, G2: Graph):
             #if they are all the same color?
                 #return true else false?
 
-    return True
+    return False
 
-def colorGraph(G):
+def colorGraph(G: Graph):
     old_graph = copy.deepcopy(G)
-    verts = [[],[],[],[]]
+    verts = []
+
     for v in G.vertices:
+        #if the degree is not found in verts, add empty lists to it
         if v.colornum > len(verts)-1:
-            diff=v.colornum - len(verts)
-
-        if v.colornum in verts:
-            verts[v.colornum]= verts.get(v.colornum).append(v)
-        else:
-            verts[v.colornum] = [v]
-
+            diff=v.colornum - (len(verts)-1)
+            for i in range(diff):
+                verts.append([])
+        #add the vertex to its respective index in verts
+        verts[v.colornum].append(v)
     for i in verts:
         l = verts[i]
         for i in range (1, len(l)):
@@ -50,9 +52,7 @@ def colorGraph(G):
 
 
 
-
-
-def write_graph_to_dot_file(G):
+def write_graph_to_dot_file(G: Graph):
     with open('mygraph.dot', 'w') as f:
         write_dot(G, f)
 
@@ -67,7 +67,7 @@ if __name__=="__main__":
 
 
 
-def colorNeighbours(v):
+def colorNeighbours(v: Vertex):
     colors = []
     for n in v.neighbours:
         colors.append(n.colornum)
