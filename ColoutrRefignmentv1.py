@@ -1,6 +1,7 @@
 from graph import *
 from graph_io import *
 import collections
+compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
@@ -44,14 +45,17 @@ def colorGraph(G: Graph):
                 verts.append([])
         #add the vertex to its respective index in verts
         verts[v.colornum].append(v)
-    for i in verts:
-        l = verts[i]
+
+    # go through vertices with same color
+    for i in range(len(verts)):
+        l = verts[i] # list with vertices of same color
+        newcolor = len(verts)
+        verts.append([]) # create new color for vertices that are not the same as v0
         for i in range (1, len(l)):
             v0 = colorNeighbours(l[0])
             vi = colorNeighbours(l[i])
-            compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
             if not compare(v0, vi):
-
+                verts[newcolor].append(vi)
 
 
 def write_graph_to_dot_file(G: Graph):
@@ -64,7 +68,7 @@ if __name__=="__main__":
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
 
-    result = compare_two_graphs(G1,G2)
+    result = compare_graph_colors(G1,G2)
     print(result)
 
 
