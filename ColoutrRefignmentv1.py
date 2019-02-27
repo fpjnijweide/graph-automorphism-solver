@@ -29,12 +29,20 @@ def compare_two_graphs(G1: Graph, G2: Graph):
 
 def colorGraph(G):
     old_graph = copy.deepcopy(G)
-    verts = dict()
+    verts = [[],[],[],[]]
     for v in G.vertices:
+        if v.colornum > len(verts)-1:
+            diff=v.colornum - len(verts)
+
         if v.colornum in verts:
-            verts[v.colornum] = verts.get(v.colornum).append(v)
+            verts[v.colornum]= verts.get(v.colornum).append(v)
         else:
             verts[v.colornum] = [v]
+
+    for i in verts:
+        l = verts[i]
+
+
 
 def write_graph_to_dot_file(G):
     with open('mygraph.dot', 'w') as f:
