@@ -10,6 +10,12 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         G2 = L[0][nr2]
         return G1,G2
 
+def colorNeighbours(v: Vertex):
+    colors = []
+    for n in v.neighbours:
+        colors.append(n.colornum)
+    return sorted(colors)
+
 def CRefignment(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
@@ -58,27 +64,9 @@ def colorGraph(G: Graph):
             if not compare(v0, vi):
                 verts[newcolor].append(vi)
 
-
 def write_graph_to_dot_file(G: Graph):
     with open('mygraph.dot', 'w') as f:
         write_dot(G, f)
-
-if __name__=="__main__":
-    # main method
-    G1,G2 = load_graphs("graph/colorref_smallexample_4_7.grl",1,3)
-    G1 = CRefignment(G1)
-    G2 = CRefignment(G2)
-
-    result = compare_graph_colors(G1,G2)
-    print(result)
-
-
-
-def colorNeighbours(v: Vertex):
-    colors = []
-    for n in v.neighbours:
-        colors.append(n.colornum)
-    return sorted(colors)
 
 if __name__=="__main__":
     # main method
@@ -88,3 +76,4 @@ if __name__=="__main__":
 
     result = compare_graph_colors(G1,G2)
     print(result)
+
