@@ -238,6 +238,9 @@ dmypy.json
 pyvenv.cfg
 pip-selfcheck.json
 
+*.dot
+.dot
+
 ### VirtualEnv ###
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/

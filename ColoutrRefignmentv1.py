@@ -1,20 +1,24 @@
 from graph import *
 from graph_io import *
 import collections
+
 compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
+
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
-        L=load_graph(f,read_list=True)
+        L = load_graph(f, read_list=True)
         G1 = L[0][nr1]
         G2 = L[0][nr2]
-        return G1,G2
+        return G1, G2
+
 
 def colorNeighbours(v: Vertex):
     colors = []
     for n in v.neighbours:
         colors.append(n.colornum)
     return sorted(colors)
+
 
 def CRefignment(G: Graph):
     for v in G.vertices:
@@ -24,7 +28,7 @@ def CRefignment(G: Graph):
     while not equal:
         old_graph = copy.deepcopy(G)
         colorGraph(G)
-        equal=compare_graph_colors(G, old_graph)
+        equal = compare_graph_colors(G, old_graph)
     return G
 
 
@@ -46,40 +50,60 @@ def colorGraph(G: Graph):
     verts = []
 
     for v in G.vertices:
-        #if the degree is not found in verts, add empty lists to it
-        if v.colornum > len(verts)-1:
-            diff=v.colornum - (len(verts)-1)
+        # if the degree is not found in verts, add empty lists to it
+        if v.colornum > len(verts) - 1:
+            diff = v.colornum - (len(verts) - 1)
             for i in range(diff):
                 verts.append([])
-        #add the vertex to its respective index in verts
+        # add the vertex to its respective index in verts
         verts[v.colornum].append(v)
 
     # go through vertices with same color
     for i in range(len(verts)):
-        l = verts[i][:] # list with vertices of same color
+        l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
-        verts.append([]) # create new color for vertices that are not the same as v0
-        for i in range (1, len(l)):
+        verts.append([])  # create new color for vertices that are not the same as v0
+        for i in range(1, len(l)):
             v0 = colorNeighbours(l[0])
-            current_vertex=l[i]
+            current_vertex = l[i]
             vi = colorNeighbours(current_vertex)
             if not compare(v0, vi):
                 verts[newcolor].append(current_vertex)
-                verts[ current_vertex.colornum ].remove(current_vertex)
+                verts[current_vertex.colornum].remove(current_vertex)
                 current_vertex.colornum = newcolor
-                current_vertex.label=current_vertex.colornum
+                current_vertex.label = current_vertex.colornum
+
 
 def write_graph_to_dot_file(G: Graph, title: str):
     with open('graph' + title + '.dot', 'w') as f:
         write_dot(G, f)
 
-if __name__=="__main__":
+
+def PRefinement(g: Graph):
+    partitions = {}
+    for v in g.vertices:
+        i = v.colornum
+        if i not in partitions.keys():
+            partitions[i] = []
+        partitions[i].append(v)
+    return partitions
+
+
+def compare_partitions(g1: Graph, g2: Graph):
+    partition1 = PRefinement(g1)
+    partition2 = PRefinement(g2)
+    for i in partition1.keys():
+        if len(partition1[i]) != len(partition2[i]):
+            return False
+    return True
+
+
+if __name__ == "__main__":
     # main method
-    G1,G2 = load_graphs("graphs/colorref_smallexample_4_7.grl",1,3)
+    G1, G2 = load_graphs("graphs/colorref_smallexample_4_7.grl", 1, 3)
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
-    write_graph_to_dot_file(G1,"G1")
-    write_graph_to_dot_file(G2,"G2")
-    result = compare_graph_colors(G1,G2)
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
+    result = compare_partitions(G1, G2)
     print(result)
-
