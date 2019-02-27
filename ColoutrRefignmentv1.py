@@ -54,9 +54,27 @@ if __name__=="__main__":
     print(result)
 
 
-
 def colorNeighbours(v: Vertex):
     colors = []
     for n in v.neighbours:
         colors.append(n.colornum)
     return sorted(colors)
+
+
+def PRefinement(g: Graph):
+    partitions = []
+    for i in len(g.vertices):
+        partitions.append([])
+    for v in g.vertices:
+        i = v.colornum
+        partitions[i].append(v)
+    return partitions
+
+
+def compare_partitions(g1: Graph, g2: Graph):
+    partition1 = PRefinement(g1)
+    partition2 = PRefinement(g2)
+    for i in range(0, len(partition1)):
+        if len(partition1[i]) != len(partition2[i]):
+            return False
+    return True
