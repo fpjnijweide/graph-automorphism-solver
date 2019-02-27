@@ -7,17 +7,15 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         G2 = load_graph(f)[0][nr2]
         return G1,G2
 
-def CRefignment(filename):
-    with open(filename) as f:
-        G = load_graph(f)[0][0]
-        for v in G.vertices:
-            v.colornum = v.degree
+def CRefignment(G: Graph):
+    for v in G.vertices:
+        v.colornum = v.degree
 
-        old_graph = copy.deepcopy(G)
-        equal = False
-        while not equal:
-            colourGraph(G)
-        return G
+    old_graph = copy.deepcopy(G)
+    equal = False
+    while not equal:
+        colourGraph(G)
+    return G
 
 
 def compare_two_graphs(G1: Graph, G2: Graph):
