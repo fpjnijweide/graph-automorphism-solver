@@ -13,6 +13,8 @@ def CRefignment(G: Graph):
     equal = False
     while not equal:
         colorGraph(G)
+        old_graph=copy.deepcopy(G)
+        equal=compare_two_graphs(G, old_graph)
     return G
 
 
@@ -25,7 +27,7 @@ def compare_two_graphs(G1: Graph, G2: Graph):
             #if they are all the same color?
                 #return true else false?
 
-    return True
+    return False
 
 def colorGraph(G: Graph):
     old_graph = copy.deepcopy(G)
