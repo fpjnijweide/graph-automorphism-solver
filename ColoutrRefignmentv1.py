@@ -15,20 +15,22 @@ def CRefignment(G: Graph):
     while not equal:
         colorGraph(G)
         old_graph=copy.deepcopy(G)
-        equal=compare_two_graphs(G, old_graph)
+        equal=compare_graph_colors(G, old_graph)
     return G
 
 
-def compare_two_graphs(G1: Graph, G2: Graph):
+def compare_graph_colors(g1: Graph, g2: Graph):
     print("Comparing two graphs")
-    #TODO implement
-    if len(G1.vertices)==len(G2.vertices):
-        pass
-        #if G1 vertices all have same degree as G2 vertices
-            #if they are all the same color?
-                #return true else false?
+    # Compare two iterations of the same graph to see if the colours have changed between the two iterations.
+    for i in range(0, len(g1.vertices)):
+        if (hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")) and \
+                (g1.vertices[i].colornum != g2.vertices[i].colornum):
+            return False
+        if (hasattr(g1.vertices[i], "colornum") and not hasattr(g2.vertices[i], "colornum")) or \
+                (not hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")):
+            return False
+    return True
 
-    return False
 
 def colorGraph(G: Graph):
     old_graph = copy.deepcopy(G)
