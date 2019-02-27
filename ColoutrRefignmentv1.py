@@ -6,17 +6,25 @@ def CRefignment(filename):
         G = load_graph(f)[0][0]
         for v in G.vertices:
             v.colornum = v.degree
-
-        old_graph = copy.deepcopy(G)
         equal = False
         while not equal:
-            colourGraph(G)
+            colorGraph(G)
         return G
 
-def colourGraph(G):
+def colorGraph(G):
+    old_graph = copy.deepcopy(G)
     verts = dict()
     for v in G.vertices:
         if v.colornum in verts:
-            verts[v.colornum] = verts.get(v.colournum).append(v)
+            verts[v.colornum] = verts.get(v.colornum).append(v)
         else:
             verts[v.colornum] = [v]
+
+
+
+
+def colorNeighbours(v):
+    colors = []
+    for n in v.neighbours:
+        colors.append(n.colornum)
+    return sorted(colors)
