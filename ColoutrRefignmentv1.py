@@ -56,17 +56,18 @@ def colorGraph(G: Graph):
 
     # go through vertices with same color
     for i in range(len(verts)):
-        l = verts[i] # list with vertices of same color
+        l = verts[i][:] # list with vertices of same color
         newcolor = len(verts)
         verts.append([]) # create new color for vertices that are not the same as v0
         for i in range (1, len(l)):
             v0 = colorNeighbours(l[0])
-            vi = colorNeighbours(l[i])
+            current_vertex=l[i]
+            vi = colorNeighbours(current_vertex)
             if not compare(v0, vi):
-                verts[newcolor].append(l[i])
-                verts[ l[i].colornum ].remove(l[i])
-                l[i].colornum = newcolor
-                l[i].label=l[i].colornum
+                verts[newcolor].append(current_vertex)
+                verts[ current_vertex.colornum ].remove(current_vertex)
+                current_vertex.colornum = newcolor
+                current_vertex.label=current_vertex.colornum
 
 def write_graph_to_dot_file(G: Graph, title: str):
     with open('graph' + title + '.dot', 'w') as f:
