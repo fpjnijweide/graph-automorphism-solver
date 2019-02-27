@@ -62,12 +62,14 @@ def colorGraph(G: Graph):
     for i in range(len(verts)):
         l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
-        verts.append([])  # create new color for vertices that are not the same as v0
+        # to create new color for vertices that are not the same as v0
         for i in range(1, len(l)):
             v0 = colorNeighbours(l[0])
             current_vertex = l[i]
             vi = colorNeighbours(current_vertex)
             if not compare(v0, vi):
+                if newcolor == len(verts):
+                    verts.append([])
                 verts[newcolor].append(current_vertex)
                 verts[current_vertex.colornum].remove(current_vertex)
                 current_vertex.colornum = newcolor
@@ -100,7 +102,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/colorref_smallexample_4_7.grl", 1, 3)
+    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0,1)
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
     write_graph_to_dot_file(G1, "G1")
