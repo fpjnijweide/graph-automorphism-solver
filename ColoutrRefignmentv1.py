@@ -74,11 +74,11 @@ def write_graph_to_dot_file(G: Graph, title: str):
         write_dot(G, f)
 
 def PRefinement(g: Graph):
-    partitions = []
-    for i in len(g.vertices):
-        partitions.append([])
+    partitions = {}
     for v in g.vertices:
         i = v.colornum
+        if i not in partitions.keys():
+            partitions[i]=[]
         partitions[i].append(v)
     return partitions
 
@@ -86,7 +86,7 @@ def PRefinement(g: Graph):
 def compare_partitions(g1: Graph, g2: Graph):
     partition1 = PRefinement(g1)
     partition2 = PRefinement(g2)
-    for i in range(0, len(partition1)):
+    for i in partition1.keys():
         if len(partition1[i]) != len(partition2[i]):
             return False
     return True
@@ -98,5 +98,5 @@ if __name__=="__main__":
     G2 = CRefignment(G2)
     write_graph_to_dot_file(G1,"G1")
     write_graph_to_dot_file(G2,"G2")
-    result = compare_graph_colors(G1,G2)
+    result = compare_partitions(G1,G2)
     print(result)
