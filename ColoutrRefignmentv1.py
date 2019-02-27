@@ -31,15 +31,16 @@ def compare_two_graphs(G1: Graph, G2: Graph):
 
 def colorGraph(G: Graph):
     old_graph = copy.deepcopy(G)
-    verts = [[],[],[],[]]
-    for v in G.vertices:
-        if v.colornum > len(verts)-1:
-            diff=v.colornum - len(verts)
+    verts = []
 
-        if v.colornum in verts:
-            verts[v.colornum]= verts.get(v.colornum).append(v)
-        else:
-            verts[v.colornum] = [v]
+    for v in G.vertices:
+        #if the degree is not found in verts, add empty lists to it
+        if v.colornum > len(verts)-1:
+            diff=v.colornum - (len(verts)-1)
+            for i in range(diff):
+                verts.append([])
+        #add the vertex to its respective index in verts
+        verts[v.colornum].append(v)
     for i in verts:
         l = verts[i]
 
