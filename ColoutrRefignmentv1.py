@@ -11,7 +11,7 @@ def CRefignment(filename):
     with open(filename) as f:
         G = load_graph(f)[0][0]
         for v in G.vertices:
-            v.colournum = v.degree
+            v.colornum = v.degree
 
 
 
