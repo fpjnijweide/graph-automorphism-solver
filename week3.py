@@ -4,7 +4,6 @@ import collections
 
 compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
-
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
         L = load_graph(f, read_list=True)
@@ -98,7 +97,6 @@ def compare_partitions(g1: Graph, g2: Graph):
         if len(partition1[i]) != len(partition2[i]):
             return False
     return True
-
 
 if __name__ == "__main__":
     # main method
