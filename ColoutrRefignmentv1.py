@@ -1,5 +1,6 @@
 from graph import *
 from graph_io import *
+import collections
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
@@ -41,6 +42,13 @@ def colorGraph(G):
 
     for i in verts:
         l = verts[i]
+        for i in range (1, len(l)):
+            v0 = colorNeighbours(l[0])
+            vi = colorNeighbours(l[i])
+            compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
+            if not compare(v0, vi):
+
+
 
 
 
