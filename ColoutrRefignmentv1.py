@@ -21,6 +21,11 @@ def CRefignment(G: Graph):
 def compare_two_graphs(G1: Graph, G2: Graph):
     print("Comparing two graphs")
     #TODO implement
+    if len(G1.vertices)==len(G2.vertices):
+        pass
+        #if G1 vertices all have same degree as G2 vertices
+            #if they are all the same color?
+                #return true else false?
 
     return True
 def colourGraph(G):
