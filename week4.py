@@ -51,7 +51,9 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     return num
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/torus24.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     print(count_isomorphism(G1, G2, [], []))
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
