@@ -320,7 +320,7 @@ class Graph(object):
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        G=copy.deepcopy(self)
+        G=copy.copy(self)
         d={}
         for v in other.vertices:
             new_v=Vertex(G,v.label)
