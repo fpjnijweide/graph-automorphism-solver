@@ -2,8 +2,19 @@ from week3 import *
 
 
 def count_isomorphism(G: Graph, H: Graph, D, I):
-    # todo compute coarsest stable coloring of G (with Crefinement) while giving the final element of D a unique color
-    #  todo compute coarsest stable coloring of H  (with Crefinement) while giving the final element of I the same color as above
+    if len(D) != 0:
+        newcol = len(G.verts)
+        i = len(D) - 1
+        x = D[i]
+        y = I[i]
+
+        x.colornum = newcol
+        y.colornum = newcol
+        x.label = x.colornum
+        y.label = y.colornum
+
+    G = CRefignment(G)
+    H = CRefignment(H)
 
     if not compare_partitions(G1, G2):
         return 0
