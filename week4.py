@@ -5,21 +5,36 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     # todo compute coarsest stable coloring of G (with Crefinement) while giving the final element of D a unique color
     #  todo compute coarsest stable coloring of H  (with Crefinement) while giving the final element of I the same color as above
 
-
+    Gverts=[]
+    Hverts=[]
     if not compare_partitions(G1, G2):
         return 0
     else:
-        pass
-        # TODO Check if all sets in the dict of the graphs have length 1. If this is the case, return 1
+        all_colors_are_unique=True
+        for i in range(len(Gverts)):
+            if len( Gverts[i])!=1 or len (Hverts[i])!=1:
+                all_colors_are_unique=False
+        if all_colors_are_unique:
+            return True
 
-    # TODO choose color class C with |C| >= 4 (so its length in G + length in H >=4)
+    C=-1
+    for i in range(len(Gverts)):
+        Gcolor = Gverts[i][:]  # list with vertices of same color
+        Hcolor = Hverts[i][:]
+        if len(Gcolor)+len(Hcolor)>=4:
+            C=i
+            break
 
-    # TODO choose a vertex x, which has color C and is in graph G
+    if C==-1:
+        return 0
+
+    x=Gverts[C][0]
+
 
     num = 0
 
-    # TODO for all y with color y and in graph H:
-    num = num + count_isomorphism(copy.deepcopy(G), copy.deepcopy(H), D + [x], I + [y])
+    for y in Hverts[C]:
+        num = num + count_isomorphism(copy.deepcopy(G), copy.deepcopy(H), D + [x], I + [y])
 
 
     return num
