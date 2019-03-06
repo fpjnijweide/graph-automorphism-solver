@@ -2,38 +2,37 @@ from week3 import *
 
 
 def count_isomorphism(G: Graph, H: Graph, D, I):
-    # todo --lotte&franka-- compute coarsest stable coloring of G (with Crefinement) while giving the final element of D a unique color
-    # todo --lotte&franka-- compute coarsest stable coloring of H  (with Crefinement) while giving the final element of I the same color as above
-
-    if len(D) != 0:
-        newcol = len(G.verts)
-        i = len(D) - 1
-        x = D[i]
-        y = I[i]
-
-        x.colornum = newcol
-        y.colornum = newcol
-        x.label = x.colornum
-        y.label = y.colornum
-
-    G = CRefignment(G)
-    H = CRefignment(H)
+    # todo compute coarsest stable coloring of G (with Crefinement) while giving the final element of D a unique color
+    #  todo compute coarsest stable coloring of H  (with Crefinement) while giving the final element of I the same color as above
 
     if not compare_partitions(G1, G2):
         return 0
     else:
-        pass
-        # TODO Check if all sets in the dict of the graphs have length 1. If this is the case, return 1
+        all_colors_are_unique=True
+        for i in range(len(G.verts)):
+            if len( G.verts[i])!=1 or len (H.verts[i])!=1:
+                all_colors_are_unique=False
+        if all_colors_are_unique:
+            return True
 
+    C=-1
+    for i in range(len(G.verts)):
+        Gcolor = G.verts[i][:]  # list with vertices of same color
+        Hcolor = H.verts[i][:]
+        if len(Gcolor)+len(Hcolor)>=4:
+            C=i
+            break
 
-    # TODO choose color class C with |C| >= 4 (so its length in G + length in H >=4)
+    if C==-1:
+        return 0
 
-    # TODO choose a vertex x, which has color C and is in graph G
+    x=G.verts[C][0]
+
 
     num = 0
 
-    # TODO for all y with color y and in graph H:
-    num = num + count_isomorphism(copy.deepcopy(G), copy.deepcopy(H), D + [x], I + [y])
+    for y in H.verts[C]:
+        num = num + count_isomorphism(copy.deepcopy(G), copy.deepcopy(H), D + [x], I + [y])
 
 
     return num
