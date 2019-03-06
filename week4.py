@@ -23,7 +23,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     else:
         all_colors_are_unique=True
         for i in range(len(G.verts)):
-            if len( G.verts[i])!=1 or len (H.verts[i])!=1:
+            if len( G.verts[i])>1 or len (H.verts[i])>1:
                 all_colors_are_unique=False
         if all_colors_are_unique:
             return 1
@@ -51,7 +51,9 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     return num
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     print(count_isomorphism(G1, G2, [], []))
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
