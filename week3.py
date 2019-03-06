@@ -105,6 +105,7 @@ def colorGraph(G: Graph):
                 x.colornum = newcolor
                 x.label = x.colornum
 
+
     G.verts=verts
 
 
