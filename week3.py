@@ -79,10 +79,15 @@ def colorGraph(G: Graph):
         newcolor = len(verts)
         # to create new color for vertices that are not the same as v0
         for i in range(1, len(l)):
-            v0 = colorNeighbours(l[0])
+            # v0 is vertex with smallest sum of colors of neighbours
+            v0 = l[0]
+            for v in l:
+                if sum(colorNeighbours(v)) < sum(colorNeighbours(v0)):
+                    v0 = v
             current_vertex = l[i]
-            vi = colorNeighbours(current_vertex)
-            if not compare(v0, vi):
+            vicolors = colorNeighbours(current_vertex)
+            v0colors = colorNeighbours(v0)
+            if not compare(v0colors, vicolors):
                 if newcolor == len(verts):
                     verts.append([])
                 verts[newcolor].append(current_vertex)

@@ -21,6 +21,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     I = I[:]
     old_colors = []
     if len(D) != 0:
+        print("b")
         newcol = len(G.verts)
         for i in range(len(D)):
             last_D = D[i]
@@ -34,6 +35,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
 
     G = CRefignment(G)
     H = CRefignment(H)
+
 
     if not compare_partitions(G, H):
         revert_changes(D, I, old_colors)
@@ -74,6 +76,7 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/cubes5.grl", 2, 3)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
+    print(compare_graph_colors(G1, G2))
     print(count_isomorphism(G1, G2, [], []))
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
