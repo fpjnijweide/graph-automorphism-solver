@@ -24,6 +24,18 @@ def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
+
+    verts=[]
+    for v in G.vertices:
+        # if the degree is not found in verts, add empty lists to it
+        if v.colornum > len(verts) - 1:
+            diff = v.colornum - (len(verts) - 1)
+            for i in range(diff):
+                verts.append([])
+        # add the vertex to its respective index in verts
+        verts[v.colornum].append(v)
+
+    G.verts=verts
     return G
 
 def CRefignment(G: Graph):
