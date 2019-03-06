@@ -21,7 +21,6 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     I = I[:]
     old_colors = []
     if len(D) != 0:
-        print("b")
         newcol = len(G.verts)
         for i in range(len(D)):
             last_D = D[i]
