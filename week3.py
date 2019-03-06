@@ -119,9 +119,11 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
+    write_graph_to_dot_file(G1, "initial_c_G1")
+    write_graph_to_dot_file(G2, "initial_c_G2")
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
     write_graph_to_dot_file(G1, "G1")

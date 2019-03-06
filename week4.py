@@ -4,11 +4,13 @@ from week3 import *
 
 
 def count_isomorphism(G: Graph, H: Graph, D, I):
+    print(len(D))
     if len(D) != 0:
         newcol = len(G.verts)
         i = len(D) - 1
         x = D[i]
         y = I[i]
+
 
         x.colornum = newcol
         y.colornum = newcol
@@ -25,6 +27,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
         for i in range(len(G.verts)):
             if len( G.verts[i])>1 or len (H.verts[i])>1:
                 all_colors_are_unique=False
+        print(all_colors_are_unique)
         if all_colors_are_unique:
             return 1
 
