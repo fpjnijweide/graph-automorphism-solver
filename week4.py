@@ -1,3 +1,5 @@
+from graph import *
+from graph_io import *
 from week3 import *
 
 
@@ -16,7 +18,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     G = CRefignment(G)
     H = CRefignment(H)
 
-    if not compare_partitions(G1, G2):
+    if not compare_partitions(G, H):
         return 0
     else:
         all_colors_are_unique=True
@@ -24,7 +26,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
             if len( G.verts[i])!=1 or len (H.verts[i])!=1:
                 all_colors_are_unique=False
         if all_colors_are_unique:
-            return True
+            return 1
 
     C=-1
     for i in range(len(G.verts)):
@@ -52,4 +54,4 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    count_isomorphism(G1, G2, [], [])
+    print(count_isomorphism(G1, G2, [], []))
