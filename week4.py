@@ -12,6 +12,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
         pass
         # TODO Check if all sets in the dict of the graphs have length 1. If this is the case, return 1
 
+
     # TODO choose color class C with |C| >= 4 (so its length in G + length in H >=4)
 
     # TODO choose a vertex x, which has color C and is in graph G
