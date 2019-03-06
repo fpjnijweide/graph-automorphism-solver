@@ -61,7 +61,6 @@ def compare_graph_colors(g1: Graph, g2: Graph):
 
 
 def colorGraph(G: Graph):
-    old_graph = copy.deepcopy(G)
     verts = []
 
     for v in G.vertices:
@@ -77,6 +76,7 @@ def colorGraph(G: Graph):
     for i in range(len(verts)):
         l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
+        print("kleur: ", i, "krijgt nieuwe kleur: ", newcolor)
         # to create new color for vertices that are not the same as v0
 
         # now look only at color group of multiple vertices
@@ -90,8 +90,8 @@ def colorGraph(G: Graph):
 
             need_change = []
 
-            for i in range(0, len(l)):
-                current_vertex = l[i]
+            for j in range(0, len(l)):
+                current_vertex = l[j]
                 if v0 != current_vertex:
                     vicolors = colorNeighbours(current_vertex)
                     if not compare(v0colors, vicolors):
@@ -135,7 +135,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
+    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
