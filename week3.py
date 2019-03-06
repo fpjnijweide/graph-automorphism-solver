@@ -78,22 +78,33 @@ def colorGraph(G: Graph):
         l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
         # to create new color for vertices that are not the same as v0
-        for i in range(1, len(l)):
+
+        # now look only at color group of multiple vertices
+        if len(l) > 1:
             # v0 is vertex with smallest sum of colors of neighbours
             v0 = l[0]
             for v in l:
                 if sum(colorNeighbours(v)) < sum(colorNeighbours(v0)):
                     v0 = v
-            current_vertex = l[i]
-            vicolors = colorNeighbours(current_vertex)
             v0colors = colorNeighbours(v0)
-            if not compare(v0colors, vicolors):
+
+            need_change = []
+
+            for i in range(0, len(l)):
+                current_vertex = l[i]
+                if v0 != current_vertex:
+                    vicolors = colorNeighbours(current_vertex)
+                    if not compare(v0colors, vicolors):
+                        need_change.append(current_vertex)
+
+            for x in need_change:
                 if newcolor == len(verts):
                     verts.append([])
-                verts[newcolor].append(current_vertex)
-                verts[current_vertex.colornum].remove(current_vertex)
-                current_vertex.colornum = newcolor
-                current_vertex.label = current_vertex.colornum
+                verts[newcolor].append(x)
+                verts[x.colornum].remove(x)
+                x.colornum = newcolor
+                x.label = x.colornum
+
     G.verts=verts
 
 
@@ -123,7 +134,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
