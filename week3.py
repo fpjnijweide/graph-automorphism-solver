@@ -4,6 +4,7 @@ import collections
 
 compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
+
 def load_graphs(filename: str, nr1: int, nr2: int):
     with open(filename) as f:
         L = load_graph(f, read_list=True)
@@ -19,10 +20,14 @@ def colorNeighbours(v: Vertex):
     return sorted(colors)
 
 
-def CRefignment(G: Graph):
+def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
+    return G
+
+def CRefignment(G: Graph):
+
     equal = False
     while not equal:
         old_graph = copy.deepcopy(G)
@@ -98,9 +103,12 @@ def compare_partitions(g1: Graph, g2: Graph):
             return False
     return True
 
+
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0,1)
+    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
+    G1 = initialize_colors(G1)
+    G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
     write_graph_to_dot_file(G1, "G1")
