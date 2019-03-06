@@ -140,7 +140,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/colorref_smallexample_4_7.grl", 1, 2)
+    G1, G2 = load_graphs("graphs/colorref_smallexample_4_7.grl", 0,2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
