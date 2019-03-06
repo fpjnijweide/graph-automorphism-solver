@@ -43,13 +43,12 @@ def CRefignment(G: Graph):
     equal = False
     while not equal:
         old_graph = copy.deepcopy(G)
-        verts = colorGraph(G)
+        colorGraph(G)
         equal = compare_graph_colors(G, old_graph)
     return G
 
 
 def compare_graph_colors(g1: Graph, g2: Graph):
-    print("Comparing two graphs")
     # Compare two iterations of the same graph to see if the colours have changed between the two iterations.
     for i in range(0, len(g1.vertices)):
         if (hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")) and \
@@ -124,7 +123,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 1)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
