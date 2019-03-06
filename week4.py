@@ -1,19 +1,32 @@
+from graph import *
+from graph_io import *
 from week3 import *
 
 
 def count_isomorphism(G: Graph, H: Graph, D, I):
-    # todo compute coarsest stable coloring of G (with Crefinement) while giving the final element of D a unique color
-    #  todo compute coarsest stable coloring of H  (with Crefinement) while giving the final element of I the same color as above
+    if len(D) != 0:
+        newcol = len(G.verts)
+        i = len(D) - 1
+        x = D[i]
+        y = I[i]
 
-    if not compare_partitions(G1, G2):
+        x.colornum = newcol
+        y.colornum = newcol
+        x.label = x.colornum
+        y.label = y.colornum
+
+    G = CRefignment(G)
+    H = CRefignment(H)
+
+    if not compare_partitions(G, H):
         return 0
     else:
         all_colors_are_unique=True
         for i in range(len(G.verts)):
-            if len( G.verts[i])!=1 or len (H.verts[i])!=1:
+            if len( G.verts[i])>1 or len (H.verts[i])>1:
                 all_colors_are_unique=False
         if all_colors_are_unique:
-            return True
+            return 1
 
     C=-1
     for i in range(len(G.verts)):
@@ -38,7 +51,9 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     return num
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    count_isomorphism(G1, G2, [], [])
+    print(count_isomorphism(G1, G2, [], []))
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
