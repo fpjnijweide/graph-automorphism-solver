@@ -23,7 +23,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I):
     else:
         all_colors_are_unique=True
         for i in range(len(G.verts)):
-            if len( G.verts[i])!=1 or len (H.verts[i])!=1:
+            if len( G.verts[i])>1 or len (H.verts[i])>1:
                 all_colors_are_unique=False
         if all_colors_are_unique:
             return 1
