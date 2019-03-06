@@ -53,7 +53,6 @@ def CRefignment(G: Graph):
 
 
 def compare_graph_colors(g1: Graph, g2: Graph):
-    print("comparing two graphs")
     # Compare two iterations of the same graph to see if the colours have changed between the two iterations.
     for i in range(0, len(g1.vertices)):
         if (hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")) and \

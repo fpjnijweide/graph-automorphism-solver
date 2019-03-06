@@ -2,20 +2,6 @@ from graph import *
 from graph_io import *
 from week3 import *
 
-
-def revert_changes(D, I, old_colors):
-    if len(D) != 0:
-
-        for i in range(len(D)):
-            last_D = D[i]
-            last_I = I[i]
-
-            last_D.colornum = old_colors[i]
-            last_I.colornum = old_colors[i]
-            last_D.label = last_D.colornum
-            last_I.label = last_I.colornum
-
-
 def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
     G = copy.copy(inputG)
     G._v = inputG._v[:]
@@ -65,21 +51,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
             break
 
     if C == -1:
-
         return 0
-
-    # new_G = copy.copy(G)
-    # new_G._v = G._v[:]
-    # for i in range(len(new_G._v)):
-    #     new_G._v[i] = copy.copy(G._v[i])
-    #     new_G._v[i]._graph=new_G
-    #
-    #
-    # new_H = copy.copy(H)
-    # new_H._v = H._v[:]
-    # for i in range(len(new_H._v)):
-    #     new_H._v[i] = copy.copy(H._v[i])
-    #     new_H._v[i]._graph = new_H
 
     x = G.verts[C][0]
 
@@ -93,7 +65,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/colorref_smallexample_4_7.grl", 0,2)
+    G1, G2 = load_graphs("graphs/trees90.grl", 0,3)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     print(compare_graph_colors(G1, G2))
