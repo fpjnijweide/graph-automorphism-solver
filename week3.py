@@ -79,7 +79,7 @@ def colorGraph(G: Graph):
         l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
         # to create new color for vertices that are not the same as v0
-        for i in range(1, len(l)):
+        for i in range(0, len(l)):
             # v0 is vertex with smallest sum of colors of neighbours
             v0 = l[0]
             for v in l:
@@ -127,9 +127,9 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    G1 = CRefignment(G1)
-    G2 = CRefignment(G2)
+    print(compare_partitions(G1, G2))
+    colorGraph(G1)
+    colorGraph(G2)
+    print(compare_partitions(G1, G2))
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")
-    result = compare_partitions(G1, G2)
-    print(result)
+    write_graph_to_dot_file(G2, "G1")
