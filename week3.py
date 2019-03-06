@@ -24,9 +24,10 @@ def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
+    return G
 
 def CRefignment(G: Graph):
-    initialize_colors(G)
+
     equal = False
     while not equal:
         old_graph = copy.deepcopy(G)
@@ -106,6 +107,8 @@ def compare_partitions(g1: Graph, g2: Graph):
 if __name__ == "__main__":
     # main method
     G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
+    G1 = initialize_colors(G1)
+    G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
     G2 = CRefignment(G2)
     write_graph_to_dot_file(G1, "G1")
