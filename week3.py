@@ -24,6 +24,18 @@ def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
+
+    verts=[]
+    for v in G.vertices:
+        # if the degree is not found in verts, add empty lists to it
+        if v.colornum > len(verts) - 1:
+            diff = v.colornum - (len(verts) - 1)
+            for i in range(diff):
+                verts.append([])
+        # add the vertex to its respective index in verts
+        verts[v.colornum].append(v)
+
+    G.verts=verts
     return G
 
 def CRefignment(G: Graph):
@@ -33,7 +45,7 @@ def CRefignment(G: Graph):
         old_graph = copy.deepcopy(G)
         verts = colorGraph(G)
         equal = compare_graph_colors(G, old_graph)
-    return G,verts
+    return G
 
 
 def compare_graph_colors(g1: Graph, g2: Graph):
@@ -78,7 +90,7 @@ def colorGraph(G: Graph):
                 verts[current_vertex.colornum].remove(current_vertex)
                 current_vertex.colornum = newcolor
                 current_vertex.label = current_vertex.colornum
-    return verts
+    G.verts=verts
 
 
 def write_graph_to_dot_file(G: Graph, title: str):
@@ -110,8 +122,8 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 1)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    G1,verts1 = CRefignment(G1)
-    G2,verts2 = CRefignment(G2)
+    G1 = CRefignment(G1)
+    G2 = CRefignment(G2)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     result = compare_partitions(G1, G2)
