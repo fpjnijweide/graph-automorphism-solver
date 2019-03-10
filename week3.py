@@ -42,7 +42,11 @@ def CRefignment(G: Graph):
 
     equal = False
     while not equal:
-        old_graph = copy.deepcopy(G)
+        old_graph = copy.copy(G)
+        old_graph._v=G._v[:]
+        for i in range(len(old_graph._v)):
+            old_graph._v[i]=copy.copy(G._v[i])
+        #old_graph._v = copy.copy(G._v)
         colorGraph(G)
         equal = compare_graph_colors(G, old_graph)
     return G
@@ -61,6 +65,7 @@ def compare_graph_colors(g1: Graph, g2: Graph):
 
 
 def colorGraph(G: Graph):
+
     verts = []
 
     for v in G.vertices:
@@ -91,7 +96,7 @@ def colorGraph(G: Graph):
             need_change = []
 
             for j in range(0, len(l)):
-                current_vertex = l[j]
+                current_vertex = l[i]
                 if v0 != current_vertex:
                     vicolors = colorNeighbours(current_vertex)
                     if not compare(v0colors, vicolors):
@@ -135,7 +140,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/colorref_smallexample_6_15.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 1)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1 = CRefignment(G1)
