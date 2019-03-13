@@ -45,7 +45,7 @@ def fast_refinement(G: Graph, H: Graph):
     return G, H
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/torus24.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     start = time.time()
