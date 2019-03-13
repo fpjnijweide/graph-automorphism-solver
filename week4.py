@@ -62,7 +62,6 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
     return num
 
-
 if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/trees36.grl", 3, 5)
     G1 = initialize_colors(G1)

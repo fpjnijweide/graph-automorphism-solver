@@ -45,24 +45,24 @@ def fast_refinement(G: Graph, H: Graph):
     return G, H
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/torus24.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    start = time.time()
+    start1 = time.time()
     G1, G2 = fast_refinement(G1, G2)
-    end = time.time()
-    print(end - start)
-    start = time.time()
+    end1 = time.time()
+    print("fast refinement: ", end1 - start1)
+    start2 = time.time()
     G1, G2 = CRefignment(G1, G2)
-    end = time.time()
-    print(end - start)
+    end2 = time.time()
+    print("normal: ", end2 - start2)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     result = compare_partitions(G1, G2)
     print(result)
 
 
-"the code you want to test stays here"
+
 
 
 
