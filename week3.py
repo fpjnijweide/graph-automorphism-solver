@@ -24,32 +24,23 @@ def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
-
-    verts=[]
-    for v in G.vertices:
-        # if the degree is not found in verts, add empty lists to it
-        if v.colornum > len(verts) - 1:
-            diff = v.colornum - (len(verts) - 1)
-            for i in range(diff):
-                verts.append([])
-        # add the vertex to its respective index in verts
-        verts[v.colornum].append(v)
-
-    G.verts=verts
+    G.verts = create_verts(G.vertices)
     return G
 
-def CRefignment(G: Graph):
+def CRefignment(G: Graph, H: Graph):
 
     equal = False
     while not equal:
-        old_graph = copy.deepcopy(G)
-        verts = colorGraph(G)
-        equal = compare_graph_colors(G, old_graph)
-    return G
+        amount_colors_G = len(G.verts)
+        amount_colors_H = len(H.verts)
+        colorGraph(G, H)
+        new_amount_colors_G = len(G.verts)
+        new_amount_colors_H = len(H.verts)
+        equal = amount_colors_G == new_amount_colors_G and amount_colors_H == new_amount_colors_H
+    return G, H
 
 
 def compare_graph_colors(g1: Graph, g2: Graph):
-    print("Comparing two graphs")
     # Compare two iterations of the same graph to see if the colours have changed between the two iterations.
     for i in range(0, len(g1.vertices)):
         if (hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")) and \
@@ -61,11 +52,11 @@ def compare_graph_colors(g1: Graph, g2: Graph):
     return True
 
 
-def colorGraph(G: Graph):
-    old_graph = copy.deepcopy(G)
+def create_verts(vertices: list):
+    # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
     verts = []
 
-    for v in G.vertices:
+    for v in vertices:
         # if the degree is not found in verts, add empty lists to it
         if v.colornum > len(verts) - 1:
             diff = v.colornum - (len(verts) - 1)
@@ -74,28 +65,50 @@ def colorGraph(G: Graph):
         # add the vertex to its respective index in verts
         verts[v.colornum].append(v)
 
+    return verts
+
+
+def colorGraph(G: Graph, H: Graph):
+
+    vertices = G.vertices + H.vertices
+    verts = create_verts(vertices)
+
     # go through vertices with same color
     for i in range(len(verts)):
         l = verts[i][:]  # list with vertices of same color
         newcolor = len(verts)
         # to create new color for vertices that are not the same as v0
-        for i in range(0, len(l)):
+
+        # now look only at color group of multiple vertices
+        if len(l) > 1:
             # v0 is vertex with smallest sum of colors of neighbours
             v0 = l[0]
             for v in l:
                 if sum(colorNeighbours(v)) < sum(colorNeighbours(v0)):
                     v0 = v
-            current_vertex = l[i]
-            vicolors = colorNeighbours(current_vertex)
             v0colors = colorNeighbours(v0)
-            if not compare(v0colors, vicolors):
+
+            need_change = []
+
+            for j in range(0, len(l)):
+                current_vertex = l[j]
+                if v0 != current_vertex:
+                    vicolors = colorNeighbours(current_vertex)
+                    if not compare(v0colors, vicolors):
+                        need_change.append(current_vertex)
+
+            for x in need_change:
                 if newcolor == len(verts):
                     verts.append([])
-                verts[newcolor].append(current_vertex)
-                verts[current_vertex.colornum].remove(current_vertex)
-                current_vertex.colornum = newcolor
-                current_vertex.label = current_vertex.colornum
-    G.verts=verts
+                verts[newcolor].append(x)
+                verts[x.colornum].remove(x)
+                x.colornum = newcolor
+                x.label = x.colornum
+
+    G.verts = create_verts(G.vertices)
+    H.verts = create_verts(H.vertices)
+
+
 
 
 def write_graph_to_dot_file(G: Graph, title: str):
@@ -104,19 +117,14 @@ def write_graph_to_dot_file(G: Graph, title: str):
 
 
 def PRefinement(g: Graph):
-    partitions = {}
-    for v in g.vertices:
-        i = v.colornum
-        if i not in partitions.keys():
-            partitions[i] = []
-        partitions[i].append(v)
+    partitions = create_verts(g)
     return partitions
 
 
 def compare_partitions(g1: Graph, g2: Graph):
     partition1 = PRefinement(g1)
     partition2 = PRefinement(g2)
-    for i in partition1.keys():
+    for i in range(len(partition1)):
         if len(partition1[i]) != len(partition2[i]):
             return False
     return True
@@ -127,9 +135,8 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    print(compare_partitions(G1, G2))
-    colorGraph(G1)
-    colorGraph(G2)
-    print(compare_partitions(G1, G2))
+    G1, G2 = CRefignment(G1, G2)
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G1")
+    write_graph_to_dot_file(G2, "G2")
+    result = compare_partitions(G1, G2)
+    print(result)

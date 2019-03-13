@@ -2,67 +2,75 @@ from graph import *
 from graph_io import *
 from week3 import *
 
+def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
+    G = copy.copy(inputG)
+    G._v = inputG._v[:]
+    for i in range(len(G._v)):
+        G._v[i] = copy.copy(inputG._v[i])
+        G._v[i]._graph=G
 
-def count_isomorphism(G: Graph, H: Graph, D, I):
+
+    H = copy.copy(inputH)
+    H._v = inputH._v[:]
+    for i in range(len(H._v)):
+        H._v[i] = copy.copy(inputH._v[i])
+        H._v[i]._graph = H
 
     if len(D) != 0:
-        print("b")
         newcol = len(G.verts)
-        i = len(D) - 1
-        x = D[i]
-        y = I[i]
+        i=len(D)-1
+        last_D = G.vertices[D[i]]
+        last_I = H.vertices[I[i]]
 
-        x.colornum = newcol
-        y.colornum = newcol
-        x.label = x.colornum
-        y.label = y.colornum
 
-    G = CRefignment(G)
-    H = CRefignment(H)
+        last_D.colornum = newcol
+        last_I.colornum = newcol
+        last_D.label = last_D.colornum
+        last_I.label = last_I.colornum
+
+    G, H = CRefignment(G, H)
 
 
     if not compare_partitions(G, H):
-        print("c")
         return 0
     else:
-        print("a")
-        all_colors_are_unique=True
+        all_colors_are_unique = True
         for i in range(len(G.verts)):
-
-            if len( G.verts[i])>1 or len (H.verts[i])>1:
-                all_colors_are_unique=False
+            if len(G.verts[i]) > 1 or len(H.verts[i]) > 1:
+                all_colors_are_unique = False
         if all_colors_are_unique:
-            print("+1")
             return 1
 
-    C=-1
+    C = -1
     for i in range(len(G.verts)):
         Gcolor = G.verts[i][:]  # list with vertices of same color
         Hcolor = H.verts[i][:]
-        if len(Gcolor)+len(Hcolor)>=4:
-            C=i
+        if len(Gcolor) + len(Hcolor) >= 4:
+            C = i
             break
 
-    if C==-1:
+    if C == -1:
         return 0
 
-    x=G.verts[C][0]
-
+    x = G.verts[C][0]
 
     num = 0
 
     for y in H.verts[C]:
-        num = num + count_isomorphism(copy.deepcopy(G), copy.deepcopy(H), D + [x], I + [y])
 
+        num = num + count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
 
     return num
 
+
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl", 2, 3)
-    print(compare_graph_colors(G1, G2))
+    G1, G2 = load_graphs("graphs/trees36.grl", 3, 5)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    print(compare_graph_colors(G1, G2))
+    G1, G2 = CRefignment(G1, G2)
+    print(compare_partitions(G1, G2))
+    # TODO why does count_isomorphism() return the correct number, but cubed?
     print(count_isomorphism(G1, G2, [], []))
+
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
