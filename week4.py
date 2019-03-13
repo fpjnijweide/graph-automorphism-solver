@@ -28,8 +28,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
-    G = CRefignment(G)
-    H = CRefignment(H)
+    G, H = CRefignment(G, H)
 
 
     if not compare_partitions(G, H):
@@ -65,7 +64,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees90.grl", 0,3)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0,7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     print(compare_graph_colors(G1, G2))
