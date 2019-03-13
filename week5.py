@@ -42,6 +42,8 @@ def fast_refinement(G: Graph, H: Graph):
                 c = create_verts(G.vertices + H.vertices)
 
         queue.pop(0)
+    G.verts = create_verts(G.vertices)
+    H.verts = create_verts(H.vertices)
     return G, H
 if __name__ == "__main__":
     # main method
