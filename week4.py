@@ -28,8 +28,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
-    G = CRefignment(G)
-    H = CRefignment(H)
+    G, H = CRefignment(G, H)
 
 
     if not compare_partitions(G, H):
@@ -65,10 +64,13 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees90.grl", 0,3)
+    G1, G2 = load_graphs("graphs/trees36.grl", 3, 5)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    print(compare_graph_colors(G1, G2))
+    G1, G2 = CRefignment(G1, G2)
+    print(compare_partitions(G1, G2))
+    # TODO why does count_isomorphism() return the correct number, but cubed?
     print(count_isomorphism(G1, G2, [], []))
+
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
