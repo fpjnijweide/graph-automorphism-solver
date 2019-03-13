@@ -2,6 +2,7 @@ from graph import *
 from graph_io import *
 from week3 import *
 from week4 import *
+import time
 
 def fast_refinement(G: Graph, H: Graph):
     c = create_verts(G.vertices + H.vertices)
@@ -44,14 +45,24 @@ def fast_refinement(G: Graph, H: Graph):
     return G, H
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
+    G1, G2 = load_graphs("graphs/torus24.grl", 0, 3)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
+    start = time.time()
     G1, G2 = fast_refinement(G1, G2)
+    end = time.time()
+    print(end - start)
+    start = time.time()
+    G1, G2 = CRefignment(G1, G2)
+    end = time.time()
+    print(end - start)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     result = compare_partitions(G1, G2)
     print(result)
+
+
+"the code you want to test stays here"
 
 
 
