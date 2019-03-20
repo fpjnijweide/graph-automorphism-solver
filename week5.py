@@ -50,21 +50,28 @@ def fast_refinement(G: Graph, H: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/threepaths320.gr", 0, 0)
+
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    start1 = time.time()
+
+    start = time.time()
     G1, G2 = fast_refinement(G1, G2)
     end = time.time()
-    print("normal:", end - start)
+    print("fast:", end - start)
+
+    G1, G2 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G1 = initialize_colors(G1)
+    G2 = initialize_colors(G2)
     start = time.time()
     G1, G2 = CRefignment(G1, G2)
     end = time.time()
-    print("fast:", end - start)
+    print("normal:", end - start)
+
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
-    result = compare_partitions(G1, G2)
-    print(result)
+
+
 
 
 
