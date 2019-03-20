@@ -8,20 +8,20 @@ import time
 def fast_refinement(G: Graph, H: Graph):
     c = create_verts(G.vertices + H.vertices)
     queue = []
-    for currentcolour in range(len(c)):
-        if len(c[currentcolour]) >= 1:
-            queue.append(currentcolour)
+    for current_color in range(len(c)):
+        if len(c[current_color]) >= 1:
+            queue.append(current_color)
             break
 
     while len(queue) != 0:
         for i in range(len(c)):
             if len(c[i]) > 1:
                 list_same_color = c[i]
-                amount_v0 = colorNeighbours(list_same_color[0]).count(queue[0])
+                amount_v0 = neighbor_colors(list_same_color[0]).count(queue[0])
                 c1 = []
                 c2 = []
                 for v in range(1, len(list_same_color)):
-                    amount_v = colorNeighbours(list_same_color[v]).count(queue[0])
+                    amount_v = neighbor_colors(list_same_color[v]).count(queue[0])
                     if amount_v == amount_v0:
                         c1.append(list_same_color[v])
                     else:
@@ -64,24 +64,9 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     start = time.time()
-    G1, G2 = CRefignment(G1, G2)
+    G1, G2 = color_refinement(G1, G2)
     end = time.time()
     print("normal:", end - start)
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
-
-
-
-
-
-
-
-
-
-
-
-#def refine_operation():
-
-
-

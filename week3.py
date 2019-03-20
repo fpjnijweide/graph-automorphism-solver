@@ -3,10 +3,12 @@ from graph_io import *
 import collections
 from graphviz import render
 
+# compare checks if two collections have the same contents
 compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
 
 def load_graphs(filename: str, nr1: int, nr2: int):
+    # loads two graphs from a file, where nr1 and nr2 specify which graphs to load from the file
     with open(filename) as f:
         L = load_graph(f, read_list=True)
         G1 = L[0][nr1]
@@ -14,22 +16,23 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         return G1, G2
 
 
-def colorNeighbours(v: Vertex):
+def neighbor_colors(v: Vertex):
+    # returns a list of colors of the neighboring vertices
     colors = []
-    for n in v.neighbours:
+    for n in v.neighbors:
         colors.append(n.colornum)
-    return sorted(colors)
+    return colors
 
 
 def initialize_colors(G: Graph):
+    # sets the colornum and label of all vertices to equal to their degree (amount of neighbors)
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
     G.verts = create_verts(G.vertices)
     return G
 
-def CRefignment(G: Graph, H: Graph):
-
+def color_refinement(G: Graph, H: Graph):
     equal = False
     while not equal:
         amount_colors_G = len(G.verts)
@@ -70,7 +73,6 @@ def create_verts(vertices: list):
 
 
 def colorGraph(G: Graph, H: Graph):
-
     vertices = G.vertices + H.vertices
     verts = create_verts(vertices)
 
@@ -85,16 +87,16 @@ def colorGraph(G: Graph, H: Graph):
             # v0 is vertex with smallest sum of colors of neighbours
             v0 = l[0]
             for v in l:
-                if sum(colorNeighbours(v)) < sum(colorNeighbours(v0)):
+                if sum(neighbor_colors(v)) < sum(neighbor_colors(v0)):
                     v0 = v
-            v0colors = colorNeighbours(v0)
+            v0colors = neighbor_colors(v0)
 
             need_change = []
 
             for j in range(0, len(l)):
                 current_vertex = l[j]
                 if v0 != current_vertex:
-                    vicolors = colorNeighbours(current_vertex)
+                    vicolors = neighbor_colors(current_vertex)
                     if not compare(v0colors, vicolors):
                         need_change.append(current_vertex)
 
@@ -108,8 +110,6 @@ def colorGraph(G: Graph, H: Graph):
 
     G.verts = create_verts(G.vertices)
     H.verts = create_verts(H.vertices)
-
-
 
 
 def write_graph_to_dot_file(G: Graph, title: str):
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    G1, G2 = CRefignment(G1, G2)
+    G1, G2 = color_refinement(G1, G2)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     render('dot', 'png', 'graphG1.dot')
