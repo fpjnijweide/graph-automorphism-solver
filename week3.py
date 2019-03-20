@@ -33,28 +33,16 @@ def initialize_colors(G: Graph):
     return G
 
 def color_refinement(G: Graph, H: Graph):
+    # Refine the colors of the graph using colorGraph until the colors are stable (do not change anymore)
     equal = False
     while not equal:
         amount_colors_G = len(G.verts)
         amount_colors_H = len(H.verts)
-        colorGraph(G, H)
+        refine_colors(G, H)
         new_amount_colors_G = len(G.verts)
         new_amount_colors_H = len(H.verts)
         equal = amount_colors_G == new_amount_colors_G and amount_colors_H == new_amount_colors_H
     return G, H
-
-
-def compare_graph_colors(g1: Graph, g2: Graph):
-    # Compare two iterations of the same graph to see if the colours have changed between the two iterations.
-    for i in range(0, len(g1.vertices)):
-        if (hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")) and \
-                (g1.vertices[i].colornum != g2.vertices[i].colornum):
-            return False
-        if (hasattr(g1.vertices[i], "colornum") and not hasattr(g2.vertices[i], "colornum")) or \
-                (not hasattr(g1.vertices[i], "colornum") and hasattr(g2.vertices[i], "colornum")):
-            return False
-    return True
-
 
 def create_verts(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
@@ -72,7 +60,7 @@ def create_verts(vertices: list):
     return verts
 
 
-def colorGraph(G: Graph, H: Graph):
+def refine_colors(G: Graph, H: Graph):
     vertices = G.vertices + H.vertices
     verts = create_verts(vertices)
 
