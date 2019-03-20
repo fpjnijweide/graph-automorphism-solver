@@ -1,7 +1,6 @@
 from graph import *
 from graph_io import *
 import collections
-from graphviz import render
 
 compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 
@@ -139,7 +138,5 @@ if __name__ == "__main__":
     G1, G2 = CRefignment(G1, G2)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
     result = compare_partitions(G1, G2)
     print(result)

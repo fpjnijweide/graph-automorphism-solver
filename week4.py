@@ -1,8 +1,7 @@
 from graph import *
 from graph_io import *
+from week5 import *
 from week3 import *
-from graphviz import render
-from graphviz import Source
 
 def is_bijection(G: Graph, H:Graph, D: List[int], I: List[int]):
     res=True
@@ -129,6 +128,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
     return num
 
 def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
+
     G = copy.copy(inputG)
     G._v = inputG._v[:]
     for i in range(len(G._v)):
@@ -194,16 +194,14 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
-    print(compare_partitions(G1, G2))
-
     print(count_isomorphism(G1, G2, [], []))
 
-    G1, G2 = load_graphs("graphs/trees36.grl", 3, 5)
+    '''G1, G2 = load_graphs("graphs/trees36.grl", 3, 5)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = fast_refinement(G1, G2)
     print(compare_partitions(G1, G2))
-    print(count_isomorphism_fast(G1, G2, [], []))
+    print(count_isomorphism_fast(G1, G2, [], []))'''
 
 
     write_graph_to_dot_file(G1, "G1")
