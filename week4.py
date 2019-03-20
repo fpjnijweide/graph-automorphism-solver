@@ -1,8 +1,9 @@
 from graph import *
 from graph_io import *
 from week3 import *
-from graphviz import render
-from graphviz import Source
+# from graphviz import render
+# from graphviz import Source
+from week5 import*
 
 def is_bijection(G: Graph, H:Graph, D: List[int], I: List[int]):
     res=True
@@ -190,7 +191,7 @@ def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl", 3,5)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 2,3)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
