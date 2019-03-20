@@ -23,9 +23,9 @@ def is_bijection(G: Graph, H:Graph, D: List[int], I: List[int]):
         #     pass
 
 def copy_graph(inputG: Graph):
-    G = copy.copy(inputG)
+    G: Graph = copy.copy(inputG)
 
-
+    G._e=[]
 
     G_copied_vertices={}
 
@@ -35,29 +35,35 @@ def copy_graph(inputG: Graph):
         G._v[i]._graph=G
 
         G_copied_vertices[inputG._v[i]]=G._v[i]
+        G._v[i]._incidence={}
 
 
-    G._e = inputG._e[:]
-    G_copied_eges={}
-    for i in range(len(G._e)):
-        G._e[i] = copy.copy(inputG._e[i])
-        G._e[i]._head=G_copied_vertices[G._e[i]._head]
-        G._e[i]._tail = G_copied_vertices[G._e[i]._tail]
-        G_copied_eges[inputG._e[i]]=G._e[i]
+    bcdef=1
+    for edge in inputG._e:
+        newedge=Edge(tail=G_copied_vertices[edge.tail],head=G_copied_vertices[edge.head],weight=edge.weight)
+        G.add_edge(newedge)
+    # G._e = inputG._e[:]
+    # G_copied_eges={}
+    # for i in range(len(G._e)):
+    #     G._e[i] = copy.copy(inputG._e[i])
+    #     G._e[i]._head=G_copied_vertices[G._e[i]._head]
+    #     G._e[i]._tail = G_copied_vertices[G._e[i]._tail]
+    #     G_copied_eges[inputG._e[i]]=G._e[i]
+    #
 
-    for i in range(len(G._v)):
-        G._v[i]._incidence = copy.copy(inputG._v[i]._incidence)
-        # incidence is a dict that maps vertex -> set of edges
-        for vertex, edge_set in list(iter(G._v[i]._incidence.items()))[:]:
-            G._v[i]._incidence[G_copied_vertices[vertex]] = G._v[i]._incidence.pop(vertex)
-            incident_edges=G._v[i]._incidence[G_copied_vertices[vertex]]
-            for edge in list(iter(incident_edges))[:]:
-                incident_edges.remove(edge)
-                #todo fix key error in following line
-                new_edge=G_copied_eges[edge]
-                incident_edges.add(new_edge)
-
-            #G._v[i]._incidence[new_key] = dictionary.pop(old_key)
+    # for i in range(len(G._v)):
+    #     G._v[i]._incidence = copy.copy(inputG._v[i]._incidence)
+    #     # incidence is a dict that maps vertex -> set of edges
+    #     for vertex, edge_set in list(iter(G._v[i]._incidence.items()))[:]:
+    #         G._v[i]._incidence[G_copied_vertices[vertex]] = G._v[i]._incidence.pop(vertex)
+    #
+    #         for edge in list(iter(edge_set))[:]:
+    #             edge_set.remove(edge)
+    #             #todo fix key error in following line
+    #             new_edge=G_copied_eges[edge]
+    #             edge_set.add(new_edge)
+    #
+    #         #G._v[i]._incidence[new_key] = dictionary.pop(old_key)
 
     return G
 
@@ -124,7 +130,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
+    G1, G2 = load_graphs("graphs/trees36.grl", 1,4)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
