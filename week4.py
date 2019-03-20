@@ -59,7 +59,7 @@ def copy_graph(inputG: Graph):
     #
     #         for edge in list(iter(edge_set))[:]:
     #             edge_set.remove(edge)
-    #             #todo fix key error in following line
+    #
     #             new_edge=G_copied_eges[edge]
     #             edge_set.add(new_edge)
     #
@@ -97,14 +97,14 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         if all_colors_are_unique:
             # DEBUGGING CODE
             # copy to wherever needed
-            write_graph_to_dot_file(G, "G1")
-            write_graph_to_dot_file(H, "G2")
-            render('dot', 'png', 'graphG1.dot')
-            render('dot', 'png', 'graphG2.dot')
+            # write_graph_to_dot_file(G, "G1")
+            # write_graph_to_dot_file(H, "G2")
+            # render('dot', 'png', 'graphG1.dot')
+            # render('dot', 'png', 'graphG2.dot')
 
             # input()
             # END DEBUGGING CODE
-            print(is_bijection(G, H, D, I))
+            #print(is_bijection(G, H, D, I))
             return 1
 
     C = -1
@@ -130,12 +130,12 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl", 1,4)
+    G1, G2 = load_graphs("graphs/trees36.grl", 3,5)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
     print(compare_partitions(G1, G2))
-    # TODO why does count_isomorphism() return the correct number, but cubed?
+
     print(count_isomorphism(G1, G2, [], []))
 
 
