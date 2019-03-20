@@ -119,7 +119,7 @@ def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
 
     for y in H.verts[C]:
 
-        num = num + count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
+        num = num + count_isomorphism_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
 
     return num
 
