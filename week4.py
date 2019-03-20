@@ -44,18 +44,18 @@ def copy_graph(inputG: Graph):
         G._e[i]._head=G_copied_vertices[G._e[i]._head]
         G._e[i]._tail = G_copied_vertices[G._e[i]._tail]
         G_copied_eges[inputG._e[i]]=G._e[i]
-    #
-    # for i in range(len(G._v)):
-    #     G._v[i]._incidence = copy.copy(inputG._v[i]._incidence) #todo changing this to deepcopy makes error appear earlier
-    #     # incidence is a dict that maps vertex -> set of edges
-    #     for vertex, edge_set in list(iter(G._v[i]._incidence.items()))[:]:
-    #         G._v[i]._incidence[G_copied_vertices[vertex]] = G._v[i]._incidence.pop(vertex)
-    #         incident_edges=G._v[i]._incidence[G_copied_vertices[vertex]]
-    #         for edge in list(iter(incident_edges))[:]:
-    #             incident_edges.remove(edge)
-    #             #todo fix key error in following line
-    #             new_edge=G_copied_eges[edge]
-    #             incident_edges.add(new_edge)
+
+    for i in range(len(G._v)):
+        G._v[i]._incidence = copy.copy(inputG._v[i]._incidence)
+        # incidence is a dict that maps vertex -> set of edges
+        for vertex, edge_set in list(iter(G._v[i]._incidence.items()))[:]:
+            G._v[i]._incidence[G_copied_vertices[vertex]] = G._v[i]._incidence.pop(vertex)
+            incident_edges=G._v[i]._incidence[G_copied_vertices[vertex]]
+            for edge in list(iter(incident_edges))[:]:
+                incident_edges.remove(edge)
+                #todo fix key error in following line
+                new_edge=G_copied_eges[edge]
+                incident_edges.add(new_edge)
 
             #G._v[i]._incidence[new_key] = dictionary.pop(old_key)
 
@@ -91,10 +91,10 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         if all_colors_are_unique:
             # DEBUGGING CODE
             # copy to wherever needed
-            # write_graph_to_dot_file(G, "G1")
-            # write_graph_to_dot_file(H, "G2")
-            # render('dot', 'png', 'graphG1.dot')
-            # render('dot', 'png', 'graphG2.dot')
+            write_graph_to_dot_file(G, "G1")
+            write_graph_to_dot_file(H, "G2")
+            render('dot', 'png', 'graphG1.dot')
+            render('dot', 'png', 'graphG2.dot')
 
             # input()
             # END DEBUGGING CODE
