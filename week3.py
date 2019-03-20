@@ -132,7 +132,7 @@ def compare_partitions(g1: Graph, g2: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/trees36.grl", 0, 7)
+    G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
