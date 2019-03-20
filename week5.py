@@ -4,13 +4,15 @@ from week3 import *
 from week4 import *
 import time
 
+
 def fast_refinement(G: Graph, H: Graph):
     c = create_verts(G.vertices + H.vertices)
     queue = []
-    for i in range(len(c)):
-        if len(c[i]) >= 1:
-            queue.append(i)
+    for currentcolour in range(len(c)):
+        if len(c[currentcolour]) >= 1:
+            queue.append(currentcolour)
             break
+
     while len(queue) != 0:
         for i in range(len(c)):
             if len(c[i]) > 1:
@@ -40,29 +42,32 @@ def fast_refinement(G: Graph, H: Graph):
                     else:
                         queue.append(l)
                 c = create_verts(G.vertices + H.vertices)
-
         queue.pop(0)
+    G.verts = create_verts(G.vertices)
+    H.verts = create_verts(H.vertices)
     return G, H
+
+
 if __name__ == "__main__":
     # main method
     G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    start = time.time()
+    start1 = time.time()
     G1, G2 = fast_refinement(G1, G2)
     end = time.time()
-    print("fast:",end - start)
+    print("normal:", end - start)
     start = time.time()
     G1, G2 = CRefignment(G1, G2)
     end = time.time()
-    print("normal:", end - start)
+    print("fast:", end - start)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     result = compare_partitions(G1, G2)
     print(result)
 
 
-"the code you want to test stays here"
+
 
 
 
