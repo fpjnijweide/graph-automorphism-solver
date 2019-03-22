@@ -1,12 +1,9 @@
-from graph import *
-from graph_io import *
-from week3 import *
 from week4 import *
 import time
 
 
 def fast_refinement(G: Graph, H: Graph):
-    c = create_verts(G.vertices + H.vertices)
+    c = create_partition(G.vertices + H.vertices)
     queue = []
     for current_color in range(len(c)):
         if len(c[current_color]) >= 1:
@@ -41,10 +38,10 @@ def fast_refinement(G: Graph, H: Graph):
                         queue.append(i)
                     else:
                         queue.append(l)
-                c = create_verts(G.vertices + H.vertices)
+                c = create_partition(G.vertices + H.vertices)
         queue.pop(0)
-    G.verts = create_verts(G.vertices)
-    H.verts = create_verts(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
     return G, H
 
 

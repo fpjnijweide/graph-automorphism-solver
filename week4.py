@@ -1,5 +1,3 @@
-from graph import *
-from graph_io import *
 from week3 import *
 # from graphviz import render
 # from graphviz import Source
@@ -18,8 +16,8 @@ def is_bijection(G: Graph, H: Graph, D: List[int], I: List[int]):
             if not res:
                 break
                 # break
-
     return res
+
 
 def copy_graph(inputG: Graph):
     G: Graph = copy.copy(inputG)
@@ -46,7 +44,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
     H = copy_graph(inputH)
 
     if len(D) != 0:
-        newcol = len(G.verts)
+        newcol = len(G.partition)
         i = len(D) - 1
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
@@ -58,12 +56,12 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
     G, H = fast_refinement(G, H)
 
-    if not compare_partitions(G, H):
+    if not compare_graphs_by_partition(G, H):
         return 0
     else:
         all_colors_are_unique = True
-        for i in range(len(G.verts)):
-            if len(G.verts[i]) > 1 or len(H.verts[i]) > 1:
+        for i in range(len(G.partition)):
+            if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
@@ -80,9 +78,9 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
             return 1
 
     C = -1
-    for i in range(len(G.verts)):
-        Gcolor = G.verts[i][:]  # list with vertices of same color
-        Hcolor = H.verts[i][:]
+    for i in range(len(G.partition)):
+        Gcolor = G.partition[i][:]  # list with vertices of same color
+        Hcolor = H.partition[i][:]
         if len(Gcolor) + len(Hcolor) >= 4:
             C = i
             break
@@ -90,11 +88,11 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
     if C == -1:
         return 0
 
-    x = G.verts[C][0]
+    x = G.partition[C][0]
 
     num = 0
 
-    for y in H.verts[C]:
+    for y in H.partition[C]:
         num = num + count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
 
     return num
@@ -105,7 +103,7 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = fast_refinement(G1, G2)
-    print(compare_partitions(G1, G2))
+    print(compare_graphs_by_partition(G1, G2))
 
     print(count_isomorphism(G1, G2, [], []))
 

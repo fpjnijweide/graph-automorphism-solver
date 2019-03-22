@@ -10,9 +10,9 @@ compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
 def load_graphs(filename: str, nr1: int, nr2: int):
     # loads two graphs from a file, where nr1 and nr2 specify which graphs to load from the file
     with open(filename) as f:
-        L = load_graph(f, read_list=True)
-        G1 = L[0][nr1]
-        G2 = L[0][nr2]
+        graph_file = load_graph(f, read_list=True)
+        G1 = graph_file[0][nr1]
+        G2 = graph_file[0][nr2]
         return G1, G2
 
 
@@ -29,75 +29,79 @@ def initialize_colors(G: Graph):
     for v in G.vertices:
         v.colornum = v.degree
         v.label = v.colornum
-    G.verts = create_verts(G.vertices)
+    G.partition = create_partition(G.vertices)
     return G
+
 
 def color_refinement(G: Graph, H: Graph):
     # Refine the colors of the graph using colorGraph until the colors are stable (do not change anymore)
     equal = False
     while not equal:
-        amount_colors_G = len(G.verts)
-        amount_colors_H = len(H.verts)
+        amount_colors_G = len(G.partition)
+        amount_colors_H = len(H.partition)
         refine_colors(G, H)
-        new_amount_colors_G = len(G.verts)
-        new_amount_colors_H = len(H.verts)
+        new_amount_colors_G = len(G.partition)
+        new_amount_colors_H = len(H.partition)
         equal = amount_colors_G == new_amount_colors_G and amount_colors_H == new_amount_colors_H
     return G, H
 
-def create_verts(vertices: list):
+
+def create_partition(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
-    verts = []
+    partition = []
 
     for v in vertices:
-        # if the degree is not found in verts, add empty lists to it
-        if v.colornum > len(verts) - 1:
-            diff = v.colornum - (len(verts) - 1)
+        # if the degree is not found in partition, add empty lists to it
+        if v.colornum > len(partition) - 1:
+            diff = v.colornum - (len(partition) - 1)
             for i in range(diff):
-                verts.append([])
-        # add the vertex to its respective index in verts
-        verts[v.colornum].append(v)
+                partition.append([])
+        # add the vertex to its respective index in partition
+        partition[v.colornum].append(v)
 
-    return verts
+    return partition
 
 
 def refine_colors(G: Graph, H: Graph):
+    # Refines colors
+
     vertices = G.vertices + H.vertices
-    verts = create_verts(vertices)
+    partition = create_partition(vertices)
 
     # go through vertices with same color
-    for i in range(len(verts)):
-        l = verts[i][:]  # list with vertices of same color
-        newcolor = len(verts)
-        # to create new color for vertices that are not the same as v0
+    for i in range(len(partition)):
+        vertices_with_this_color = partition[i][:]  # list with vertices of same color
+        new_color = len(partition)
+        # to create new color for vertices that are not the same as first_vertex
 
         # now look only at color group of multiple vertices
-        if len(l) > 1:
-            # v0 is vertex with smallest sum of colors of neighbours
-            v0 = l[0]
-            for v in l:
-                if sum(neighbor_colors(v)) < sum(neighbor_colors(v0)):
-                    v0 = v
-            v0colors = neighbor_colors(v0)
+        if len(vertices_with_this_color) > 1:
+            # first_vertex is vertex with smallest sum of colors of neighbours
+            first_vertex = vertices_with_this_color[0]
+            for other_vertex in vertices_with_this_color:
+                if sum(neighbor_colors(other_vertex)) < sum(neighbor_colors(first_vertex)):
+                    first_vertex = other_vertex
+            first_vertex_colors = neighbor_colors(first_vertex)
 
-            need_change = []
+            vertices_needing_change = []
 
-            for j in range(0, len(l)):
-                current_vertex = l[j]
-                if v0 != current_vertex:
-                    vicolors = neighbor_colors(current_vertex)
-                    if not compare(v0colors, vicolors):
-                        need_change.append(current_vertex)
+            for j in range(0, len(vertices_with_this_color)):
+                current_vertex = vertices_with_this_color[j]
+                if first_vertex != current_vertex:
+                    current_vertex_color = neighbor_colors(current_vertex)
+                    if not compare(first_vertex_colors, current_vertex_color):
+                        vertices_needing_change.append(current_vertex)
 
-            for x in need_change:
-                if newcolor == len(verts):
-                    verts.append([])
-                verts[newcolor].append(x)
-                verts[x.colornum].remove(x)
-                x.colornum = newcolor
-                x.label = x.colornum
+            for changing_vertex in vertices_needing_change:
+                if new_color == len(partition):
+                    partition.append([])
+                partition[new_color].append(changing_vertex)
+                partition[changing_vertex.colornum].remove(changing_vertex)
+                changing_vertex.colornum = new_color
+                changing_vertex.label = changing_vertex.colornum
 
-    G.verts = create_verts(G.vertices)
-    H.verts = create_verts(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
 
 
 def write_graph_to_dot_file(G: Graph, title: str):
@@ -105,15 +109,12 @@ def write_graph_to_dot_file(G: Graph, title: str):
         write_dot(G, f)
 
 
-def PRefinement(g: Graph):
-    partitions = create_verts(g)
-    return partitions
-
-
-def compare_partitions(g1: Graph, g2: Graph):
-    partition1 = PRefinement(g1)
-    partition2 = PRefinement(g2)
+def compare_graphs_by_partition(g1: Graph, g2: Graph):
+    # Compares partition to see if they are the same
+    partition1 = create_partition(g1.vertices)
+    partition2 = create_partition(g2.vertices)
     for i in range(len(partition1)):
+        # Check if the amount of vertices in this partition are equal in both graphs
         if len(partition1[i]) != len(partition2[i]):
             return False
     return True
@@ -129,5 +130,5 @@ if __name__ == "__main__":
     write_graph_to_dot_file(G2, "G2")
     render('dot', 'png', 'graphG1.dot')
     render('dot', 'png', 'graphG2.dot')
-    result = compare_partitions(G1, G2)
+    result = compare_graphs_by_partition(G1, G2)
     print(result)
