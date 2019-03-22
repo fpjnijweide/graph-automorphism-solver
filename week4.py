@@ -1,6 +1,6 @@
 from week3 import *
-# from graphviz import render
-# from graphviz import Source
+from graphviz import render
+from graphviz import Source
 from week5 import *
 
 
@@ -54,7 +54,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
-    G, H = fast_refinement(G, H)
+    G, H = color_refinement(G, H)
 
     if not compare_graphs_by_partition(G, H):
         return 0
@@ -65,15 +65,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-            # DEBUGGING CODE
-            # copy to wherever needed
-            # write_graph_to_dot_file(G, "G1")
-            # write_graph_to_dot_file(H, "G2")
-            # render('dot', 'png', 'graphG1.dot')
-            # render('dot', 'png', 'graphG2.dot')
 
-            # input()
-            # END DEBUGGING CODE
             # print(is_bijection(G, H, D, I))
             return 1
 
@@ -99,13 +91,21 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/threepaths5.gr", 0, 0)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    G1, G2 = fast_refinement(G1, G2)
-    print(compare_graphs_by_partition(G1, G2))
+    G1, G2 = fast_refinement(G1, G1)
+    G2,G2=color_refinement(G1,G2)
+    #print(compare_graphs_by_partition(G1, G2))
 
-    print(count_isomorphism(G1, G2, [], []))
-
+ #   print(count_isomorphism(G1, G2, [], []))
+    # DEBUGGING CODE
+    # copy to wherever needed
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
+    render('dot', 'png', 'graphG1.dot')
+    render('dot', 'png', 'graphG2.dot')
+
+
+    # END DEBUGGING CODE
+

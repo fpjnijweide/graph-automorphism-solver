@@ -111,11 +111,11 @@ def write_graph_to_dot_file(G: Graph, title: str):
 
 def compare_graphs_by_partition(g1: Graph, g2: Graph):
     # Compares partition to see if they are the same
-    partition1 = create_partition(g1.vertices)
-    partition2 = create_partition(g2.vertices)
-    for i in range(len(partition1)):
+    g1.partition = create_partition(g1.vertices)
+    g2.partition = create_partition(g2.vertices)
+    for i in range(len(g1.partition)):
         # Check if the amount of vertices in this partition are equal in both graphs
-        if len(partition1[i]) != len(partition2[i]):
+        if len(g1.partition[i]) != len(g2.partition[i]):
             return False
     return True
 
