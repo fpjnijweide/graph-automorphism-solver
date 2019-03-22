@@ -1,7 +1,5 @@
 from graph import *
 from graph_io import *
-import collections
-from graphviz import render
 from week5 import *
 
 def load_graphs(filename: str, nr1: int, nr2: int):

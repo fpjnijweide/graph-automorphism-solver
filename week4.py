@@ -113,7 +113,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl",0,0 )
+    G1, G2 = load_graphs("graphs/trees90.grl",1,2 )
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
