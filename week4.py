@@ -4,30 +4,30 @@ from week3 import *
 from week5 import *
 
 
-# def copy_graph(inputG: Graph):
-#     # Copies a graph
-#
-#     G: Graph = copy.copy(inputG)  # Shallow copy it
-#
-#     G._e = []  # Delete its edges
-#
-#     G_copied_vertices = {}  # Dictionary to go from old vertex to new vertex
-#
-#     # Copying vertices
-#     G._v = inputG._v[:]  # Copy list of vertices
-#     for i in range(len(G._v)):
-#         G._v[i] = copy.copy(inputG._v[i])  # Copying each vertex individually
-#         G._v[i]._graph = G  # Set its graph attribute to the new graph
-#
-#         G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
-#         G._v[i]._incidence = {}  # Reset its incidence
-#
-#     # Re-add all edges
-#     for edge in inputG._e:
-#         new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
-#         G.add_edge(new_edge)
-#
-#     return G
+def copy_graph(inputG: Graph):
+    # Copies a graph
+
+    G: Graph = copy.copy(inputG)  # Shallow copy it
+
+    G._e = []  # Delete its edges
+
+    G_copied_vertices = {}  # Dictionary to go from old vertex to new vertex
+
+    # Copying vertices
+    G._v = inputG._v[:]  # Copy list of vertices
+    for i in range(len(G._v)):
+        G._v[i] = copy.copy(inputG._v[i])  # Copying each vertex individually
+        G._v[i]._graph = G  # Set its graph attribute to the new graph
+
+        G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
+        G._v[i]._incidence = {}  # Reset its incidence
+
+    # Re-add all edges
+    for edge in inputG._e:
+        new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
+        G.add_edge(new_edge)
+
+    return G
 
 def color_by_partition(partition: List):
     # todo check if this works
@@ -114,15 +114,23 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl", 0,6)
+    G1, G2 = load_graphs("graphs/cubes4.grl",0,1 )
+    if (G1==G2):
+        G2=copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
+
     G1, G2 = color_refinement(G1, G2)
     # G1,G2=color_refinement(G1,G2)
     print(compare_graphs_by_partition(G1, G2))
 
     G_partition_backup = create_partition(G1.vertices)
+
+    G2=copy_graph(G2)
+
     H_partition_backup = create_partition(G2.vertices)
+
+
 
     print(count_isomorphism(G1, G2, [], [], G_partition_backup, H_partition_backup))
     # DEBUGGING CODE
