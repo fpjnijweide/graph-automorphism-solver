@@ -78,18 +78,21 @@ def refine_colors(G: Graph, H: Graph):
         if len(vertices_with_this_color) > 1:
             # first_vertex is vertex with smallest sum of colors of neighbours
             first_vertex = vertices_with_this_color[0]
+
             for other_vertex in vertices_with_this_color:
-                if sum(neighbor_colors(other_vertex)) < sum(neighbor_colors(first_vertex)):
+                other_vertex.neighbor_colors=neighbor_colors(other_vertex)
+                other_vertex.neighbor_colors_sum=sum(other_vertex.neighbor_colors)
+                if other_vertex.neighbor_colors_sum < first_vertex.neighbor_colors_sum:
                     first_vertex = other_vertex
-            first_vertex_colors = neighbor_colors(first_vertex)
+
 
             vertices_needing_change = []
 
             for j in range(0, len(vertices_with_this_color)):
                 current_vertex = vertices_with_this_color[j]
                 if first_vertex != current_vertex:
-                    current_vertex_color = neighbor_colors(current_vertex)
-                    if not compare(first_vertex_colors, current_vertex_color):
+
+                    if not compare(first_vertex.neighbor_colors, current_vertex.neighbor_colors):
                         vertices_needing_change.append(current_vertex)
 
             for changing_vertex in vertices_needing_change:

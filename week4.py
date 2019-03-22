@@ -3,6 +3,7 @@ from week3 import *
 # from graphviz import Source
 from week5 import *
 
+
 def copy_graph(inputG: Graph):
     G: Graph = copy.copy(inputG)
     G._e = []
@@ -38,7 +39,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
-    G, H = fast_refinement(G, H)
+    G, H = color_refinement(G, H)
 
     if not compare_graphs_by_partition(G, H):
         return 0
@@ -49,36 +50,31 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-
-            # print(is_bijection(G, H, D, I))
             return 1
 
-    C = -1
+    chosen_color = -1
     for i in range(len(G.partition)):
         Gcolor = G.partition[i][:]  # list with vertices of same color
         Hcolor = H.partition[i][:]
         if len(Gcolor) + len(Hcolor) >= 4:
-            C = i
+            chosen_color = i
             break
-
-    if C == -1:
+    if chosen_color == -1:
         return 0
 
-    x = G.partition[C][0]
+    x = G.partition[chosen_color][0]
+    nr_of_isomorphs = 0
+    for y in H.partition[chosen_color]:
+        nr_of_isomorphs += count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
 
-    num = 0
-
-    for y in H.partition[C]:
-        num = num + count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
-
-    return num
+    return nr_of_isomorphs
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl", 0,7)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    G1, G2 = fast_refinement(G1, G1)
+    G1, G2 = color_refinement(G1, G2)
     # G1,G2=color_refinement(G1,G2)
     print(compare_graphs_by_partition(G1, G2))
 
@@ -90,6 +86,4 @@ if __name__ == "__main__":
     # render('dot', 'png', 'graphG1.dot')
     # render('dot', 'png', 'graphG2.dot')
 
-
     # END DEBUGGING CODE
-
