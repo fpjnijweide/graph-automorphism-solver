@@ -10,21 +10,21 @@ def fast_refinement(G: Graph, H: Graph):
             queue.append(current_color)
             break
 
-    while len(queue) != 0: #todo de queue wordt amper gebruikt..? alleen in queue_color
-        for color in range(len(partition)): #todo weten we zeker dat dit klopt? Ik zou vanaf nu alleen naar de queue kijken (for i in queue ofzo)
-            if len(partition[color]) > 1:
-                vertices_of_this_color = partition[color]
-                first_vertex=vertices_of_this_color[0]
-                queue_color=queue[0] # todo er wordt uberhaupt eigenlijk niks gedaan met queue_color...
-                first_vertex_neighbor_count = neighbor_colors(first_vertex).count(queue_color)
+    while len(queue) != 0: #todo de queue wordt amper gebruikt..? alleen in first_color_in_queue
+        for partition_color in range(len(partition)): #todo weten we zeker dat dit klopt? Ik zou vanaf nu alleen naar kleuren in de queue kijken (for i in queue ofzo)
+            if len(partition[partition_color]) > 1:
+                partition_color_vertices = partition[partition_color]
+                first_partition_color_vertex=partition_color_vertices[0]
+                first_color_in_queue=queue[0] # todo er wordt uberhaupt eigenlijk niks gedaan met first_color_in_queue...
+                first_partition_color_vertex_neighbor_count = neighbor_colors(first_partition_color_vertex).count(first_color_in_queue)
                 vertices_of_color_1 = []
                 vertices_of_color_2 = []
-                for v in range(1, len(vertices_of_this_color)):
-                    current_vertex_neighbor_count = neighbor_colors(vertices_of_this_color[v]).count(queue_color)# todo ...behalve hier
-                    if current_vertex_neighbor_count == first_vertex_neighbor_count:
-                        vertices_of_color_1.append(vertices_of_this_color[v])
+                for v in range(1, len(partition_color_vertices)):
+                    current_vertex_neighbor_count = neighbor_colors(partition_color_vertices[v]).count(first_color_in_queue)# todo ...behalve hier
+                    if current_vertex_neighbor_count == first_partition_color_vertex_neighbor_count:
+                        vertices_of_color_1.append(partition_color_vertices[v])
                     else:
-                        vertices_of_color_2.append(vertices_of_this_color[v]) # todo deze regel wordt nooit bereikt
+                        vertices_of_color_2.append(partition_color_vertices[v]) # todo deze regel wordt nooit bereikt, de if-statement is altijd True
 
                 if len(vertices_of_color_2) == 0:
                     continue
@@ -35,14 +35,14 @@ def fast_refinement(G: Graph, H: Graph):
                     v.colornum = new_color
                     v.label=new_color
 
-                if color in queue: # todo wtf gebeurt hier lol
+                if partition_color in queue: # todo wtf gebeurt hier lol waarom wordt partition_color weer gebruikt
                     queue.append(new_color)
                 else:
                     if len(vertices_of_color_1) < len(vertices_of_color_2):
-                        queue.append(color)
+                        queue.append(partition_color)
                     else:
                         queue.append(new_color)
-                partition = create_partition(G.vertices + H.vertices)
+                partition = create_partition(G.vertices + H.vertices) # todo dit heeft geen effect op de rest van de for-loop van regel 14, is dat de bedoeling?
         queue.pop(0)
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
