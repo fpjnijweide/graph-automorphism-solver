@@ -45,19 +45,15 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
 
     # Color the last instances of D and I
     if len(D) != 0:
+        newcol = len(G.partition)
+        i = len(D) - 1
+        last_D = G.vertices[D[i]]
+        last_I = H.vertices[I[i]]
 
-        for i in range(len(D)):
-            newcol = len(G.partition)
-
-            last_D = G.vertices[D[i]]
-            last_I = H.vertices[I[i]]
-
-            last_D.colornum = newcol
-            last_I.colornum = newcol
-            last_D.label = last_D.colornum
-            last_I.label = last_I.colornum
-            G.partition.append([])
-            H.partition.append([])
+        last_D.colornum = newcol
+        last_I.colornum = newcol
+        last_D.label = last_D.colornum
+        last_I.label = last_I.colornum
 
     # Refine the colors of G and H
 
@@ -116,7 +112,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0,1)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0,7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = color_refinement(G1, G2)
