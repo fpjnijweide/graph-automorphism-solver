@@ -30,7 +30,6 @@ def copy_graph(inputG: Graph):
     return G
 
 def color_by_partition(partition: List):
-    # todo check if this works
     for color in range(len(partition)):
         for vertex in partition[color]:
             vertex.colornum = color

@@ -2,10 +2,7 @@ from graph import *
 from graph_io import *
 import collections
 from graphviz import render
-
-# compare checks if two collections have the same contents
-compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
-
+from week5 import *
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     # loads two graphs from a file, where nr1 and nr2 specify which graphs to load from the file
@@ -92,7 +89,14 @@ def refine_colors(G: Graph, H: Graph):
                 current_vertex = vertices_with_this_color[j]
                 if first_vertex != current_vertex:
 
-                    if not compare(first_vertex.neighbor_colors, current_vertex.neighbor_colors):
+                    needs_change=False
+                    for x in set(first_vertex.neighbor_colors):
+                        if current_vertex.neighbor_colors.count(x) != first_vertex.neighbor_colors.count(x):
+                            needs_change=True
+                            break
+
+                    # if not compare(first_vertex.neighbor_colors, current_vertex.neighbor_colors):
+                    if needs_change:
                         vertices_needing_change.append(current_vertex)
 
             for changing_vertex in vertices_needing_change:
