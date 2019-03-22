@@ -59,9 +59,9 @@ if __name__ == "__main__":
 
     G3, G4 = load_graphs("graphs/threepaths5.gr", 0, 0)
     G3 = initialize_colors(G3)
-    G4= initialize_colors(G4)
+    G4 = initialize_colors(G4)
     start = time.time()
-    G3, G4 = color_refinement(G3,G4)
+    G3, G4 = color_refinement(G3, G4)
     end = time.time()
     print("normal:", end - start)
 
