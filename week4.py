@@ -1,23 +1,7 @@
 from week3 import *
-from graphviz import render
-from graphviz import Source
+# from graphviz import render
+# from graphviz import Source
 from week5 import *
-
-
-def is_bijection(G: Graph, H: Graph, D: List[int], I: List[int]):
-    res = True
-    for i in range(len(D)):
-        last_D = G.vertices[D[i]]
-        last_I = H.vertices[I[i]]
-        for j in range(len(last_D.neighbors)):
-            first_neighbour = last_D.neighbors[j]
-            second_neighbour = last_I.neighbors[j]
-            res = first_neighbour.colornum == second_neighbour.colornum
-            if not res:
-                break
-                # break
-    return res
-
 
 def copy_graph(inputG: Graph):
     G: Graph = copy.copy(inputG)
@@ -54,7 +38,7 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
-    G, H = color_refinement(G, H)
+    G, H = fast_refinement(G, H)
 
     if not compare_graphs_by_partition(G, H):
         return 0
@@ -91,20 +75,20 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/threepaths5.gr", 0, 0)
+    G1, G2 = load_graphs("graphs/trees36.grl", 0,7)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = fast_refinement(G1, G1)
-    G2,G2=color_refinement(G1,G2)
-    #print(compare_graphs_by_partition(G1, G2))
+    # G1,G2=color_refinement(G1,G2)
+    print(compare_graphs_by_partition(G1, G2))
 
- #   print(count_isomorphism(G1, G2, [], []))
+    print(count_isomorphism(G1, G2, [], []))
     # DEBUGGING CODE
     # copy to wherever needed
-    write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    # write_graph_to_dot_file(G1, "G1")
+    # write_graph_to_dot_file(G2, "G2")
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
 
 
     # END DEBUGGING CODE
