@@ -10,36 +10,38 @@ def fast_refinement(G: Graph, H: Graph):
             queue.append(current_color)
             break
 
-    while len(queue) != 0:
+    while len(queue) != 0: #todo de queue wordt amper gebruikt..? alleen in queue_color
         for color in range(len(partition)): #todo weten we zeker dat dit klopt? Ik zou vanaf nu alleen naar de queue kijken (for i in queue ofzo)
             if len(partition[color]) > 1:
                 vertices_of_this_color = partition[color]
                 first_vertex=vertices_of_this_color[0]
-                queue_color=queue[0]
+                queue_color=queue[0] # todo er wordt uberhaupt eigenlijk niks gedaan met queue_color...
                 first_vertex_neighbor_count = neighbor_colors(first_vertex).count(queue_color)
                 vertices_of_color_1 = []
                 vertices_of_color_2 = []
                 for v in range(1, len(vertices_of_this_color)):
-                    current_vertex_neighbor_count = neighbor_colors(vertices_of_this_color[v]).count(queue_color)
+                    current_vertex_neighbor_count = neighbor_colors(vertices_of_this_color[v]).count(queue_color)# todo ...behalve hier
                     if current_vertex_neighbor_count == first_vertex_neighbor_count:
                         vertices_of_color_1.append(vertices_of_this_color[v])
                     else:
-                        vertices_of_color_2.append(vertices_of_this_color[v])
+                        vertices_of_color_2.append(vertices_of_this_color[v]) # todo deze regel wordt nooit bereikt
 
                 if len(vertices_of_color_2) == 0:
                     continue
 
-                amount_of_colors = len(partition)
+                new_color = len(partition)
                 for v in vertices_of_color_2: #todo hier opnieuw "v" gebruiken is slecht en kan alleen problemen veroorzaken
-                    v.colornum = amount_of_colors
+                    # todo deze regels code worden uberhaupt nooit bereikt. vertices_of_color_2 is altijd leeg.
+                    v.colornum = new_color
+                    v.label=new_color
 
                 if color in queue: # todo wtf gebeurt hier lol
-                    queue.append(amount_of_colors)
+                    queue.append(new_color)
                 else:
                     if len(vertices_of_color_1) < len(vertices_of_color_2):
                         queue.append(color)
                     else:
-                        queue.append(amount_of_colors)
+                        queue.append(new_color)
                 partition = create_partition(G.vertices + H.vertices)
         queue.pop(0)
     G.partition = create_partition(G.vertices)
@@ -69,3 +71,5 @@ if __name__ == "__main__":
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G3, "G2")
+    render('dot', 'png', 'graphG1.dot')
+    render('dot', 'png', 'graphG2.dot')
