@@ -3,42 +3,44 @@ import time
 
 
 def fast_refinement(G: Graph, H: Graph):
-    c = create_partition(G.vertices + H.vertices)
+    partition = create_partition(G.vertices + H.vertices)
     queue = []
-    for current_color in range(len(c)):
-        if len(c[current_color]) >= 1:
+    for current_color in range(len(partition)):
+        if len(partition[current_color]) >= 1:
             queue.append(current_color)
             break
 
     while len(queue) != 0:
-        for i in range(len(c)):
-            if len(c[i]) > 1:
-                list_same_color = c[i]
-                amount_v0 = neighbor_colors(list_same_color[0]).count(queue[0])
-                c1 = []
-                c2 = []
-                for v in range(1, len(list_same_color)):
-                    amount_v = neighbor_colors(list_same_color[v]).count(queue[0])
-                    if amount_v == amount_v0:
-                        c1.append(list_same_color[v])
+        for color in range(len(partition)): #todo weten we zeker dat dit klopt? Ik zou vanaf nu alleen naar de queue kijken (for i in queue ofzo)
+            if len(partition[color]) > 1:
+                vertices_of_this_color = partition[color]
+                first_vertex=vertices_of_this_color[0]
+                queue_color=queue[0]
+                first_vertex_neighbor_count = neighbor_colors(first_vertex).count(queue_color)
+                vertices_of_color_1 = []
+                vertices_of_color_2 = []
+                for v in range(1, len(vertices_of_this_color)):
+                    current_vertex_neighbor_count = neighbor_colors(vertices_of_this_color[v]).count(queue_color)
+                    if current_vertex_neighbor_count == first_vertex_neighbor_count:
+                        vertices_of_color_1.append(vertices_of_this_color[v])
                     else:
-                        c2.append(list_same_color[v])
+                        vertices_of_color_2.append(vertices_of_this_color[v])
 
-                if len(c2) == 0:
+                if len(vertices_of_color_2) == 0:
                     continue
 
-                l = len(c)
-                for v in c2:
-                    v.colornum = l
+                amount_of_colors = len(partition)
+                for v in vertices_of_color_2: #todo hier opnieuw "v" gebruiken is slecht en kan alleen problemen veroorzaken
+                    v.colornum = amount_of_colors
 
-                if i in queue:
-                    queue.append(l)
+                if color in queue: # todo wtf gebeurt hier lol
+                    queue.append(amount_of_colors)
                 else:
-                    if len(c1) < len(c2):
-                        queue.append(i)
+                    if len(vertices_of_color_1) < len(vertices_of_color_2):
+                        queue.append(color)
                     else:
-                        queue.append(l)
-                c = create_partition(G.vertices + H.vertices)
+                        queue.append(amount_of_colors)
+                partition = create_partition(G.vertices + H.vertices)
         queue.pop(0)
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
