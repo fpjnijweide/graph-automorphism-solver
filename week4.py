@@ -5,29 +5,39 @@ from week5 import *
 
 
 def copy_graph(inputG: Graph):
-    G: Graph = copy.copy(inputG)
-    G._e = []
-    G_copied_vertices = {}
+    # Copies a graph
 
-    G._v = inputG._v[:]
+    G: Graph = copy.copy(inputG)  # Shallow copy it
+
+    G._e = []  # Delete its edges
+
+    G_copied_vertices = {}  # Dictionary to go from old vertex to new vertex
+
+    # Copying vertices
+    G._v = inputG._v[:]  # Copy list of vertices
     for i in range(len(G._v)):
-        G._v[i] = copy.copy(inputG._v[i])
-        G._v[i]._graph = G
+        G._v[i] = copy.copy(inputG._v[i])  # Copying each vertex individually
+        G._v[i]._graph = G  # Set its graph attribute to the new graph
 
-        G_copied_vertices[inputG._v[i]] = G._v[i]
-        G._v[i]._incidence = {}
+        G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
+        G._v[i]._incidence = {}  # Reset its incidence
 
+    # Re-add all edges
     for edge in inputG._e:
-        newedge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
-        G.add_edge(newedge)
+        new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
+        G.add_edge(new_edge)
 
     return G
 
 
 def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
+    # Recursively counts all isomorphs of this graph
+
+    # Copy the graphs
     G = copy_graph(inputG)
     H = copy_graph(inputH)
 
+    # Color the last instances of D and I
     if len(D) != 0:
         newcol = len(G.partition)
         i = len(D) - 1
@@ -39,11 +49,14 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         last_D.label = last_D.colornum
         last_I.label = last_I.colornum
 
+    # Refine the colors of G and H
     G, H = color_refinement(G, H)
 
+    # If this coloring is not stable, return 0
     if not compare_graphs_by_partition(G, H):
         return 0
     else:
+        # Else, check if all colors are unique. If so, it is an isomorph
         all_colors_are_unique = True
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
@@ -52,6 +65,9 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
         if all_colors_are_unique:
             return 1
 
+    # We have now found a stable coloring that has non-unique colors
+
+    # Choose a color that is not unique
     chosen_color = -1
     for i in range(len(G.partition)):
         Gcolor = G.partition[i][:]  # list with vertices of same color
@@ -60,8 +76,11 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
             chosen_color = i
             break
     if chosen_color == -1:
+        # If no color has been chosen something obviously went wrong
         return 0
 
+    # Choose the first vertex of this color in G and check for all y of this color in H
+    # if they are isomorphs
     x = G.partition[chosen_color][0]
     nr_of_isomorphs = 0
     for y in H.partition[chosen_color]:
