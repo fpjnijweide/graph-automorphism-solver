@@ -160,9 +160,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         # If no color has been chosen something obviously went wrong
         return 0
 
-    # Choose the first vertex of this color in G and check for all y of this color in H
+    # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
-    x = G.partition[chosen_color][0]
+    if twincheck:
+        x = find_twins(G.partition[chosen_color])
+    else:
+        x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
