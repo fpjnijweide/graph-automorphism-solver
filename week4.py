@@ -6,8 +6,9 @@ from graph import *
 import math
 
 #todo deze global variables misschien naar main moven
-preprocessing=False
-treecheck=False
+preprocessing = False
+treecheck = False
+twincheck = True
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -70,7 +71,7 @@ def find_twins (vertices_list):
     for i in range(0, len(vertices_list)):
         V = vertices_list[i]
         for W in vertices_list[i:len(vertices_list)]:
-            if V.neighbours == W.neighbours:
+            if V.neighbors == W.neighbors:
                 return V
     return vertices_list[0]
 
@@ -170,9 +171,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         # If no color has been chosen something obviously went wrong
         return 0
 
-    # Choose the first vertex of this color in G and check for all y of this color in H
+    # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
-    x = G.partition[chosen_color][0]
+    if twincheck:
+        x = find_twins(G.partition[chosen_color])
+    else:
+        x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
@@ -197,7 +201,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     return False
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl",0,0 )
+    G1, G2 = load_graphs("graphs/trees90.grl",0,3 )
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
