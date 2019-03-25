@@ -1,8 +1,8 @@
 from graph import *
 from graph_io import *
 from week3 import *
-from graphviz import render
-from graphviz import Source
+from week5 import *
+import math
 
 def is_bijection(G: Graph, H:Graph, D: List[int], I: List[int]):
     res=True
@@ -68,6 +68,7 @@ def copy_graph(inputG: Graph):
     return G
 
 def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
+
     G=copy_graph(inputG)
     H=copy_graph(inputH)
 
@@ -128,7 +129,8 @@ def count_isomorphism(inputG: Graph, inputH: Graph, D, I):
 
     return num
 
-def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
+def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I, preprocessing, treecheck):
+
     G = copy.copy(inputG)
     G._v = inputG._v[:]
     for i in range(len(G._v)):
@@ -167,6 +169,21 @@ def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
         if all_colors_are_unique:
             return 1
 
+    if preprocessing:   # only once, after first call of fast refignment
+        disconnectedG = disconnectedVertices(inputG)
+        for v in disconnectedG:
+            inputG._v.remove(v)
+        disconnectedH = disconnectedVertices(inputH)
+        for v in disconnectedH:
+            inputH._v.remove(v)
+    if treecheck:
+        print("goes to check")
+        print(isTree(G))
+        print(isTree(H))
+        if isTree(G) and isTree(H):
+            print("it is a tree")
+            return countTreeIsomorphism(G)
+
     C = -1
     for i in range(len(G.verts)):
         Gcolor = G.verts[i][:]  # list with vertices of same color
@@ -184,14 +201,73 @@ def count_isomorphism_fast(inputG: Graph, inputH: Graph, D, I):
 
     for y in H.verts[C]:
 
-        num = num + count_isomorphism_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)])
+        num = num + count_isomorphism_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], False, False)
+
+    return num
+
+def countTreeIsomorphism(G: Graph):
+
+    root = G._v[0] # it does not matter which vertex is the root so we pick one
+    children = dict() # parent points to array of its children
+
+    visited = [] # fill the dictionary
+    next = [root]
+    while len(next) != 0:
+        inspect = next.pop(0)
+        visited.append(inspect)
+        if len(inspect.neighbours) > 0:
+            children[inspect] = []
+            for x in inspect.neighbours:
+                if x not in visited:
+                    next.append(x)
+                    children[inspect].append(x)
+
+    num = 1
+    print(children)
+    for x in children:
+        if len(children[x]) > 1:
+            num = num * math.factorial(len(children[x]))
 
     return num
 
 
+
+
+def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
+    disconnected = []
+    for v in G.vertices:
+        if v.degree == 0:
+            disconnected.append(v)
+    return disconnected
+
+def isTree(G: Graph):
+    vertices = G.vertices
+    queue = []
+    visited = []
+    # add first vertex to queue en make it true so visited
+    queue.append([vertices[0], vertices[0]])
+    visited.append(vertices[0])
+    while len(queue) != 0:
+        v = queue.pop()
+        for w in v[0].neighbours:
+            if w not in visited:
+                queue.insert(0, [w, v[0]])
+                visited.insert(0, w)
+            else:
+                if w != v[1]:
+                    return False
+    return True
+
+
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl", 3,5)
+    G1, G2 = load_graphs("graphs/trees36.grl", 1, 4)
     G1 = initialize_colors(G1)
+    G2 = initialize_colors(G2)
+    print(count_isomorphism_fast(G1, G2, [], [], False, True))
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
+'''
+.    G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
     G1, G2 = CRefignment(G1, G2)
     print(compare_partitions(G1, G2))
@@ -208,3 +284,7 @@ if __name__ == "__main__":
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
+'''
+
+
+
