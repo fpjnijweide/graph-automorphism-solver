@@ -100,7 +100,7 @@ class Vertex(object):
         return list(result)
 
     @property
-    def neighbours(self) -> List["Vertex"]:
+    def neighbors(self) -> List["Vertex"]:
         """
         Returns the list of neighbors of the vertex.
         """
@@ -368,7 +368,7 @@ class Graph(object):
         :param v: The other vertex
         :return: Whether the vertices are adjacent
         """
-        return v in u.neighbours and (not self.directed or any(e.head == v for e in u.incidence))
+        return v in u.neighbors and (not self.directed or any(e.head == v for e in u.incidence))
 
 
 class UnsafeGraph(Graph):

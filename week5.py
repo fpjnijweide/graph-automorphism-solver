@@ -1,80 +1,75 @@
-from graph import *
-from graph_io import *
-from week3 import *
 from week4 import *
 import time
 
 
 def fast_refinement(G: Graph, H: Graph):
-    c = create_verts(G.vertices + H.vertices)
+    partition = create_partition(G.vertices + H.vertices)
     queue = []
-    for currentcolour in range(len(c)):
-        if len(c[currentcolour]) >= 1:
-            queue.append(currentcolour)
+    for current_color in range(len(partition)):
+        if len(partition[current_color]) >= 1:
+            queue.append(current_color)
             break
 
-    while len(queue) != 0:
-        for i in range(len(c)):
-            if len(c[i]) > 1:
-                list_same_color = c[i]
-                amount_v0 = colorNeighbours(list_same_color[0]).count(queue[0])
-                c1 = []
-                c2 = []
-                for v in range(1, len(list_same_color)):
-                    amount_v = colorNeighbours(list_same_color[v]).count(queue[0])
-                    if amount_v == amount_v0:
-                        c1.append(list_same_color[v])
+    while len(queue) != 0: #todo de queue wordt amper gebruikt..? alleen in first_color_in_queue
+        for partition_color in range(len(partition)): #todo weten we zeker dat dit klopt? Ik zou vanaf nu alleen naar kleuren in de queue kijken (for i in queue ofzo)
+            if len(partition[partition_color]) > 1:
+                partition_color_vertices = partition[partition_color]
+                first_partition_color_vertex=partition_color_vertices[0]
+                first_color_in_queue=queue[0] # todo er wordt uberhaupt eigenlijk niks gedaan met first_color_in_queue...
+                first_partition_color_vertex_neighbor_count = neighbor_colors(first_partition_color_vertex).count(first_color_in_queue)
+                vertices_of_color_1 = []
+                vertices_of_color_2 = []
+                for v in range(1, len(partition_color_vertices)):
+                    current_vertex_neighbor_count = neighbor_colors(partition_color_vertices[v]).count(first_color_in_queue)# todo ...behalve hier
+                    if current_vertex_neighbor_count == first_partition_color_vertex_neighbor_count:
+                        vertices_of_color_1.append(partition_color_vertices[v])
                     else:
-                        c2.append(list_same_color[v])
+                        vertices_of_color_2.append(partition_color_vertices[v]) # todo deze regel wordt nooit bereikt, de if-statement is altijd True
 
-                if len(c2) == 0:
+                if len(vertices_of_color_2) == 0:
                     continue
 
-                l = len(c)
-                for v in c2:
-                    v.colornum = l
+                new_color = len(partition)
+                for v in vertices_of_color_2: #todo hier opnieuw "v" gebruiken is slecht en kan alleen problemen veroorzaken
+                    # todo deze regels code worden uberhaupt nooit bereikt. vertices_of_color_2 is altijd leeg.
+                    v.colornum = new_color
+                    v.label=new_color
 
-                if i in queue:
-                    queue.append(l)
+                if partition_color in queue: # todo wtf gebeurt hier lol waarom wordt partition_color weer gebruikt
+                    queue.append(new_color)
                 else:
-                    if len(c1) < len(c2):
-                        queue.append(i)
+                    if len(vertices_of_color_1) < len(vertices_of_color_2):
+                        queue.append(partition_color)
                     else:
-                        queue.append(l)
-                c = create_verts(G.vertices + H.vertices)
+                        queue.append(new_color)
+                partition = create_partition(G.vertices + H.vertices) # todo dit heeft geen effect op de rest van de for-loop van regel 14, is dat de bedoeling?
         queue.pop(0)
-    G.verts = create_verts(G.vertices)
-    H.verts = create_verts(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
     return G, H
 
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/bigtrees1.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/threepaths5.gr", 0, 0)
+
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
-    start1 = time.time()
+
+    start = time.time()
     G1, G2 = fast_refinement(G1, G2)
     end = time.time()
-    print("normal:", end - start)
-    start = time.time()
-    G1, G2 = CRefignment(G1, G2)
-    end = time.time()
     print("fast:", end - start)
+
+    G3, G4 = load_graphs("graphs/threepaths5.gr", 0, 0)
+    G3 = initialize_colors(G3)
+    G4 = initialize_colors(G4)
+    start = time.time()
+    G3, G4 = color_refinement(G3, G4)
+    end = time.time()
+    print("normal:", end - start)
+
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")
-    result = compare_partitions(G1, G2)
-    print(result)
-
-
-
-
-
-
-
-
-
-#def refine_operation():
-
-
-
+    write_graph_to_dot_file(G3, "G2")
+    render('dot', 'png', 'graphG1.dot')
+    render('dot', 'png', 'graphG2.dot')
