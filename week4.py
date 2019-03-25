@@ -4,10 +4,7 @@ from week3 import *
 from week5 import *
 from graph import *
 import math
-
-#todo deze global variables misschien naar main moven
-preprocessing=False
-treecheck=False
+from main import Settings
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -34,18 +31,19 @@ def copy_graph(inputG: Graph):
 
     return G
 
+
 def color_by_partition(partition: List):
     for color in range(len(partition)):
         for vertex in partition[color]:
             vertex.colornum = color
             vertex.label = color
 
+
 def countTreeIsomorphism(G: Graph):
+    root = G._v[0]  # it does not matter which vertex is the root so we pick one
+    children = dict()  # parent points to array of its children
 
-    root = G._v[0] # it does not matter which vertex is the root so we pick one
-    children = dict() # parent points to array of its children
-
-    visited = [] # fill the dictionary
+    visited = []  # fill the dictionary
     next = [root]
     while len(next) != 0:
         inspect = next.pop(0)
@@ -66,12 +64,13 @@ def countTreeIsomorphism(G: Graph):
     return num
 
 
-def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
+def disconnectedVertices(G: Graph):  # to return a list of all not connected vertices
     disconnected = []
     for v in G.vertices:
         if v.degree == 0:
             disconnected.append(v)
     return disconnected
+
 
 def isTree(G: Graph):
     vertices = G.vertices
@@ -91,13 +90,14 @@ def isTree(G: Graph):
                     return False
     return True
 
+
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
-    G.partition=G_partition_backup
-    H.partition=H_partition_backup
+    G.partition = G_partition_backup
+    H.partition = H_partition_backup
 
     # Color the last instances of D and I
     if len(D) != 0:
@@ -133,14 +133,14 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # We have now found a stable coloring that has non-unique colors
 
-    if preprocessing:   # only once, after first call of fast refignment
+    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if treecheck:
+    if Settings.TREE_CHECK and len(D) == 0:
         print("goes to check")
         print(isTree(G))
         print(isTree(H))
@@ -174,22 +174,23 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-
-
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition, new_H_partition)
+        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+                                               new_H_partition)
 
     return nr_of_isomorphs
+
 
 def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # TODO implement this
     print('not implemented yet')
     return False
 
+
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl",0,0 )
-    if (G1==G2):
-        G2=copy_graph(G2)
+    G1, G2 = load_graphs("graphs/products72.grl", 0, 0)
+    if (G1 == G2):
+        G2 = copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
@@ -200,8 +201,6 @@ if __name__ == "__main__":
     G_partition_backup = create_partition(G1.vertices)
 
     H_partition_backup = create_partition(G2.vertices)
-
-
 
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
     # DEBUGGING CODE

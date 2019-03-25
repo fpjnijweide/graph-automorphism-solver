@@ -1,4 +1,5 @@
 from week4 import *
+from week3 import *
 import time
 
 
@@ -71,5 +72,5 @@ if __name__ == "__main__":
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G3, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')

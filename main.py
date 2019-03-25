@@ -3,8 +3,11 @@ from week4 import *
 from week3 import *
 
 FILENAME = "graphs/trees36.grl"
-FAST = False
 
+class Settings:
+    FAST = False
+    PREPROCESSING = False
+    TREE_CHECK = False
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
@@ -26,7 +29,7 @@ if __name__ == '__main__':
                 graphs[graph2] = initialize_colors(graphs[graph2])
 
                 # Refinement, either colour or fast
-                if FAST:
+                if Settings.FAST:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                     g1_partition_backup = graphs[graph1].partition[:]
                     g2_partition_backup = graphs[graph2].partition[:]
@@ -53,7 +56,7 @@ if __name__ == '__main__':
     for graph in isomorphisms.keys() or notisomorphic:
         sys.stdout.write('\n')
         graphcopy = copy_graph(graphs[graph])
-        if FAST:
+        if Settings.FAST:
             graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
             g_partition_backup = graphs[graph].partition[:]
             gcopy_partition_backup = graphcopy.partition[:]
