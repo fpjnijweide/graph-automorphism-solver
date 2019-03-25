@@ -114,8 +114,8 @@ def write_graph_to_dot_file(G: Graph, title: str):
         write_dot(G, f)
 
 
-def compare_graphs_by_partition(g1: Graph, g2: Graph):
-    # Compares partition to see if they are the same
+def is_isomorphism(g1: Graph, g2: Graph):
+    # Compares graphs by their partitions to see if they are the same
     g1.partition = create_partition(g1.vertices)
     g2.partition = create_partition(g2.vertices)
     for i in range(len(g1.partition)):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     G1, G2 = color_refinement(G1, G2)
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
-    result = compare_graphs_by_partition(G1, G2)
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
+    result = is_isomorphism(G1, G2)
     print(result)

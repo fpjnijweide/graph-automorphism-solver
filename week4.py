@@ -36,7 +36,7 @@ def color_by_partition(partition: List):
             vertex.label = color
 
 
-def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
 
     color_by_partition(G_partition_backup)
@@ -64,7 +64,7 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
     G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
-    if not compare_graphs_by_partition(G, H):
+    if not is_isomorphism(G, H):
         return 0
     else:
         # Else, check if all colors are unique. If so, it is an isomorph
@@ -107,13 +107,13 @@ def count_isomorphism(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_
     # todo maybe pass previous partition to it
 
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_isomorphism(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition, new_H_partition)
+        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition, new_H_partition)
 
     return nr_of_isomorphs
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees90.grl",1,2 )
+    G1, G2 = load_graphs("graphs/products72.grl",0,0 )
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
@@ -121,17 +121,15 @@ if __name__ == "__main__":
 
     G1, G2 = color_refinement(G1, G2)
     # G1,G2=color_refinement(G1,G2)
-    print(compare_graphs_by_partition(G1, G2))
+    print(is_isomorphism(G1, G2))
 
     G_partition_backup = create_partition(G1.vertices)
-
-    G2=copy_graph(G2)
 
     H_partition_backup = create_partition(G2.vertices)
 
 
 
-    print(count_isomorphism(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
     # DEBUGGING CODE
     # copy to wherever needed
     # write_graph_to_dot_file(G1, "G1")
