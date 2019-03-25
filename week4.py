@@ -66,6 +66,16 @@ def countTreeIsomorphism(G: Graph):
     return num
 
 
+def find_twins (vertices_list):
+    for i in range(0, len(vertices_list)):
+        V = vertices_list[i]
+        for W in vertices_list[i:len(vertices_list)]:
+            if V.neighbours == W.neighbours:
+                return V
+    return vertices_list[0]
+
+
+
 def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
     disconnected = []
     for v in G.vertices:
