@@ -30,13 +30,13 @@ if __name__ == '__main__':
                     print("go fast")
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
 
-                    if count_isomorphism_fast(graphs[graph1], graphs[graph2], [], []) > 0:
+                    if count_automorphisms_fast(graphs[graph1], graphs[graph2], [], []) > 0:
                         isomorphisms.get(graph1).append(graph2)
                         mapped.append(graph2)
                 else:
-                    graphs[graph1], graphs[graph2] = CRefignment(graphs[graph1], graphs[graph2])
+                    graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
 
-                    if count_isomorphism(graphs[graph1], graphs[graph2], [], []) > 0:
+                    if count_automorphisms(graphs[graph1], graphs[graph2], [], []) > 0:
                         isomorphisms.get(graph1).append(graph2)
                         mapped.append(graph2)
 
@@ -49,10 +49,10 @@ if __name__ == '__main__':
         sys.stdout.write('\n')
         if FAST:
             graphs[graph], graphs[graph] = fast_refinement(graphs[graph], graphs[graph])
-            automorphisms = count_isomorphism_fast(graphs[graph], graphs[graph], [], [])
+            automorphisms = count_automorphisms_fast(graphs[graph], graphs[graph], [], [])
         else:
-            graphs[graph], graphs[graph] = CRefignment(graphs[graph], graphs[graph])
-            automorphisms = count_isomorphism(graphs[graph], graphs[graph], [], [])
+            graphs[graph], graphs[graph] = color_refinement(graphs[graph], graphs[graph])
+            automorphisms = count_automorphisms_fast(graphs[graph], graphs[graph], [], [])
         if graph in isomorphisms.keys():
             isomorphisms.get(graph).insert(0, graph)
             sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
