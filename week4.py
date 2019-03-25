@@ -7,7 +7,7 @@ import math
 
 #todo deze global variables misschien naar main moven
 preprocessing=False
-treecheck=False
+treecheck=True
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -50,20 +50,35 @@ def countTreeIsomorphism(G: Graph):
     while len(next) != 0:
         inspect = next.pop(0)
         visited.append(inspect)
-        if len(inspect.neighbours) > 0:
-            children[inspect] = []
-            for x in inspect.neighbours:
-                if x not in visited:
-                    next.append(x)
-                    children[inspect].append(x)
+        children[inspect] = []
+        for x in inspect.neighbors:
+            if x not in visited:
+                next.append(x)
+                children[inspect].append(x)
 
     num = 1
     print(children)
     for x in children:
-        if len(children[x]) > 1:
-            num = num * math.factorial(len(children[x]))
+        if len(children[x]) > 1: #children with same parent x, now check the subtrees
+            subtrees = []
+            for child in children[x]: # create subtree for each child
+                tocheck = [child]
+                subtree = []
+                while len(tocheck) != 0:
+                    check = tocheck.pop(0)
+                    subtree.append(check)
+                    for y in children[check]:
+                        check.append(y)
+                subtrees.append(subtree)
+
+            if compareSubtrees(subtrees):
+                num = num * math.factorial(len(children[x]))
 
     return num
+
+def compareSubtrees(subtrees):
+    #TODO: implement this
+
 
 
 def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
@@ -82,7 +97,7 @@ def isTree(G: Graph):
     visited.append(vertices[0])
     while len(queue) != 0:
         v = queue.pop()
-        for w in v[0].neighbours:
+        for w in v[0].neighbors:
             if w not in visited:
                 queue.insert(0, [w, v[0]])
                 visited.insert(0, w)
@@ -187,7 +202,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     return False
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl",0,0 )
+    G1, G2 = load_graphs("graphs/trees36.grl",1,4 )
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
