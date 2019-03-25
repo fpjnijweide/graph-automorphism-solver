@@ -2,7 +2,12 @@ from week3 import *
 # from graphviz import render
 # from graphviz import Source
 from week5 import *
+from graph import *
+import math
 
+#todo deze global variables misschien naar main moven
+preprocessing=False
+treecheck=False
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -35,6 +40,56 @@ def color_by_partition(partition: List):
             vertex.colornum = color
             vertex.label = color
 
+def countTreeIsomorphism(G: Graph):
+
+    root = G._v[0] # it does not matter which vertex is the root so we pick one
+    children = dict() # parent points to array of its children
+
+    visited = [] # fill the dictionary
+    next = [root]
+    while len(next) != 0:
+        inspect = next.pop(0)
+        visited.append(inspect)
+        if len(inspect.neighbours) > 0:
+            children[inspect] = []
+            for x in inspect.neighbours:
+                if x not in visited:
+                    next.append(x)
+                    children[inspect].append(x)
+
+    num = 1
+    print(children)
+    for x in children:
+        if len(children[x]) > 1:
+            num = num * math.factorial(len(children[x]))
+
+    return num
+
+
+def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
+    disconnected = []
+    for v in G.vertices:
+        if v.degree == 0:
+            disconnected.append(v)
+    return disconnected
+
+def isTree(G: Graph):
+    vertices = G.vertices
+    queue = []
+    visited = []
+    # add first vertex to queue en make it true so visited
+    queue.append([vertices[0], vertices[0]])
+    visited.append(vertices[0])
+    while len(queue) != 0:
+        v = queue.pop()
+        for w in v[0].neighbours:
+            if w not in visited:
+                queue.insert(0, [w, v[0]])
+                visited.insert(0, w)
+            else:
+                if w != v[1]:
+                    return False
+    return True
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
@@ -78,6 +133,21 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # We have now found a stable coloring that has non-unique colors
 
+    if preprocessing:   # only once, after first call of fast refignment
+        disconnectedG = disconnectedVertices(G)
+        for v in disconnectedG:
+            G._v.remove(v)
+        disconnectedH = disconnectedVertices(H)
+        for v in disconnectedH:
+            H._v.remove(v)
+    if treecheck:
+        print("goes to check")
+        print(isTree(G))
+        print(isTree(H))
+        if isTree(G) and isTree(H):
+            print("it is a tree")
+            return countTreeIsomorphism(G)
+
     # Choose a color that is not unique
     chosen_color = -1
     for i in range(len(G.partition)):
@@ -104,7 +174,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-    # todo maybe pass previous partition to it
+
 
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition, new_H_partition)
