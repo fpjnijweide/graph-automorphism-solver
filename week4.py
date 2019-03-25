@@ -104,7 +104,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-    # todo maybe pass previous partition to it
 
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition, new_H_partition)
