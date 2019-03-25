@@ -6,6 +6,14 @@ from graph import *
 import math
 from main import Settings
 
+def find_twins(vertices_list):
+    for i in range(0, len(vertices_list)):
+        V = vertices_list[i]
+        for W in vertices_list[i:len(vertices_list)]:
+            if V.neighbors == W.neighbors:
+                return V
+    return vertices_list[0]
+
 def copy_graph(inputG: Graph):
     # Copies a graph
 
@@ -162,7 +170,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
-    if twincheck:
+    if Settings.TWIN_CHECK:
         x = find_twins(G.partition[chosen_color])
     else:
         x = G.partition[chosen_color][0]
