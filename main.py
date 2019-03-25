@@ -31,20 +31,13 @@ if __name__ == '__main__':
                 # Refinement, either colour or fast
                 if Settings.FAST:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
-                    g1_partition_backup = graphs[graph1].partition[:]
-                    g2_partition_backup = graphs[graph2].partition[:]
-
-                    if count_automorphisms_fast(graphs[graph1], graphs[graph2], [], [],
-                                                g1_partition_backup, g2_partition_backup) > 0:
-                        isomorphisms.get(graph1).append(graph2)
-                        mapped.append(graph2)
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
-                    g1_partition_backup = graphs[graph1].partition[:]
-                    g2_partition_backup = graphs[graph2].partition[:]
+                g1_partition_backup = graphs[graph1].partition[:]
+                g2_partition_backup = graphs[graph2].partition[:]
 
-                    if count_automorphisms(graphs[graph1], graphs[graph2], [], [],
-                                           g1_partition_backup, g2_partition_backup) > 0:
+
+                if is_isomorphism(graphs[graph1], graphs[graph2]):
                         isomorphisms.get(graph1).append(graph2)
                         mapped.append(graph2)
 
