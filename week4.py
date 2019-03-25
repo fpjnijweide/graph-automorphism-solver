@@ -181,6 +181,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     return nr_of_isomorphs
 
+def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+    # TODO implement this
+    print('not implemented yet')
+    return False
 
 if __name__ == "__main__":
     G1, G2 = load_graphs("graphs/products72.grl",0,0 )
