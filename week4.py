@@ -48,9 +48,9 @@ def countTreeIsomorphism(G: Graph):
     while len(next) != 0:
         inspect = next.pop(0)
         visited.append(inspect)
-        if len(inspect.neighbours) > 0:
+        if len(inspect.neighburs) > 0:
             children[inspect] = []
-            for x in inspect.neighbours:
+            for x in inspect.neighburs:
                 if x not in visited:
                     next.append(x)
                     children[inspect].append(x)
@@ -81,7 +81,7 @@ def isTree(G: Graph):
     visited.append(vertices[0])
     while len(queue) != 0:
         v = queue.pop()
-        for w in v[0].neighbours:
+        for w in v[0].neighbors:
             if w not in visited:
                 queue.insert(0, [w, v[0]])
                 visited.insert(0, w)
