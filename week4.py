@@ -64,7 +64,17 @@ def countTreeIsomorphism(G: Graph):
     return num
 
 
-def disconnectedVertices(G: Graph):  # to return a list of all not connected vertices
+def find_twins (vertices_list):
+    for i in range(0, len(vertices_list)):
+        V = vertices_list[i]
+        for W in vertices_list[i:len(vertices_list)]:
+            if V.neighbors == W.neighbors:
+                print("found a twin")
+                return V
+    return vertices_list[0]
+
+
+def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
     disconnected = []
     for v in G.vertices:
         if v.degree == 0:
@@ -162,12 +172,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
-    if twincheck:
+    if Settings.TWIN_CHECK:
         x = find_twins(G.partition[chosen_color])
     else:
         x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
-    nr_of_isomorphs = 0
+    nr_of_isomorphisms = 0
 
     new_G_partition = G.partition
     new_H_partition = H.partition
@@ -178,10 +188,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # H.partition = H_partition_backup
 
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+        nr_of_isomorphisms += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
 
-    return nr_of_isomorphs
+    return nr_of_isomorphisms
 
 
 def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):

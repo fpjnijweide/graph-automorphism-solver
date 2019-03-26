@@ -8,6 +8,7 @@ class Settings:
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
+    TWIN_CHECK = False
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
