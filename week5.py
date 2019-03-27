@@ -55,6 +55,7 @@ def fast_refinement_old(G: Graph, H: Graph):
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition(G.vertices + H.vertices)
     queue = []
+    queueindex = 0
 
     # Add the colour of the first non-empty partition to the queue first
     for current_colour in range(len(partitions)):
@@ -64,9 +65,11 @@ def fast_refinement(G: Graph, H: Graph):
 
     # Loop while we have a non-empty queue, each loop will take queue[0] as the colour to compare everything with
     # (how many neighbours of this colour a vertex has)
-    while len(queue) != 0:
+    while queueindex < len(queue):
+        partitions = create_partition(G.vertices + H.vertices)
+
         # Find all colours of the neighbours of queue[0]
-        vertices_col0 = partitions[queue[0]]
+        vertices_col0 = partitions[queue[queueindex]]
         colours_neighbouring_queue0 = []
         for v_col0 in vertices_col0:
             for n in v_col0.neighbors:
@@ -74,6 +77,8 @@ def fast_refinement(G: Graph, H: Graph):
                     colours_neighbouring_queue0.append(n.colornum)
 
         for colour in colours_neighbouring_queue0:
+            partitions = create_partition(G.vertices + H.vertices)
+
             vertices = partitions[colour]
 
             # Empty partition - no vertices with this colour
@@ -82,13 +87,13 @@ def fast_refinement(G: Graph, H: Graph):
 
             vertex0 = vertices[0]
 
-            num_col0neighbours_group1 = neighbor_colors(vertex0).count(queue[0])
+            num_col0neighbours_group1 = neighbor_colors(vertex0).count(queue[queueindex])
 
             group1 = []
             group2 = []
 
             for v in vertices:
-                if neighbor_colors(v).count(queue[0]) == num_col0neighbours_group1:
+                if neighbor_colors(v).count(queue[queueindex]) == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
                     group1.append(v)
                 else:
@@ -102,16 +107,22 @@ def fast_refinement(G: Graph, H: Graph):
                     vertex.colornum = new_colour
                     vertex.label = new_colour
 
-            # Add/remove from queue
-            if colour in queue or (len(group2) != 0 and len(group2) < len(group1)):
-                queue.append(new_colour)
+                # Add to queue
+                if colour in queue or len(group2) < len(group1):
+                    addtoqueue = new_colour
+                else:
+                    addtoqueue = colour
             else:
-                queue.append(colour)
+                addtoqueue = colour
 
-        queue.pop(0)
+            if addtoqueue not in queue:
+                queue.append(addtoqueue)
+
+        queueindex += 1
 
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
+
     return G, H
 
 
@@ -135,7 +146,7 @@ if __name__ == "__main__":
     end = time.time()
     print("normal:", end - start)
 
-    write_graph_to_dot_file(G1, "G2")
-    write_graph_to_dot_file(G3, "G4")
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
+    render('dot', 'png', 'graphG1.dot')
     render('dot', 'png', 'graphG2.dot')
-    render('dot', 'png', 'graphG4.dot')
