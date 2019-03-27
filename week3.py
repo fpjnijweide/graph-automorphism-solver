@@ -1,6 +1,7 @@
 from graph import *
 from graph_io import *
 from week5 import *
+from DLL import *
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     # loads two graphs from a file, where nr1 and nr2 specify which graphs to load from the file
@@ -51,6 +52,21 @@ def create_partition(vertices: list):
             diff = v.colornum - (len(partition) - 1)
             for i in range(diff):
                 partition.append([])
+        # add the vertex to its respective index in partition
+        partition[v.colornum].append(v)
+
+    return partition
+
+def create_partition_DLL(vertices: list):
+    # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
+    partition = []
+
+    for v in vertices:
+        # if the degree is not found in partition, add empty lists to it
+        if v.colornum > len(partition) - 1:
+            diff = v.colornum - (len(partition) - 1)
+            for i in range(diff):
+                partition.append(DoubleLinkedList())
         # add the vertex to its respective index in partition
         partition[v.colornum].append(v)
 
