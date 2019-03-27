@@ -2,13 +2,13 @@ from week5 import *
 from week4 import *
 from week3 import *
 
-FILENAME = "graphs/trees36.grl"
+FILENAME = "graphs/trees90.grl"
 
 class Settings:
-    FAST = False
-    PREPROCESSING = False
-    TREE_CHECK = False
-    TWIN_CHECK= False
+    FAST = False # Todo fix
+    PREPROCESSING = True
+    TREE_CHECK = False #Todo fix
+    TWIN_CHECK= False # Todo fix
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
