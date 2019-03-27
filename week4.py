@@ -267,11 +267,11 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
         for v in disconnectedH:
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
-        print("goes to check")
-        print(isTree(G))
-        print(isTree(H))
+        # print("goes to check")
+        # print(isTree(G))
+        # print(isTree(H))
         if isTree(G) and isTree(H):
-            print("it is a tree")
+            # print("it is a tree")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
