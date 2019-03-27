@@ -8,7 +8,7 @@ class Settings:
     FAST = False # Todo fix
     PREPROCESSING = True
     TREE_CHECK = False #Todo fix
-    TWIN_CHECK= False # Todo fix
+    TWIN_CHECK= False # Todo fix / sneller maken
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
