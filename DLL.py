@@ -1,18 +1,20 @@
 class Node:
-    # class of the items in
+    # class of the items in the DLL
     def __init__(self, next=None, prev=None, data=None):
         self.next = next
         self.prev = prev
         self.data = data
 
+    # string representation used for debugging
     def __str__(self) -> str:
         return self.data
 
 
-class DLL:
+class DoubleLinkedList:
     head = None
     tail = None
 
+    # string representation for easier debugging
     def __str__(self) -> str:
         current_node = self.head
         output = "DLL {"
@@ -39,7 +41,6 @@ class DLL:
         return new_node
 
     """ add element to the start of the DLL """
-
     def add_begin(self, data):
         new_node = Node(None, None, data)
 
@@ -54,52 +55,66 @@ class DLL:
 
     """ add an element after old_node (if this is a Node """
     def add_after(self, data, old_node):
+        # if old_node is not an instance of node try finding it as data in the DLL
         if not isinstance(old_node, Node):
             old_node = self.find(old_node)
 
         new_node = Node(None, None, data)
 
-        new_node.next = old_node.next
-        new_node.prev = old_node
+        if old_node is not None:
+            new_node.next = old_node.next
+            new_node.prev = old_node
 
-        old_node.next = new_node
+            old_node.next = new_node
 
-        new_node.next.prev = new_node
+            new_node.next.prev = new_node
 
-        return new_node
+            return new_node
+        else:
+            return "ERROR: could not find the item old_node in list"
+
 
     """ add an element before old_node """
 
     def add_before(self, data, old_node):
+        # if old_node is not an instance of node try finding it as data in the DLL
         if not isinstance(old_node, Node):
             old_node = self.find(old_node)
+
         new_node = Node(None, None, data)
 
-        new_node.next = old_node
-        new_node.prev = old_node.prev
+        if old_node is not None:
+            new_node.next = old_node
+            new_node.prev = old_node.prev
 
-        old_node.prev = new_node
+            old_node.prev = new_node
 
-        new_node.prev.next = new_node
+            new_node.prev.next = new_node
 
-        return new_node
+            return new_node
+        else:
+            return "ERROR: could not find the item old_node in list"
 
     """ remove an element from the list """
 
     def remove(self, removable_node):
+        # if removable_node is not an instance of node try finding it as data in the DLL
         if not isinstance(removable_node, Node):
             removable_node = self.find(removable_node)
 
-        if removable_node.prev is None:
-            self.head = removable_node.next
-            removable_node.next.prev = None
-        if removable_node.prev is not None:
-            removable_node.prev.next = removable_node.next
-        if removable_node.next is None:
-            self.tail = removable_node.prev
-            removable_node.prev.next = None
+        if removable_node is not None:
+            if removable_node.prev is None:
+                self.head = removable_node.next
+                removable_node.next.prev = None
+            if removable_node.prev is not None:
+                removable_node.prev.next = removable_node.next
+            if removable_node.next is None:
+                self.tail = removable_node.prev
+                removable_node.prev.next = None
+            else:
+                removable_node.next.prev = removable_node.prev
         else:
-            removable_node.next.prev = removable_node.prev
+            return "ERROR: could not find the item old_node in list"
 
     def find(self, data):
         current_node = self.head
