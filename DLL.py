@@ -25,6 +25,20 @@ class DoubleLinkedList:
 
         return output[:len(output)-2] + "}"
 
+    # return iterable object of DLL
+    def __iter__(self):
+        self.current_node = self.head
+        return self
+
+    # return next in iteration
+    def __next__(self):
+        if self.current_node.next is not None:
+            current_data = self.current_node.data
+            self.current_node = self.current_node.next
+            return current_data
+        else:
+            raise StopIteration
+
     # add element to the end of the double linked list
     def append(self, data):
         new_node = Node(None, None, data)
@@ -125,3 +139,12 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
+
+
+test_DLL = DoubleLinkedList()
+test_DLL.append("hoool")
+test_DLL.append("looooo")
+test_DLL.add_begin("test")
+print(test_DLL)
+for i in test_DLL:
+    print(i)
