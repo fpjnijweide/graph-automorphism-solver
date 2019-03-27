@@ -17,6 +17,7 @@ def fast_refinement(G: Graph, H: Graph):
     # Loop while we have a non-empty queue, each loop will take queue[0] as the colour to compare everything with
     # (how many neighbours of this colour a vertex has)
     while queueindex < len(queue):
+        partitions = create_partition(G.vertices + H.vertices)
 
         # Find all colours of the neighbours of queue[0]
         vertices_col0 = partitions[queue[queueindex]]
