@@ -1,6 +1,6 @@
 from week3 import *
-# from graphviz import render
-# from graphviz import Source
+from graphviz import render
+
 from week5 import *
 from graph import *
 import math
@@ -57,28 +57,37 @@ def countTreeIsomorphism(G: Graph):
                 children[inspect].append(x)
 
     num = 1
-    print(children)
     for x in children:
         if len(children[x]) > 1: #children with same parent x, now check the subtrees
-            subtrees = []
-            for child in children[x]: # create subtree for each child
-                tocheck = [child]
-                subtree = []
-                while len(tocheck) != 0:
-                    check = tocheck.pop(0)
-                    subtree.append(check)
-                    for y in children[check]:
-                        check.append(y)
-                subtrees.append(subtree)
+            equalChildren = True
+            for l in range(1, len(children[x])): # compare subtrees to subtree of first child
+                equalChildren = equalChildren and compareSubtrees(children[x][0], children[x][l], children)
 
-            if compareSubtrees(subtrees):
+            if equalChildren:
                 num = num * math.factorial(len(children[x]))
 
     return num
 
-def compareSubtrees(subtrees):
-    #TODO: implement this
+def compareSubtrees(parent1, parent2, children): #children of first generation
+    comp = True
 
+    sameNeighbors = len(parent1.neighbor_colors) == len(parent2.neighbor_colors) # to check if the parents have the same neighbourhood
+    if sameNeighbors:
+        for x in set(parent1.neighbor_colors):
+            if parent1.neighbor_colors.count(x) != parent2.neighbor_colors.count(x):
+                sameNeighbors = False
+                break
+
+    if sameNeighbors: # because same neighbourhood, we now have to compare their subtrees
+        for x in children[parent1]: # find equal subtree of parent 2 for each subtree of parent 1
+            found = False
+            for y in children[parent2]:
+                found = found or compareSubtrees(x, y, children)
+            if not found: # no equal subtree of parent 2 for subtree of parent 1, so not the same
+                comp = False
+    else: # parents do not have same neighbourhood so subtrees can not be equal
+        comp = False
+    return comp
 
 
 def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
@@ -156,11 +165,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         for v in disconnectedH:
             H._v.remove(v)
     if treecheck:
-        print("goes to check")
-        print(isTree(G))
-        print(isTree(H))
         if isTree(G) and isTree(H):
-            print("it is a tree")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
@@ -202,15 +207,12 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     return False
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees36.grl",1,4 )
+    G1, G2 = load_graphs("graphs/trees90.grl", 0, 3)
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
-    G1, G2 = color_refinement(G1, G2)
-    # G1,G2=color_refinement(G1,G2)
-    print(is_isomorphism(G1, G2))
 
     G_partition_backup = create_partition(G1.vertices)
 
@@ -219,6 +221,11 @@ if __name__ == "__main__":
 
 
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
+
+
     # DEBUGGING CODE
     # copy to wherever needed
     # write_graph_to_dot_file(G1, "G1")
