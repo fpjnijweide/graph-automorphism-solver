@@ -139,12 +139,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-
-
-test_DLL = DoubleLinkedList()
-test_DLL.append("hoool")
-test_DLL.append("looooo")
-test_DLL.add_begin("test")
-print(test_DLL)
-for i in test_DLL:
-    print(i)
