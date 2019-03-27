@@ -1,4 +1,6 @@
 from week3 import *
+from week4 import *
+from DLL import *
 import time
 from graphviz import render
 
@@ -7,6 +9,14 @@ def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition(G.vertices + H.vertices)
     queue = []
     queueindex = 0
+    DLL = DLL()
+
+
+
+
+    # Create a DLL for the vertices
+    for current_colour in range(len(partitions)):
+
 
     # Add the colour of the first non-empty partition to the queue first
     for current_colour in range(len(partitions)):
