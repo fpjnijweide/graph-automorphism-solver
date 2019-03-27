@@ -5,7 +5,7 @@ from week3 import *
 FILENAME = "graphs/trees90.grl"
 
 class Settings:
-    FAST = False # Todo fix
+    FAST = True # Todo fix
     PREPROCESSING = True
     TREE_CHECK = False #Todo fix
     TWIN_CHECK= False # Todo fix / sneller maken
