@@ -5,10 +5,10 @@ from week3 import *
 FILENAME = "graphs/trees90.grl"
 
 class Settings:
-    FAST = True # Todo fix
+    FAST = True # Todo sneller maken (doubly linked list)
     PREPROCESSING = True
     TREE_CHECK = False #Todo fix
-    TWIN_CHECK= False # Todo fix / sneller maken
+    TWIN_CHECK= False # Todo sneller maken
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
