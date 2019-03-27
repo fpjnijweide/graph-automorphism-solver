@@ -1,4 +1,5 @@
-class Node():
+class Node:
+    # class of the items in
     def __init__(self, next=None, prev=None, data=None):
         self.next = next
         self.prev = prev
@@ -8,7 +9,7 @@ class Node():
         return self.data
 
 
-class DLL():
+class DLL:
     head = None
     tail = None
 
@@ -16,7 +17,7 @@ class DLL():
         current_node = self.head
         output = "DLL {"
 
-        while not current_node is None:
+        while current_node is not None:
             output += current_node.data + ", "
             current_node = current_node.next
 
@@ -51,7 +52,7 @@ class DLL():
 
         return new_node
 
-    # add an element after old_node"""
+    """ add an element after old_node (if this is a Node """
     def add_after(self, data, old_node):
         if not isinstance(old_node, Node):
             old_node = self.find(old_node)
@@ -92,34 +93,20 @@ class DLL():
         if removable_node.prev is None:
             self.head = removable_node.next
             removable_node.next.prev = None
-        else:
+        if removable_node.prev is not None:
             removable_node.prev.next = removable_node.next
-
         if removable_node.next is None:
             self.tail = removable_node.prev
             removable_node.prev.next = None
         else:
             removable_node.next.prev = removable_node.prev
 
-
     def find(self, data):
         current_node = self.head
 
-        while not current_node is None:
+        while current_node is not None:
             if current_node.data == data:
                 return current_node
             current_node = current_node.next
 
         return None
-
-
-test_DLL = DLL()
-test_DLL.append("hallo")
-var1 = test_DLL.append("doie")
-test_DLL.add_begin("test")
-test_DLL.add_after("kip", "hallo")
-test_DLL.add_before("lotte" , var1)
-print(test_DLL.find("lotte"))
-test_DLL.remove("lotte")
-test_DLL.remove(var1)
-print(test_DLL)
