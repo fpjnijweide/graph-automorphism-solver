@@ -128,7 +128,7 @@ class DoubleLinkedList:
             else:
                 removable_node.next.prev = removable_node.prev
         else:
-            return "ERROR: could not find the item old_node in list"
+            return "ERROR: could not find the item removable_node in list"
 
     def find(self, data):
         current_node = self.head
