@@ -1,5 +1,4 @@
 from graph import *
-
 from week3 import *
 from week4 import *
 import time
@@ -90,6 +89,7 @@ if __name__ == "__main__":
     G1, G2 = fast_refinement(G1, G2)
     end = time.time()
     print("fast:", end - start)
+
 
     G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
     G3 = initialize_colors(G3)
