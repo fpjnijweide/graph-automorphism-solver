@@ -17,14 +17,16 @@ class DoubleLinkedList:
     # string representation for easier debugging
     def __str__(self) -> str:
         current_node = self.head
-        output = "DLL {"
+        output = "DLL: {"
+        len_list = 0
 
         while current_node is not None:
             string_to_add = current_node.data.__str__()
             output += string_to_add + ", "
+            len_list += 1
             current_node = current_node.next
 
-        return output[:len(output)-2] + "}"
+        return "len: " + str(len_list) + "  " + output[:len(output)-2] + "}"
 
     # return iterable object of DLL
     def __iter__(self):
