@@ -6,13 +6,19 @@ from week5 import *
 from graph import *
 import math
 
-def find_twins(vertices_list):
-    list = []
-    for i in range(0, len(vertices_list)):
-        V = vertices_list[i]
-        for W in vertices_list[i:len(vertices_list)]:
-            if V.neighbors == W.neighbors:
-                list.append([V, W])
+def find_twins(G: Graph):
+    v = G.vertices
+    list = [[v[0]]]
+    for i in range(1, len(v)):
+        for j in list:
+            if v[i].neighbors == j[0].neighbors:
+                j.append(v[i])
+            else:
+                list.append([v[i]])
+    #TODO: add twin groups too
+    for k in list:
+        if len(k) == 1:
+            list.remove(k)
     return list
 
 def copy_graph(inputG: Graph):
@@ -189,18 +195,29 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not is_isomorphism(G, H):
         return 0
     else:
-        # Else, check if all colors are unique. If so, it is an isomorph
+        # Else, check if all colors are unique. If so, it is an isomorphism. Also we ignore the false twins and calculate those in the end when twin check is True.
         all_colors_are_unique = True
         for i in range(len(G.partition)):
-            if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
-                all_colors_are_unique = False
-                break
-        if all_colors_are_unique:
-            return 1
+            if Settings.TWIN_CHECK:
+                twins_G = find_twins(G)
+                twins_H = find_twins(H)
+                if (len(G.partition[i]) > 1 and G.partition[i] not in twins_G) or (len(H.partition[i]) > 1 and H.partition[i] not in twins_H):
+                    all_colors_are_unique = False
+                    break
+            else:
+                if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
+                    all_colors_are_unique = False
+                    break
+        if all_colors_are_unique: # everything unique except for groups of twins, when twin check is True.
+            result = 1
+            if Settings.TWIN_CHECK:
+                for i in twins_G:
+                    result += math.factorial(len(i))
+            return result
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refignment
+    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refinement
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
@@ -211,24 +228,27 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
 
+
     # Choose a color that is not unique
     chosen_color = -1
-    for i in range(len(G.partition)):
-        Gcolor = G.partition[i][:]  # list with vertices of same color
-        Hcolor = H.partition[i][:]
-        if len(Gcolor) + len(Hcolor) >= 4:
-            chosen_color = i
-            break
+
+    if Settings.TWIN_CHECK:
+        #TODO: choose a color that is not unique and not part of twin group
+    else:
+        for i in range(len(G.partition)):
+            Gcolor = G.partition[i][:]  # list with vertices of same color
+            Hcolor = H.partition[i][:]
+            if len(Gcolor) + len(Hcolor) >= 4:
+                chosen_color = i
+                break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
         return 0
 
-    # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
-    # if they are isomorphs
-    if Settings.TWIN_CHECK:
-        x = find_twins(G.partition[chosen_color])
-    else:
-        x = G.partition[chosen_color][0]
+    #TODO: check if there need to be anything different for when twin check is true after this
+
+    # Choose a vertex of this color in G and check for all y of this color in H
+    x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphisms = 0
 
