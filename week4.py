@@ -1,10 +1,10 @@
+from main import *
 from week3 import *
 from graphviz import render
 
 from week5 import *
 from graph import *
 import math
-from main import Settings
 
 def find_twins(vertices_list):
     for i in range(0, len(vertices_list)):
@@ -48,36 +48,58 @@ def color_by_partition(partition: List):
 
 
 def countTreeIsomorphism(G: Graph):
-    root = G._v[0]  # it does not matter which vertex is the root so we pick one
-    children = dict()  # parent points to array of its children
+    # if the tree is in string form, we can return 2
+    degree1 = 0
+    degreemorethan2 = 0
+    for v in G.vertices:
+        if v.degree == 1:
+            degree1 += 1
+        if v.degree > 2:
+            degreemorethan2 += 1
+    if degree1 == 2 and degreemorethan2 == 0:
+        return 2
 
-    visited = []  # fill the dictionary
-    next = [root]
-    while len(next) != 0:
-        inspect = next.pop(0)
-        visited.append(inspect)
-        if len(inspect.neighbors) > 0:
-            children[inspect] = []
-            for x in inspect.neighbors:
-                if x not in visited:
-                    next.append(x)
-                    children[inspect].append(x)
+    result = 1  # result depends on position of the root, so we check for every vertex as root
+    for v in G.vertices:
+        root = v  # root
+        children = dict()  # parent points to array of its children
 
-    num = 1
-    for x in children:
-        if len(children[x]) > 1: #children with same parent x, now check the subtrees
-            equalChildren = True
-            for l in range(1, len(children[x])): # compare subtrees to subtree of first child
-                equalChildren = equalChildren and compareSubtrees(children[x][0], children[x][l], children)
+        visited = []  # fill the dictionary by breath first search
+        next = [root]
+        while len(next) != 0:
+            inspect = next.pop(0)
+            visited.append(inspect)
+            if len(inspect.neighbors) > 0:
+                children[inspect] = []
+                for x in inspect.neighbors:
+                    if x not in visited:
+                        next.append(x)
+                        children[inspect].append(x)
 
-            if equalChildren:
-                num = num * math.factorial(len(children[x]))
+        num = 1
+        for x in children:
+            if len(children[x]) > 1: #children with same parent x, now check the subtrees
 
-    return num
+                equalChildren = [[children[x][0]]]
+                for l in range(1, len(children[x])): # create a list of lists containing subtrees that are equal
+                    addedToEqualChildren = False
+                    for m in equalChildren:
+                        if compareSubtrees(m[0], children[x][l], children):
+                            m.append(children[x][l])
+                            addedToEqualChildren = True
+                    if not addedToEqualChildren:
+                        equalChildren.append([children[x][l]])
+
+                for q in equalChildren:
+                    if len(q) > 1:
+                        num = num * math.factorial(len(q))
+
+        if num > result:
+            result = num
+    return result
 
 def compareSubtrees(parent1, parent2, children): #children of first generation
     comp = True
-
     sameNeighbors = len(parent1.neighbor_colors) == len(parent2.neighbor_colors) # to check if the parents have the same neighbourhood
     if sameNeighbors:
         for x in set(parent1.neighbor_colors):
@@ -311,21 +333,32 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees90.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/bigtrees1.grl", 1, 3)
+
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
-
     G_partition_backup = create_partition(G1.vertices)
 
     H_partition_backup = create_partition(G2.vertices)
-
+    print(len(G1.vertices))
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
+
+'''
+bigtrees1:
+[0,2] 442368 but gives 110592
+[1,3] 5308416 correct fak yesss
+
+bigtrees3:
+
+[0, 2] 2772351862699137701073289910157312 correct fak yeeessssss
+[1, 3] 462058643783189616845548318359552 correct whooooopppp
+'''
 
 
     # DEBUGGING CODE
