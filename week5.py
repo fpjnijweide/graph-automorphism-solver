@@ -1,3 +1,4 @@
+from graph import *
 from week3 import *
 import time
 from graphviz import render

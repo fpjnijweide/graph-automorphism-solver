@@ -2,10 +2,10 @@ from week5 import *
 from week4 import *
 from week3 import *
 
-FILENAME = "graphs/trees90.grl"
+FILENAME = "graphs/cubes3.grl"
 
 class Settings:
-    FAST = True # Todo sneller maken (doubly linked list)
+    FAST = False # Todo sneller maken (doubly linked list)
     PREPROCESSING = True
     TREE_CHECK = False #Todo fix
     TWIN_CHECK= False # Todo sneller maken

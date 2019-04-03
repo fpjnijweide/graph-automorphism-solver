@@ -1,10 +1,11 @@
+from main import *
 from week3 import *
 from graphviz import render
 
 from week5 import *
 from graph import *
 import math
-from main import Settings
+
 
 def find_twins(vertices_list):
     for i in range(0, len(vertices_list)):
@@ -311,7 +312,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/trees90.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/cubes3.grl", 0, 0)
     if (G1==G2):
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
@@ -321,7 +322,7 @@ if __name__ == "__main__":
     G_partition_backup = create_partition(G1.vertices)
 
     H_partition_backup = create_partition(G2.vertices)
-
+    print(is_isomorphism(G1,G2))
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
