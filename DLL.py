@@ -17,14 +17,16 @@ class DoubleLinkedList:
     # string representation for easier debugging
     def __str__(self) -> str:
         current_node = self.head
-        output = "DLL {"
+        output = "DLL: {"
+        len_list = 0
 
         while current_node is not None:
             string_to_add = current_node.data.__str__()
             output += string_to_add + ", "
+            len_list += 1
             current_node = current_node.next
 
-        return output[:len(output)-2] + "}"
+        return "len: " + str(len_list) + "  " + output[:len(output)-2] + "}"
 
     # return iterable object of DLL
     def __iter__(self):
@@ -33,6 +35,10 @@ class DoubleLinkedList:
 
     # return next in iteration
     def __next__(self):
+        if self.current_node == self.tail:
+            current_data = self.current_node.data
+            self.current_node = Node(None,None,"stop")
+            return  current_data
         if self.current_node.next is not None:
             current_data = self.current_node.data
             self.current_node = self.current_node.next
@@ -140,3 +146,14 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
+
+test_DLL = DoubleLinkedList()
+test_DLL.append("hallo")
+test_DLL.append(2)
+test_DLL.append([2,3,4])
+from graph import *
+G = Graph(True)
+test_DLL.append(Vertex(G))
+print(test_DLL)
+for i in test_DLL:
+    print(i)
