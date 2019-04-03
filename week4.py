@@ -7,12 +7,13 @@ from graph import *
 import math
 
 def find_twins(vertices_list):
+    list = []
     for i in range(0, len(vertices_list)):
         V = vertices_list[i]
         for W in vertices_list[i:len(vertices_list)]:
             if V.neighbors == W.neighbors:
-                return V
-    return vertices_list[0]
+                list.append([V, W])
+    return list
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -197,9 +198,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         for v in disconnectedH:
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
-        print("goes to check")
-        print(isTree(G))
-        print(isTree(H))
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
 
