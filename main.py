@@ -2,7 +2,7 @@ from week5 import *
 from week4 import *
 from week3 import *
 
-FILENAME = "graphs/cubes3.grl"
+FILENAME = "graphs/trees36.grl"
 
 class Settings:
     FAST = False # Todo sneller maken (doubly linked list)
