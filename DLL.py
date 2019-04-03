@@ -20,7 +20,8 @@ class DoubleLinkedList:
         output = "DLL {"
 
         while current_node is not None:
-            output += current_node.data + ", "
+            string_to_add = current_node.data.__str__()
+            output += string_to_add + ", "
             current_node = current_node.next
 
         return output[:len(output)-2] + "}"
@@ -128,7 +129,7 @@ class DoubleLinkedList:
             else:
                 removable_node.next.prev = removable_node.prev
         else:
-            return "ERROR: could not find the item old_node in list"
+            return "ERROR: could not find the item removable_node in list"
 
     def find(self, data):
         current_node = self.head
@@ -139,4 +140,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-
