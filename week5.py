@@ -31,6 +31,7 @@ def fast_refinement(G: Graph, H: Graph):
         for colour in colours_neighbouring_queue0:
 
             vertices_dll = partitions[colour]
+            print(vertices_dll)
 
             # Empty partition - no vertices with this colour
             '''if len(vertices) == 0:
@@ -102,5 +103,5 @@ if __name__ == "__main__":
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G3, "G2")
-    # render('dot', 'png', 'graphG1.dot')
-    # render('dot', 'png', 'graphG2.dot')
+    render('dot', 'png', 'graphG1.dot')
+    render('dot', 'png', 'graphG2.dot')
