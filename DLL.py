@@ -37,8 +37,8 @@ class DoubleLinkedList:
     def __next__(self):
         if self.current_node == self.tail:
             current_data = self.current_node.data
-            self.current_node = Node(None,None,"stop")
-            return  current_data
+            self.current_node = Node(None, None, "stop")
+            return current_data
         if self.current_node.next is not None:
             current_data = self.current_node.data
             self.current_node = self.current_node.next
@@ -94,7 +94,6 @@ class DoubleLinkedList:
         else:
             return "ERROR: could not find the item old_node in list"
 
-
     """ add an element before old_node """
 
     def add_before(self, data, old_node):
@@ -146,14 +145,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-
-test_DLL = DoubleLinkedList()
-test_DLL.append("hallo")
-test_DLL.append(2)
-test_DLL.append([2,3,4])
-from graph import *
-G = Graph(True)
-test_DLL.append(Vertex(G))
-print(test_DLL)
-for i in test_DLL:
-    print(i)

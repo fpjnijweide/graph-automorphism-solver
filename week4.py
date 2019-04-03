@@ -6,6 +6,7 @@ from graph import *
 import math
 from main import Settings
 
+
 def find_twins(vertices_list):
     for i in range(0, len(vertices_list)):
         V = vertices_list[i]
@@ -13,6 +14,7 @@ def find_twins(vertices_list):
             if V.neighbors == W.neighbors:
                 return V
     return vertices_list[0]
+
 
 def copy_graph(inputG: Graph):
     # Copies a graph
