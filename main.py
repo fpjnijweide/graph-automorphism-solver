@@ -5,9 +5,9 @@ from week5 import *
 FILENAME = "graphs/cubes5.grl"
 
 class Settings:
-    FAST = False # Todo sneller maken (doubly linked list)
-    PREPROCESSING = False
-    TREE_CHECK = False #Todo fix
+    FAST = True # Todo sneller maken (doubly linked list)
+    PREPROCESSING = True
+    TREE_CHECK = True #Todo fix
     TWIN_CHECK= False # Todo sneller maken
 
 if __name__ == '__main__':
