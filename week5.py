@@ -5,10 +5,6 @@ from graphviz import render
 
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition_DLL(G.vertices + H.vertices)
-    print("partitions:")
-    for p in partitions:
-        print(p)
-    print("---------")
 
     queue = []
     queueindex = 0
@@ -36,10 +32,6 @@ def fast_refinement(G: Graph, H: Graph):
 
             vertices_dll = partitions[colour]
 
-            # Empty partition - no vertices with this colour
-            '''if len(vertices) == 0:
-                continue'''
-
             vertex0 = vertices_dll.head
 
             num_col0neighbours_group1 = neighbor_colors(vertex0.data).count(queue[queueindex])
@@ -47,21 +39,13 @@ def fast_refinement(G: Graph, H: Graph):
             group1 = []
             group2 = []
 
-            i = 0
-            j = 0
-
             for v in vertices_dll:
                 if neighbor_colors(v).count(queue[queueindex]) == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
-                    j += 1
                     group1.append(v)
                 else:
-                    i += 1
                     group2.append(v)
                     vertices_dll.remove(v)
-            print(i, "verts in group2")
-            print(j, "verts in group1")
-            k =0
 
             if len(group2) != 0:
                 # Can split the partition based on the number of colour-queue[0] neighbours
@@ -69,14 +53,9 @@ def fast_refinement(G: Graph, H: Graph):
                 new_colour = len(partitions)
                 partitions.append(DoubleLinkedList())
                 for node in group2:
-                    k += 1
                     node.colornum = new_colour
                     node.label = new_colour
                     partitions[new_colour].append(node)
-                print("---- updated partitions:")
-                for pa in partitions:
-                    print(pa)
-                print("----")
 
                 # Add to queue
                 if colour in queue or len(group2) < len(group1):
@@ -118,6 +97,6 @@ if __name__ == "__main__":
     print("normal:", end - start)
 
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G3, "G2")
+    write_graph_to_dot_file(G2, "G2")
     render('dot', 'png', 'graphG1.dot')
     render('dot', 'png', 'graphG2.dot')

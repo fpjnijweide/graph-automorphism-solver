@@ -147,13 +147,3 @@ class DoubleLinkedList:
 
         return None
 
-test_DLL = DoubleLinkedList()
-test_DLL.append("hallo")
-test_DLL.append(2)
-test_DLL.append([2,3,4])
-from graph import *
-G = Graph(True)
-test_DLL.append(Vertex(G))
-print(test_DLL)
-for i in test_DLL:
-    print(i)
