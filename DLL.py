@@ -20,7 +20,8 @@ class DoubleLinkedList:
         output = "DLL {"
 
         while current_node is not None:
-            output += current_node.data + ", "
+            string_to_add = current_node.data.__str__()
+            output += string_to_add + ", "
             current_node = current_node.next
 
         return output[:len(output)-2] + "}"
