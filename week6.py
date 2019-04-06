@@ -109,23 +109,6 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
         I= old_I[:] + [H._v.index(y)]
 
-        # cycle_list = []
-        # P2 = permutation(len(G._v))
-        # for i in range(len(D)):
-        #     new_cycle=[D[i],I[i]]
-        #
-        #
-        #     if [new_cycle[1],new_cycle[0]] not in cycle_list:
-        #         cycle_list.append(new_cycle)
-        #         P2 = P2* permutation(len(G._v), cycles=[new_cycle])
-        # # todo maybe remove permutation code here
-        # P1 = permutation(len(G._v), cycles=cycle_list)  # todo what to do with this perm?
-
-
-        # mapping1=list(range(len(G._v)))
-        # for i in range(len(D)):
-        #     mapping1[D[i]]=I[i]
-        # P = permutation(len(G._v), mapping=mapping1)
 
 
         res = automorphisms_cycles(G, H, D, I, new_G_partition,
@@ -149,10 +132,18 @@ def algebra_magic(input_cycles,gr_size):
     permutations_list=[]
 
     for cycle in input_cycles:
+
+        # todo dont add permutation that is multiple oof 2 other (1,4,5)
         permutations_list.append(permutation(gr_size,cycles=[cycle]))
 
-    o=Orbit(permutations_list,1)
-    s=Stabilizer(permutations_list,1)
+    # permutations_list.remove(permutations_list[-1])
+    i=0
+    o = Orbit(permutations_list, i)
+    while len(o)<2:
+        i+=1
+        o = Orbit(permutations_list, i)
+    print(i)
+    s=Stabilizer(permutations_list,i)
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s))
     # cycle_list_new = []
@@ -170,6 +161,7 @@ def algebra_magic(input_cycles,gr_size):
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
     cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
+
     if cycle_list is None:
         return 0
     elif cycle_list==[]:
