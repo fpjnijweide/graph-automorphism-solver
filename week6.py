@@ -55,7 +55,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
                 if [new_cycle[1], new_cycle[0]] not in cycle_list:
                     cycle_list.append(new_cycle)
                     P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
-            print(P2)
+            # print(P2)
             if D:
                 return P2.cycles()
             else:
@@ -109,16 +109,16 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
         I= old_I[:] + [H._v.index(y)]
 
-        cycle_list = []
-        P2 = permutation(len(G._v))
-        for i in range(len(D)):
-            new_cycle=[D[i],I[i]]
-
-
-            if [new_cycle[1],new_cycle[0]] not in cycle_list:
-                cycle_list.append(new_cycle)
-                P2 = P2* permutation(len(G._v), cycles=[new_cycle])
-        # todo maybe remove permutation code here
+        # cycle_list = []
+        # P2 = permutation(len(G._v))
+        # for i in range(len(D)):
+        #     new_cycle=[D[i],I[i]]
+        #
+        #
+        #     if [new_cycle[1],new_cycle[0]] not in cycle_list:
+        #         cycle_list.append(new_cycle)
+        #         P2 = P2* permutation(len(G._v), cycles=[new_cycle])
+        # # todo maybe remove permutation code here
         # P1 = permutation(len(G._v), cycles=cycle_list)  # todo what to do with this perm?
 
 
@@ -143,11 +143,30 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
     return permutations
 
-def algebra_magic(cycle_list,gr_size):
-    print(cycle_list)
-    permutations=permutation(gr_size, cycles=cycle_list)
-    print()
-    return 99
+def algebra_magic(input_cycles,gr_size):
+    print(input_cycles)
+
+    permutations_list=[]
+
+    for cycle in input_cycles:
+        permutations_list.append(permutation(gr_size,cycles=[cycle]))
+
+    o=Orbit(permutations_list,1)
+    s=Stabilizer(permutations_list,1)
+    print("orbit: "+ str(o))
+    print("stabilizer: "+ str(s))
+    # cycle_list_new = []
+    # permutations = permutation(gr_size)
+    # for i in range(len(input_cycles)):
+    #     new_cycle = input_cycles[i]
+    #
+    #     if [new_cycle[1], new_cycle[0]] not in cycle_list_new:
+    #         cycle_list_new.append(new_cycle)
+    #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
+
+
+
+    return len(o)*len(s)
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
     cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
@@ -177,8 +196,8 @@ if __name__ == '__main__':
 
     H_partition_backup = create_partition(G2.vertices)
     print(is_isomorphism(G1,G2))
-    print(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup))
-
+    print("week 6 answer: "+ str(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup)))
+    print("real nr: "+ str(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup)))
 
 
     write_graph_to_dot_file(G1, "G1")
