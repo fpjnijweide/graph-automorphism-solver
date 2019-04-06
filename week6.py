@@ -47,6 +47,15 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
+            cycle_list = []
+            P2 = permutation(len(G._v))
+            for i in range(len(D)):
+                new_cycle = [D[i], I[i]]
+
+                if [new_cycle[1], new_cycle[0]] not in cycle_list:
+                    cycle_list.append(new_cycle)
+                    P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
+            print(P2)
             return 1 #TODO return to the last visited trivial ancestor node
 
     # We have now found a stable coloring that has non-unique colors
@@ -96,20 +105,38 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
         D= old_D[:] + [G._v.index(x)]
 
         I= old_I[:] + [H._v.index(y)]
-        cycle_list=[]
+
+        cycle_list = []
+        P2 = permutation(len(G._v))
         for i in range(len(D)):
-            cycle_list.append([D[i],I[i]])
+            new_cycle=[D[i],I[i]]
 
-        P = permutation(len(G._v),cycles=cycle_list) #todo what to do with this perm?
 
-        nr_of_isomorphisms += count_automorphisms_groups(G, H, D,I, new_G_partition,
+            if [new_cycle[1],new_cycle[0]] not in cycle_list:
+                cycle_list.append(new_cycle)
+                P2 = P2* permutation(len(G._v), cycles=[new_cycle])
+        # todo maybe remove permutation code here
+        # P1 = permutation(len(G._v), cycles=cycle_list)  # todo what to do with this perm?
+
+
+        # mapping1=list(range(len(G._v)))
+        # for i in range(len(D)):
+        #     mapping1[D[i]]=I[i]
+        # P = permutation(len(G._v), mapping=mapping1)
+
+
+        res = count_automorphisms_groups(G, H, D,I, new_G_partition,
                                                new_H_partition)
+        if res==1:
+            pass
+            #TODO we may stop exploring this tree?
+        nr_of_isomorphisms+= res
 
     return nr_of_isomorphisms
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0,0)
+    G1, G2 = load_graphs("graphs/slides.gr", 0,0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
