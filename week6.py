@@ -102,14 +102,14 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
 
         P = permutation(len(G._v),cycles=cycle_list) #todo what to do with this perm?
 
-        nr_of_isomorphisms += count_automorphisms(G, H, D,I, new_G_partition,
+        nr_of_isomorphisms += count_automorphisms_groups(G, H, D,I, new_G_partition,
                                                new_H_partition)
 
     return nr_of_isomorphisms
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/slides.gr", 0,0)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0,0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -129,5 +129,5 @@ if __name__ == '__main__':
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')

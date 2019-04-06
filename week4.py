@@ -334,7 +334,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     # H.partition = H_partition_backup
 
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+        nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
 
     return nr_of_isomorphs
