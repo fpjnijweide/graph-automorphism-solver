@@ -7,7 +7,7 @@ from week5 import *
 from permv2 import *
 from basicpermutationgroup import *
 
-def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
     old_D=D[:]
     old_I=I[:]
@@ -38,7 +38,7 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
 
     # If this coloring is not stable, return 0
     if not is_isomorphism(G, H):
-        return 0
+        return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph
         all_colors_are_unique = True
@@ -56,7 +56,10 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
                     cycle_list.append(new_cycle)
                     P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
             print(P2)
-            return 1 #TODO return to the last visited trivial ancestor node
+            if D:
+                return P2.cycles()
+            else:
+                return []
 
     # We have now found a stable coloring that has non-unique colors
 
@@ -81,7 +84,7 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
             break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
-        return 0
+        return []
 
     # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
@@ -90,7 +93,7 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
     else:
         x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
-    nr_of_isomorphisms = 0
+    permutations=[]
 
     new_G_partition = G.partition
     new_H_partition = H.partition
@@ -101,7 +104,7 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
     # H.partition = H_partition_backup
 
 
-    for y in H_partition_chosen_color: #TODO start with y=x if possible
+    for y in H_partition_chosen_color:
         D= old_D[:] + [G._v.index(x)]
 
         I= old_I[:] + [H._v.index(y)]
@@ -125,14 +128,36 @@ def count_automorphisms_groups(G: Graph, H: Graph, D, I, G_partition_backup, H_p
         # P = permutation(len(G._v), mapping=mapping1)
 
 
-        res = count_automorphisms_groups(G, H, D,I, new_G_partition,
-                                               new_H_partition)
-        if res==1:
-            pass
-            #TODO we may stop exploring this tree?
-        nr_of_isomorphisms+= res
+        res = automorphisms_cycles(G, H, D, I, new_G_partition,
+                                   new_H_partition)
+        if res: # if res is not empty
+            if not isinstance(res[0],int):
+                permutations.extend(res)
+            else:
+                permutations.append(res)
+            if old_D:
+                if old_D[-1] != old_I[-1]: #if this iteration is not trivial
+                    return permutations
 
-    return nr_of_isomorphisms
+
+
+    return permutations
+
+def algebra_magic(cycle_list,gr_size):
+    print(cycle_list)
+    permutations=permutation(gr_size, cycles=cycle_list)
+    print()
+    return 99
+
+def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
+    cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
+    if cycle_list is None:
+        return 0
+    elif cycle_list==[]:
+        return 1
+    else:
+        return algebra_magic(cycle_list,len(G1._v))
+
 
 
 if __name__ == '__main__':
@@ -153,6 +178,8 @@ if __name__ == '__main__':
     H_partition_backup = create_partition(G2.vertices)
     print(is_isomorphism(G1,G2))
     print(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup))
+
+
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
