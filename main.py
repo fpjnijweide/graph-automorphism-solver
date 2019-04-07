@@ -7,7 +7,7 @@ FILENAME = "graphs/trees90.grl"
 class Settings:
     FAST = True # Todo sneller maken (doubly linked list)
     PREPROCESSING = False
-    TREE_CHECK = False #Todo fix
+    TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
 
 if __name__ == '__main__':

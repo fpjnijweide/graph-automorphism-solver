@@ -229,13 +229,15 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
         return 0
     elif cycle_list==[]:
         return 1
+    elif isinstance(cycle_list,int):
+        return cycle_list
     else:
         return algebra_magic(cycle_list,len(G1._v))
 
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/trees36.grl", 1,1)
+    G1, G2 = load_graphs("graphs/trees90.grl", 1,1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
