@@ -135,21 +135,24 @@ def algebra_magic(input_cycles,gr_size):
 
 
     for cycle in input_cycles:
-        orb,trs= Orbit(permutations_list, cycle[0],True)
-        print("trans:::::"+ str(trs))
-        print("orb:::::" + str(orb))
+
+
         new_perm_list=[]
         cycle_perm=permutation(gr_size,cycles=[cycle])
         is_unique=True
         try:
             for nr in range(1,len(cycle)):
-
+                orb, trs = Orbit(permutations_list, cycle[nr-1], True)
+                print("trans:::::" + str(trs))
+                print("orb:::::" + str(orb))
+                print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
                 trans_cycle=trs[orb.index(cycle[nr])]
                 composition_perm=-trans_cycle*cycle_perm
                 print("composition perm:" + str(composition_perm))
                 print("permutation list cycles:" + str(permutations_list))
                 if composition_perm in permutations_list: #todo
                     is_unique=False
+                    break
 
                 # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
                 print("yeahh")
@@ -160,9 +163,9 @@ def algebra_magic(input_cycles,gr_size):
         # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
 
         #     pass
-            #todo maybe also test if its in stab of cycle[1]
 
-        # todo dont add permutation that is multiple oof 2 other (1,4,5)
+
+        # todo maybe just don't add permutation that is multiple oof 2 other (1,4,5)
         if is_unique:
             permutations_list.append(cycle_perm)
 
@@ -194,7 +197,10 @@ def algebra_magic(input_cycles,gr_size):
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
 
-
+    if not o:
+        o=[0]
+    if not s:
+        s=[0]
     return len(o)*len(s)
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
@@ -210,7 +216,7 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/slides.gr", 0,0)
+    G1, G2 = load_graphs("graphs/trees36.grl", 1,1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
