@@ -131,14 +131,46 @@ def algebra_magic(input_cycles,gr_size):
 
     permutations_list=[]
 
+    a:list = [1,2,3]
+
+
     for cycle in input_cycles:
+        orb,trs= Orbit(permutations_list, cycle[0],True)
+        print("trans:::::"+ str(trs))
+        print("orb:::::" + str(orb))
+        new_perm_list=[]
+        cycle_perm=permutation(gr_size,cycles=[cycle])
+        is_unique=True
+        try:
+            for nr in range(1,len(cycle)):
+
+                trans_cycle=trs[orb.index(cycle[nr])]
+                composition_perm=-trans_cycle*cycle_perm
+                print("composition perm:" + str(composition_perm))
+                print("permutation list cycles:" + str(permutations_list))
+                if composition_perm in permutations_list: #todo
+                    is_unique=False
+
+                # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
+                print("yeahh")
+
+        except ValueError:
+            pass
+        print("new_perm::: " + str(new_perm_list))
+        # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
+
+        #     pass
+            #todo maybe also test if its in stab of cycle[1]
 
         # todo dont add permutation that is multiple oof 2 other (1,4,5)
-        permutations_list.append(permutation(gr_size,cycles=[cycle]))
+        if is_unique:
+            permutations_list.append(cycle_perm)
 
-    # permutations_list.remove(permutations_list[-1])
+
+
+
     i=0
-    o = Orbit(permutations_list, i)
+    o,trans = Orbit(permutations_list, i,True)
     while len(o)<2:
         i+=1
         o = Orbit(permutations_list, i)
@@ -146,6 +178,12 @@ def algebra_magic(input_cycles,gr_size):
     s=Stabilizer(permutations_list,i)
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s))
+    print("permutations: " + str(permutations_list))
+    print("reduced: " + str(Reduce(permutations_list)))
+
+    print("transversal:" + str(trans))
+
+
     # cycle_list_new = []
     # permutations = permutation(gr_size)
     # for i in range(len(input_cycles)):
