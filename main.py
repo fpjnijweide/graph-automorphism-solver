@@ -8,7 +8,7 @@ class Settings:
     FAST = True # Todo sneller maken (doubly linked list)
     PREPROCESSING = True
     TREE_CHECK = True #Todo fix
-    TWIN_CHECK= False # Todo sneller maken
+    TWIN_CHECK= True # Todo sneller maken
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
