@@ -7,6 +7,16 @@ from week5 import *
 from permv2 import *
 from basicpermutationgroup import *
 
+def generate_group(generators):
+    res=generators
+    for i in generators:
+        for j in generators:
+            product=i*j
+            if product not in res:
+                res.append(product)
+    return res
+
+
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
     old_D=D[:]
@@ -57,9 +67,10 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
                     P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
             # print(P2)
             if D:
+                print(P2)
                 return P2.cycles()
             else:
-                return []
+                return None
 
     # We have now found a stable coloring that has non-unique colors
 
@@ -113,14 +124,20 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
         res = automorphisms_cycles(G, H, D, I, new_G_partition,
                                    new_H_partition)
-        if res: # if res is not empty
-            if not isinstance(res[0],int):
-                permutations.extend(res)
+        if not res is None: # if res is not None
+            if not res: #if res is empty
+                if not [] in permutations:
+                    permutations.append([])
             else:
-                permutations.append(res)
-            if old_D:
-                if old_D[-1] != old_I[-1]: #if this iteration is not trivial
-                    return permutations
+                if not isinstance(res[0],int):
+                    permutations.extend(res)
+                else:
+                    permutations.append(res)
+                ### this code makes it return to previous instance
+                if old_D:
+                    if old_D[-1] != old_I[-1]: #if this iteration is not trivial
+                        return permutations
+                ### uncomment if needed
 
 
 
@@ -177,15 +194,17 @@ def algebra_magic(input_cycles,gr_size):
     while len(o)<2:
         i+=1
         o = Orbit(permutations_list, i)
+    # i=i+1
     print(i)
     s=Stabilizer(permutations_list,i)
     print("orbit: "+ str(o))
-    print("stabilizer: "+ str(s))
+    print("stabilizer: "+ str(s)) #todo this is actually a generating set
     print("permutations: " + str(permutations_list))
     print("reduced: " + str(Reduce(permutations_list)))
 
     print("transversal:" + str(trans))
 
+    #todo maybe actually generate H and check which ones are in it via membership testing
 
     # cycle_list_new = []
     # permutations = permutation(gr_size)
@@ -205,7 +224,7 @@ def algebra_magic(input_cycles,gr_size):
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
     cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
-
+    print("--- finished finding unique permutations ---")
     if cycle_list is None:
         return 0
     elif cycle_list==[]:
