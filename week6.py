@@ -43,8 +43,10 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
 
-
-    G, H = color_refinement(G, H)
+    if Settings.FAST:
+        G, H = fast_refinement(G, H)
+    else:
+        G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_isomorphism(G, H):
