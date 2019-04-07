@@ -136,8 +136,8 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
                                    new_H_partition)
         if not res is None: # if res is not None
             if not res: #if res is empty
-                if not [] in permutations:
-                    permutations.append([])
+                if not [[]] in permutations:
+                    permutations.append([[]])
             else: #todo joint cycles (0,3)(1,2) should not get split up here, but a list of cycles should
                 if not isinstance(res,permutation):
                     permutations.extend(res)
@@ -165,7 +165,7 @@ def algebra_magic(input_cycles,gr_size):
 
 
         new_perm_list=[]
-        cycle_perm=permutation(gr_size,cycles=[cycle])
+        cycle_perm=permutation(gr_size,cycles=cycle)
         is_unique=True
         try:
             for nr in range(1,len(cycle)):
