@@ -6,15 +6,23 @@ from graphviz import render
 from week5 import *
 from permv2 import *
 from basicpermutationgroup import *
+from week2 import *
 
 def generate_group(generators):
-    res=generators
+    res=generators[:]
     for i in generators:
         for j in generators:
             product=i*j
             if product not in res:
                 res.append(product)
     return res
+
+def generate_group_recursive(generators):
+    res = generate_group(generators)
+    if res==generators:
+        return res
+    else:
+        return generate_group_recursive(res)
 
 
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
@@ -70,7 +78,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
             # print(P2)
             if D:
                 print(P2)
-                return P2.cycles()
+                return P2
             else:
                 return None
 
@@ -97,7 +105,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
             break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
-        return []
+        return None
 
     # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
     # if they are isomorphs
@@ -130,11 +138,11 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
             if not res: #if res is empty
                 if not [] in permutations:
                     permutations.append([])
-            else:
-                if not isinstance(res[0],int):
+            else: #todo joint cycles (0,3)(1,2) should not get split up here, but a list of cycles should
+                if not isinstance(res,permutation):
                     permutations.extend(res)
                 else:
-                    permutations.append(res)
+                    permutations.append(res.cycles())
                 ### this code makes it return to previous instance
                 if old_D:
                     if old_D[-1] != old_I[-1]: #if this iteration is not trivial
@@ -161,6 +169,7 @@ def algebra_magic(input_cycles,gr_size):
         is_unique=True
         try:
             for nr in range(1,len(cycle)):
+                #todo fix that this doesnt respod well to (0,3)(1,2)
                 orb, trs = Orbit(permutations_list, cycle[nr-1], True)
                 print("trans:::::" + str(trs))
                 print("orb:::::" + str(orb))
@@ -206,7 +215,7 @@ def algebra_magic(input_cycles,gr_size):
 
     print("transversal:" + str(trans))
 
-    #todo maybe actually generate H and check which ones are in it via membership testing
+    #todo maybe actually generate H and check which ones are in it via membership testing? (or recursive membership testing)
 
     # cycle_list_new = []
     # permutations = permutation(gr_size)
@@ -217,7 +226,7 @@ def algebra_magic(input_cycles,gr_size):
     #         cycle_list_new.append(new_cycle)
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
-
+    o=generate_group_recursive(o)
     if not o:
         o=[0]
     if not s:
@@ -239,8 +248,10 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/trees90.grl", 1,1)
+    # G1, G2 = load_graphs("graphs/slides.gr", 0,0)
 
+    G1=create_graph_with_cycle(5)
+    G2=G1
     # from week2 import *
     # G1=create_complete_graph(4)
     # G2=create_complete_graph(4)
