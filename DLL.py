@@ -148,13 +148,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-
-DLL_test = DoubleLinkedList()
-a = DLL_test.append("hello")
-b = DLL_test.append("anotherone")
-c = DLL_test.append("goodbye")
-print(DLL_test)
-DLL_test.remove(c)
-DLL_test.remove(b)
-DLL_test.remove(a)
-print(DLL_test)
