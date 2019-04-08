@@ -43,8 +43,8 @@ def reduce_twins(G: Graph, twins_G):
     for i in twins_G:
         for vertex in range(1, len(i)):
             for e in vertex.edges:
-                if (e.head == vertex and e.tail in i) or (e.tail == vertex and e.head in i):
-                    print("TODOD")
+                if (e.head == vertex and e.tail in i) or (e.tail == vertex and e.head in i): # connection between true twins can be left out
+                    G.del_edge(e)
                 elif e.head == vertex:
                     edge = Edge(e.tail, i[0])
                     G.add_edge(edge)
@@ -56,8 +56,6 @@ def reduce_twins(G: Graph, twins_G):
     for j in twins_G:
         for x in range(1, len(j)):
             G.del_vertex(x)
-
-
 
 
 def copy_graph(inputG: Graph):
@@ -141,7 +139,6 @@ def countTreeIsomorphism(G: Graph):
         num = 1
         for x in children:
             if len(children[x]) > 1: #children with same parent x, now check the subtrees
-
                 equalChildren = [[children[x][0]]]
                 for l in range(1, len(children[x])): # create a list of lists containing subtrees that are equal
                     addedToEqualChildren = False
@@ -367,6 +364,9 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
             constantG = constantG * math.factorial(len(i))
         for j in twins_H:
             constantH = constantH * math.factorial(len(j))
+        if constantG != constantH: # sanity check
+            print("ERROR WITH TWINS")
+            return 0
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
 
@@ -406,7 +406,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/bigtrees3.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/modulesC.grl", 2, 4)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -422,8 +422,9 @@ if __name__ == "__main__":
 
     H_partition_backup = create_partition(G2.vertices)
     print(is_isomorphism(G1,G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
-
+    print("sgdf")
+    print(count_automorphisms_fast(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print("end")
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
 
