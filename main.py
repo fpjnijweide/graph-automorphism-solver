@@ -2,7 +2,7 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/trees90.grl"
+FILENAME = "graphs/products72.grl"
 
 class Settings:
     FAST = False # Todo sneller maken (doubly linked list)
@@ -57,7 +57,7 @@ if __name__ == '__main__':
             graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
             g_partition_backup = graphs[graph].partition[:]
             gcopy_partition_backup = graphcopy.partition[:]
-            automorphisms = count_automorphisms_fast(graphs[graph], graphcopy, [], [],
+            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                      g_partition_backup, gcopy_partition_backup)
         else:
             graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
