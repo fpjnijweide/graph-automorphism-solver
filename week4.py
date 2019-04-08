@@ -273,7 +273,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
-            print("it is a tree")
+            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
@@ -321,7 +321,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl", 0, 6)
+    G1, G2 = load_graphs("graphs/bigtrees3.grl", 0, 2)
 
     # from week2 import *
     # G1=create_complete_graph(4)

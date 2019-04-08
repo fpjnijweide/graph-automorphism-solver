@@ -5,8 +5,8 @@ from week5 import *
 FILENAME = "graphs/products72.grl"
 
 class Settings:
-    FAST = True # Todo sneller maken (doubly linked list)
-    PREPROCESSING = True
+    FAST = False # Todo sneller maken (doubly linked list)
+    PREPROCESSING = False
     TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
 
