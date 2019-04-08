@@ -1,8 +1,6 @@
 from main import *
 from week3 import *
 from graphviz import render
-
-from week5 import *
 from graph import *
 import math
 
@@ -58,6 +56,7 @@ def reduce_twins(G: Graph, twins_G):
     for j in twins_G:
         for x in range(1, len(j)):
             G.del_vertex(x)
+
 
 
 
