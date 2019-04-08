@@ -1,4 +1,7 @@
+from graph import *
+
 from week3 import *
+from week4 import *
 import time
 #from graphviz import render
 
@@ -31,11 +34,6 @@ def fast_refinement(G: Graph, H: Graph):
         for colour in colours_neighbouring_queue0:
 
             vertices_dll = partitions[colour]
-            print(vertices_dll)
-
-            # Empty partition - no vertices with this colour
-            '''if len(vertices) == 0:
-                continue'''
 
             vertex0 = vertices_dll.head
 
@@ -83,7 +81,7 @@ def fast_refinement(G: Graph, H: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/threepaths5.gr", 0, 0)
+    G1, G2 = load_graphs("graphs/threepaths320.gr", 0, 0)
 
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
@@ -93,7 +91,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    G3, G4 = load_graphs("graphs/threepaths5.gr", 0, 0)
+    G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()
@@ -102,6 +100,6 @@ if __name__ == "__main__":
     print("normal:", end - start)
 
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G3, "G2")
+    write_graph_to_dot_file(G2, "G2")
     render('dot', 'png', 'graphG1.dot')
     render('dot', 'png', 'graphG2.dot')
