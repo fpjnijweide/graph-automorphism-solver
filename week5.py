@@ -8,8 +8,8 @@ import time
 
 def neighbors_of_colour(v: Vertex, colour):
     sum = 0
-    for col in v.neighbor_colors:
-        if col == colour:
+    for c in v.neighbor_colors:
+        if c == colour:
             sum += 1
     return sum
 
@@ -35,32 +35,32 @@ def fast_refinement(G: Graph, H: Graph):
         colours_neighbouring_queue0 = []
 
         for v_col0 in vertices_col0_dll:
-            for n in v_col0.neighbors:
-                if n.colornum not in colours_neighbouring_queue0:
-                    colours_neighbouring_queue0.append(n.colornum)
+            for col in neighbor_colors(v_col0.data):
+                if col not in colours_neighbouring_queue0:
+                    colours_neighbouring_queue0.append(col)
 
         for colour in colours_neighbouring_queue0:
+            #set the neighbor_colors here
 
             vertices_dll = partitions[colour]
 
+            for vert in vertices_dll:
+                vert.data.neighbor_colors = neighbor_colors(vert.data)
+
             vertex0 = vertices_dll.head
 
-            vertex0.data.neighbor_colors = neighbor_colors(vertex0.data)
             num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, colour)
-
-            #num_col0neighbours_group1 = neighbor_colors(vertex0.data).count(queue[queueindex])
 
             group1 = []
             group2 = []
 
             for v in vertices_dll:
-                v.neighbor_colors = neighbor_colors(v)
-                num_col0neighbours_group2 = neighbors_of_colour(v, colour)
+                num_col0neighbours_group2 = neighbors_of_colour(v.data, colour)
                 if num_col0neighbours_group2 == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
-                    group1.append(v)
+                    group1.append(v.data)
                 else:
-                    group2.append(v)
+                    group2.append(v.data)
                     vertices_dll.remove(v)
 
             if len(group2) != 0:
