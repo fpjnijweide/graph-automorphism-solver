@@ -51,6 +51,9 @@ def generate_group_recursive(generators):
     else:
         return generate_group_recursive(res)
 
+def membership_check(element,group):
+    return False
+    # if element in group
 
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
@@ -223,7 +226,9 @@ def stabilizer_magic2(permutation_list):
             if stab.P[nr]!=nr:
                 #todo check if u0->2 ^-1 * f in h
                 composition = -transversals[nr][stab.P[nr]]*stab
-                if composition in stabilizers[nr]:
+                # comp2=
+                if membership_check(composition,stabilizers[nr]):
+
 
                     new_stabilizers.append(stab)
     if new_stabilizers==[]:
@@ -319,47 +324,48 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
-    aaa=stabilizer_magic(gr_size,o,trans,s)
-    abb=stabilizer_magic2(permutations_list)
-    big_s=generate_group(s)
-    # print("big_s: "+  str(big_s))
+    abb=stabilizer_magic(gr_size,o,trans,s)
+    # abb=stabilizer_magic2(permutations_list)
+    return abb
+    # big_s=generate_group(s)
+    # # print("big_s: "+  str(big_s))
+    #
+    # # permutation(3)
+    # new_s = []
+    # for s_perm in big_s: #just using S works for dihedral groups. generate S recursive works for complete.
+    #     cycle_composition=s_perm.cycles()
+    #     is_in_generators=False
+    #     for cycle in cycle_composition:
+    #         for nr in range(0, len(cycle)):
+    #             try:
+    #
+    #
+    #
+    #                 trans_cycle = trans[o.index(cycle[nr])]
+    #                 composition_perm = -trans_cycle * s_perm
+    #                 # comp_perm2 = s_perm * -trans_cycle
+    #
+    #                 if composition_perm in permutations_list:
+    #                     is_in_generators = True
+    #                     break
+    #
+    #                 # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
+    #                 # print("yeahh")
+    #
+    #             except ValueError:
+    #                 pass
+    #     if is_in_generators:
+    #         new_s.append(s_perm)
+    #
+    # print("new_s: " + str(new_s))
+    #
+    # trivial_perm=permutation(gr_size)
+    # if not o:
+    #     o=[0]
+    # if trivial_perm not in new_s:
+    #     new_s.append(trivial_perm)
 
-    # permutation(3)
-    new_s = []
-    for s_perm in big_s: #just using S works for dihedral groups. generate S recursive works for complete.
-        cycle_composition=s_perm.cycles()
-        is_in_generators=False
-        for cycle in cycle_composition:
-            for nr in range(0, len(cycle)):
-                try:
-
-
-
-                    trans_cycle = trans[o.index(cycle[nr])]
-                    composition_perm = -trans_cycle * s_perm
-                    # comp_perm2 = s_perm * -trans_cycle
-
-                    if composition_perm in permutations_list:
-                        is_in_generators = True
-                        break
-
-                    # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
-                    # print("yeahh")
-
-                except ValueError:
-                    pass
-        if is_in_generators:
-            new_s.append(s_perm)
-
-    print("new_s: " + str(new_s))
-
-    trivial_perm=permutation(gr_size)
-    if not o:
-        o=[0]
-    if trivial_perm not in new_s:
-        new_s.append(trivial_perm)
-
-    return len(o)*len(new_s)
+    # return len(o)*len(new_s)
 
 
 
