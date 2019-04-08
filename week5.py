@@ -6,6 +6,14 @@ import time
 from graphviz import render
 
 
+def neighbors_of_colour(v: Vertex, colour):
+    sum = 0
+    for col in v.neighbor_colors:
+        if col == colour:
+            sum += 1
+    return sum
+
+
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition_DLL(G.vertices + H.vertices)
 
@@ -37,13 +45,18 @@ def fast_refinement(G: Graph, H: Graph):
 
             vertex0 = vertices_dll.head
 
-            num_col0neighbours_group1 = neighbor_colors(vertex0.data).count(queue[queueindex])
+            vertex0.data.neighbor_colors = neighbor_colors(vertex0.data)
+            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, colour)
+
+            #num_col0neighbours_group1 = neighbor_colors(vertex0.data).count(queue[queueindex])
 
             group1 = []
             group2 = []
 
             for v in vertices_dll:
-                if neighbor_colors(v).count(queue[queueindex]) == num_col0neighbours_group1:
+                v.neighbor_colors = neighbor_colors(v)
+                num_col0neighbours_group2 = neighbors_of_colour(v, colour)
+                if num_col0neighbours_group2 == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
                     group1.append(v)
                 else:
@@ -91,7 +104,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    '''G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()
@@ -100,6 +113,6 @@ if __name__ == "__main__":
     print("normal:", end - start)
 
     write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    write_graph_to_dot_file(G2, "G2")'''
+    #render('dot', 'png', 'graphG1.dot')
+    #render('dot', 'png', 'graphG2.dot')

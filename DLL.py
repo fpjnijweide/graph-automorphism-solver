@@ -127,7 +127,7 @@ class DoubleLinkedList:
             if removable_node.prev is None:
                 self.head = removable_node.next
                 removable_node.next.prev = None
-            if removable_node.prev is not None:
+            else:
                 removable_node.prev.next = removable_node.next
             if removable_node.next is None:
                 self.tail = removable_node.prev
