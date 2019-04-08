@@ -2,16 +2,18 @@
 from week4 import *
 from week3 import *
 from week5 import fast_refinement
+import time
 
-FILENAME = "graphs/trees36.grl"
+FILENAME = "graphs/trees90.grl"
 
 class Settings:
     FAST = True # Todo sneller maken (doubly linked list)
     PREPROCESSING = True
-    TREE_CHECK = False #Todo fix
+    TREE_CHECK = True #Todo fix
     TWIN_CHECK= False # Todo sneller maken
 
 if __name__ == '__main__':
+    start = time.time()
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -68,7 +70,7 @@ if __name__ == '__main__':
             sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
         else:
             sys.stdout.write(str(graph) + ": " + str(automorphisms))
-
-
+    print(" \n ")
+    print(time.time() - start)
 
 

@@ -100,7 +100,7 @@ def fast_refinement(G: Graph, H: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G1, G2 = load_graphs("graphs/threepaths640.gr", 0, 0)
 
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G3, G4 = load_graphs("graphs/threepaths640.gr", 0, 0)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()
@@ -120,5 +120,5 @@ if __name__ == "__main__":
 
     write_graph_to_dot_file(G1, "G11")
     write_graph_to_dot_file(G2, "G22")
-    render('dot', 'png', 'graphG11.dot')
-    render('dot', 'png', 'graphG22.dot')
+    #render('dot', 'png', 'graphG11.dot')
+    #render('dot', 'png', 'graphG22.dot')
