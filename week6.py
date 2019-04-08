@@ -8,6 +8,33 @@ from permv2 import *
 from basicpermutationgroup import *
 from week2 import *
 
+def check_dihedral(G: Graph):
+
+    is_cycle=True
+
+    for i in range(len(G._v)):
+        v=G._v[i]
+        if len(v.neighbors)==2:
+            pass
+        else:
+            is_cycle=False
+            break
+    return is_cycle
+
+def check_complete(G: Graph):
+    is_complete=True
+    G_size=len(G._v)
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if not len(v.neighbors)==G_size-1:
+            is_complete=False
+            break
+    return is_complete
+
+
+
+
+
 def generate_group(generators):
     res=generators[:]
     for i in generators:
@@ -292,9 +319,9 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
 
 
-    G1=create_graph_with_cycle(30)
+    G1=create_graph_with_path(30)
     G2=G1
-
+    check_complete(G1)
 
 
     if (G1==G2):
