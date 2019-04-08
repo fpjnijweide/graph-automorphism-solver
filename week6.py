@@ -173,23 +173,23 @@ def algebra_magic(input_cycles,gr_size):
                 try:
                     #todo fix that this doesnt respod well to (0,3)(1,2)
                     orb, trs = Orbit(permutations_list, cycle[nr-1], True)
-                    print("trans:::::" + str(trs))
-                    print("orb:::::" + str(orb))
-                    print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
+                    # print("trans:::::" + str(trs))
+                    # print("orb:::::" + str(orb))
+                    # print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
                     trans_cycle=trs[orb.index(cycle[nr])]
                     composition_perm=-trans_cycle*cycle_perm
-                    print("composition perm:" + str(composition_perm))
-                    print("permutation list cycles:" + str(permutations_list))
+                    # print("composition perm:" + str(composition_perm))
+                    # print("permutation list cycles:" + str(permutations_list))
                     if composition_perm in permutations_list: #todo
                         is_unique=False
                         break
 
                     # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
-                    print("yeahh")
+                    # print("yeahh")
 
                 except ValueError:
                     pass
-        print("new_perm::: " + str(new_perm_list))
+        # print("new_perm::: " + str(new_perm_list))
         # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
 
         #     pass
@@ -211,12 +211,11 @@ def algebra_magic(input_cycles,gr_size):
     print(i)
     s=Stabilizer(permutations_list,i)
 
-
+    print("permutations: " + str(permutations_list))
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s)) #todo this is actually a generating set
-    print("permutations: " + str(permutations_list))
-    print("reduced: " + str(Reduce(permutations_list)))
 
+    print("reduced: " + str(Reduce(permutations_list)))
     print("transversal:" + str(trans))
 
     #todo maybe actually generate H and check which ones are in it via membership testing? (or recursive membership testing)
@@ -230,10 +229,10 @@ def algebra_magic(input_cycles,gr_size):
     #         cycle_list_new.append(new_cycle)
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
-    s=generate_group_recursive(s)
-    permutation(3)
+    big_s=generate_group_recursive(s)
+    # permutation(3)
     new_s = []
-    for s_perm in s:
+    for s_perm in big_s:
         cycle_composition=s_perm.cycles()
         is_in_generators=False
         for cycle in cycle_composition:
@@ -241,24 +240,23 @@ def algebra_magic(input_cycles,gr_size):
                 try:
                     # todo fix that this doesnt respod well to (0,3)(1,2)
                     orb, trs = Orbit(permutations_list, cycle[nr - 1], True)
-                    print("trans:::::" + str(trs))
-                    print("orb:::::" + str(orb))
-                    print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
+
                     trans_cycle = trs[orb.index(cycle[nr])]
                     composition_perm = -trans_cycle * s_perm
-                    print("composition perm:" + str(composition_perm))
-                    print("permutation list cycles:" + str(permutations_list))
+
                     if composition_perm in permutations_list:  # todo
                         is_in_generators = True
                         break
 
                     # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
-                    print("yeahh")
+                    # print("yeahh")
 
                 except ValueError:
                     pass
         if is_in_generators:
             new_s.append(s_perm)
+
+    print("new_s: " + str(new_s))
 
     if not o:
         o=[0]
@@ -285,9 +283,7 @@ if __name__ == '__main__':
 
     G1=create_graph_with_cycle(5)
     G2=G1
-    # from week2 import *
-    # G1=create_complete_graph(4)
-    # G2=create_complete_graph(4)
+
 
 
     if (G1==G2):
