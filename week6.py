@@ -58,7 +58,7 @@ def membership_check(element,group):
         return False
 
     orbits=[None]*element.n
-    traversals=None*element.n
+    traversals=[None]*element.n
     orbit_nrs=[]
     for nr in range(len(element.P)):
         if element.P[nr]!=nr:
@@ -77,10 +77,14 @@ def membership_check(element,group):
     for orbit_and_image in orbit_nrs:
         orbit_nr=orbit_and_image[0]
         image=orbit_and_image[1]
-        traversal_perm=traversals[orbit_nr][image]
-        composition_perm=-traversal_perm*element
-        if membership_check(composition_perm,group_stabilizer):
-            return True
+        image_orbit_index=orbits[orbit_nr].index(image)
+        traversal_perm=traversals[orbit_nr][image_orbit_index]
+        if traversal_perm is not None:
+            # traversal_perm=traversals[orbit_nr][image]
+            composition_perm = -traversal_perm * element
+            if membership_check(composition_perm, group_stabilizer):
+                return True
+
 
 
 
@@ -426,11 +430,11 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 2,3)
 
 
-    G1=create_graph_with_cycle(5)
-    G2=G1
+    # G1=create_complete_graph(6)
+    # G2=G1
 
 
     if (G1==G2):
