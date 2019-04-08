@@ -36,13 +36,13 @@ class DoubleLinkedList:
     # return next in iteration
     def __next__(self):
         if self.current_node == self.tail:
-            current_data = self.current_node.data
+            returnable_node = self.current_node
             self.current_node = Node(None,None,"stop")
-            return  current_data
+            return  returnable_node
         if self.current_node.next is not None:
-            current_data = self.current_node.data
+            returnable_node = self.current_node
             self.current_node = self.current_node.next
-            return current_data
+            return returnable_node
         else:
             raise StopIteration
 
@@ -125,13 +125,19 @@ class DoubleLinkedList:
 
         if removable_node is not None:
             if removable_node.prev is None:
-                self.head = removable_node.next
-                removable_node.next.prev = None
+                if removable_node.next is not None:
+                    self.head = removable_node.next
+                    removable_node.next.prev = None
+                else:
+                    self.head = None
             if removable_node.prev is not None:
                 removable_node.prev.next = removable_node.next
             if removable_node.next is None:
-                self.tail = removable_node.prev
-                removable_node.prev.next = None
+                if removable_node.prev is not None:
+                    self.tail = removable_node.prev
+                    removable_node.prev.next = None
+                else:
+                    self.tail = None
             else:
                 removable_node.next.prev = removable_node.prev
         else:
@@ -146,4 +152,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-
