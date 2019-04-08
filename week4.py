@@ -25,18 +25,21 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in result:
         if len(i) > 1:
             trueResult.append(i)
-
+    print(trueResult)
     return trueResult
 
 
 def are_twins(v0, v1):
     s1 = set(v1.neighbors)
     s2 = set(v0.neighbors)
+    s3 = list(s1 - s2)
+    #TODO: fix this method
 
     if v0 in s1 and v1 in s2:
-        s1.remove(v0)
-        s2.remove(v1)
+        print("oeh")
+        return True
         if s1 == s2:  # the only difference should be each other when they are true twins
+            print("twins")
             return True
     return False
 
@@ -45,20 +48,22 @@ def reduce_twins(G: Graph, twins_G):
     # we keep one of the twins with index 0, all others will be deleted and their edges will be added to the twin that is kept.
     for i in twins_G:
         for vertex in range(1, len(i)):
-            for e in vertex.edges:
-                if (e.head == vertex and e.tail in i) or (e.tail == vertex and e.head in i): # connection between true twins can be left out
-                    G.del_edge(e)
-                elif e.head == vertex:
-                    edge = Edge(e.tail, i[0])
-                    G.add_edge(edge)
-                    G.del_edge(G, e)
-                elif e.tail == vertex:
-                    edge = Edge(i[0], e.head)
-                    G.add_edge(edge)
-                    G.del_edge(G, e)
+            for e in i[vertex].incidence:
+                if (e.head == i[vertex] and e.tail in i) or (e.tail == i[vertex] and e.head in i): # connection between true twins can be left out
+                    break
+                else:
+                    if e.head == i[vertex]:
+                        edge = Edge(e.tail, i[0])
+                        G.add_edge(edge)
+                    elif e.tail == i[vertex]:
+                        edge = Edge(i[0], e.head)
+                        G.add_edge(edge)
+
     for j in twins_G:
         for x in range(1, len(j)):
-            G.del_vertex(x)
+            if j[x] in G.vertices:
+                print(j[x])
+                G.del_vertex(j[x])
 
 
 def copy_graph(inputG: Graph):
@@ -219,7 +224,7 @@ def is_twin(v, list_of_twins):
     return result
 
 
-def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant):
     # Recursively counts all isomorphs of this graph
 
     color_by_partition(G_partition_backup)
@@ -260,7 +265,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-            return 1
+            if Settings.TWIN_CHECK:
+                return 1 * constant
+            else:
+                return 1
 
     # We have now found a stable coloring that has non-unique colors
 
@@ -273,7 +281,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
-            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
@@ -285,10 +292,16 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         for j in twins_H:
             constantH = constantH * math.factorial(len(j))
         if constantG != constantH: # sanity check
-            print("ERROR WITH TWINS")
+            print("constanten niet gelijk: ", constantG, constantH)
             return 0
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
+        print("heyaa")
+        print("G: ", constantG, " H: ", constantH)
+        G.partition = create_partition(G.vertices)
+        H.partition = create_partition(H.vertices)
+    else:
+        constantG = constant
 
     # Choose a color that is not unique
     chosen_color = -1
@@ -319,12 +332,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition)
+                                               new_H_partition, constantG)
     return nr_of_isomorphs
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/modulesC.grl", 2, 4)
+    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -339,7 +352,7 @@ if __name__ == "__main__":
 
     H_partition_backup = create_partition(G2.vertices)
     print(is_isomorphism(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
