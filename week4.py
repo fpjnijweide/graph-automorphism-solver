@@ -1,6 +1,6 @@
 from main import *
 from week3 import *
-# from graphviz import render
+from graphviz import render
 from graph import *
 import math
 
@@ -344,7 +344,10 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
 
-    G, H = fast_refinement(G, H)
+    if Settings.FAST:
+        G, H = fast_refinement(G, H)
+    else:
+        G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
@@ -361,7 +364,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refignment
+    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
@@ -370,6 +373,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
+            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
@@ -414,10 +418,9 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
         if nr_of_isomorphs > 0:
             return True
         else:
-            nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                                    new_H_partition)
+            nr_of_isomorphs += is_isomorphic(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+                                               new_H_partition)
     return False
-
 
 
 if __name__ == "__main__":
@@ -434,7 +437,7 @@ if __name__ == "__main__":
 
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
-    print(is_isomorphism(G1, G2))
+    print(is_isomorphic(G1, G2))
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
