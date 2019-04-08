@@ -110,7 +110,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    '''G3, G4 = load_graphs("graphs/threepaths640.gr", 0, 0)
+    G3, G4 = load_graphs("graphs/products72.grl", 0, 6)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()

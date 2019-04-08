@@ -51,36 +51,27 @@ if __name__ == '__main__':
                 isomorphisms.popitem()
                 notisomorphic.append(graph1)
 
-    if Settings.AUTOMORPHISMS:
-        # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
-        sys.stdout.write("Sets of isomorphic graphs and number of automorphisms:")
-        for graph in isomorphisms.keys() or notisomorphic:
-            sys.stdout.write('\n')
-            graphcopy = copy_graph(graphs[graph])
-            if Settings.FAST:
-                graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
-                g_partition_backup = graphs[graph].partition[:]
-                gcopy_partition_backup = graphcopy.partition[:]
-                automorphisms = count_automorphisms_fast(graphs[graph], graphcopy, [], [],
-                                                         g_partition_backup, gcopy_partition_backup)
-            else:
-                graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
-                g_partition_backup = graphs[graph].partition[:]
-                gcopy_partition_backup = graphcopy.partition[:]
-                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                    g_partition_backup, gcopy_partition_backup)
-            if graph in isomorphisms.keys():
-                isomorphisms.get(graph).insert(0, graph)
-                sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
-            else:
-                sys.stdout.write(str(graph) + ": " + str(automorphisms))
-    else:
-        # Print isomorphisms without the number of automorphisms
-        for g in isomorphisms.keys():
-            isomorphisms.get(g).insert(0, g)
-            sys.stdout.write('\n')
-            sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(g)) + ']')
-
+    # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
+    for graph in isomorphisms.keys() or notisomorphic:
+        sys.stdout.write('\n')
+        graphcopy = copy_graph(graphs[graph])
+        if Settings.FAST:
+            graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
+            g_partition_backup = graphs[graph].partition[:]
+            gcopy_partition_backup = graphcopy.partition[:]
+            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+                                                     g_partition_backup, gcopy_partition_backup)
+        else:
+            graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
+            g_partition_backup = graphs[graph].partition[:]
+            gcopy_partition_backup = graphcopy.partition[:]
+            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+                                                g_partition_backup, gcopy_partition_backup)
+        if graph in isomorphisms.keys():
+            isomorphisms.get(graph).insert(0, graph)
+            sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
+        else:
+            sys.stdout.write(str(graph) + ": " + str(automorphisms))
     print(" \n ")
     print(time.time() - start)
 
