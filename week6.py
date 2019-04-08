@@ -286,7 +286,7 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/trees36.grl", 1,1)
+    G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
 
     # G1=create_graph_with_cycle(5)
     # G2=G1
