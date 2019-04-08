@@ -1,5 +1,4 @@
 from graph import *
-
 from week3 import *
 from week4 import *
 import time
@@ -16,6 +15,9 @@ def neighbors_of_colour(v: Vertex, colour):
 
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition_DLL(G.vertices + H.vertices)
+
+    for vertex in (G.vertices + H.vertices):
+        vertex.neighbor_colors = neighbor_colors(vertex)
 
     queue = []
     queueindex = 0
@@ -35,27 +37,23 @@ def fast_refinement(G: Graph, H: Graph):
         colours_neighbouring_queue0 = []
 
         for v_col0 in vertices_col0_dll:
-            for col in neighbor_colors(v_col0.data):
+            for col in v_col0.data.neighbor_colors:
                 if col not in colours_neighbouring_queue0:
                     colours_neighbouring_queue0.append(col)
 
         for colour in colours_neighbouring_queue0:
-            #set the neighbor_colors here
 
             vertices_dll = partitions[colour]
 
-            for vert in vertices_dll:
-                vert.data.neighbor_colors = neighbor_colors(vert.data)
-
             vertex0 = vertices_dll.head
 
-            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, colour)
+            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, queue[queueindex])
 
             group1 = []
             group2 = []
 
             for v in vertices_dll:
-                num_col0neighbours_group2 = neighbors_of_colour(v.data, colour)
+                num_col0neighbours_group2 = neighbors_of_colour(v.data, queue[queueindex])
                 if num_col0neighbours_group2 == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
                     group1.append(v.data)
@@ -72,6 +70,14 @@ def fast_refinement(G: Graph, H: Graph):
                     node.colornum = new_colour
                     node.label = new_colour
                     partitions[new_colour].append(node)
+
+                # Change the neighbor_colors stuff since this isn't correct anymore
+                for vtx in vertices_dll:
+                    if queue[queueindex] in vtx.data.neighbor_colors:
+                        vtx.data.neighbor_colors = neighbor_colors(vtx.data)
+                for vtx0 in vertices_col0_dll:
+                    if queue[queueindex] in vtx0.data.neighbor_colors:
+                        vtx0.data.neighbor_colors = neighbor_colors(vtx0.data)
 
                 # Add to queue
                 if colour in queue or len(group2) < len(group1):
@@ -104,7 +110,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    '''G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()
@@ -112,7 +118,7 @@ if __name__ == "__main__":
     end = time.time()
     print("normal:", end - start)
 
-    write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")'''
-    #render('dot', 'png', 'graphG1.dot')
-    #render('dot', 'png', 'graphG2.dot')
+    write_graph_to_dot_file(G1, "G11")
+    write_graph_to_dot_file(G2, "G22")
+    render('dot', 'png', 'graphG11.dot')
+    render('dot', 'png', 'graphG22.dot')

@@ -1,8 +1,6 @@
 from main import *
 from week3 import *
 from graphviz import render
-
-from week5 import *
 from graph import *
 import math
 
