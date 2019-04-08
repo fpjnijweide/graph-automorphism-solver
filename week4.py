@@ -401,7 +401,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0,2)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -412,6 +412,7 @@ if __name__ == "__main__":
         G2=copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
+
 
     G_partition_backup = create_partition(G1.vertices)
 

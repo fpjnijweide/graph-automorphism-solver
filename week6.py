@@ -52,6 +52,38 @@ def generate_group_recursive(generators):
         return generate_group_recursive(res)
 
 def membership_check(element,group):
+    if element in group:
+        return True
+    if group==[] or group==[[]]:
+        return False
+
+    orbits=[None]*element.n
+    traversals=None*element.n
+    orbit_nrs=[]
+    for nr in range(len(element.P)):
+        if element.P[nr]!=nr:
+            orb,trans=Orbit(group,nr,True)
+            orbits[nr]= orb
+            traversals[nr]= trans
+            orbit_nrs.append((nr,element.P[nr]))
+    non_trivial_orbit_nr=-1
+    for orbit_and_image in orbit_nrs:
+        if len(orbits[orbit_and_image[0]])>1:
+            non_trivial_orbit_nr=orbit_and_image[0]
+            break
+
+    group_stabilizer=Stabilizer(group,non_trivial_orbit_nr)
+
+    for orbit_and_image in orbit_nrs:
+        orbit_nr=orbit_and_image[0]
+        image=orbit_and_image[1]
+        traversal_perm=traversals[orbit_nr][image]
+        composition_perm=-traversal_perm*element
+        if membership_check(composition_perm,group_stabilizer):
+            return True
+
+
+
     return False
     # if element in group
 
