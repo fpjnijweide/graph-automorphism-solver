@@ -180,12 +180,15 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
     return permutations
 
+
+
 def stabilizer_magic(gr_size, orb, trans,stab):
     current_stab=stab[0]
 
     first_stab_el=current_stab.cycles()[0][0]
     new_orb,new_trans=Orbit(stab,first_stab_el,True)
     new_stab=Stabilizer(stab,first_stab_el)
+
     # if len(new_stab)==0 or len(new_stab)==1:
     #     final_stab_size=len(new_orb)*len(new_stab)
     if new_stab==[]:
@@ -195,6 +198,44 @@ def stabilizer_magic(gr_size, orb, trans,stab):
 
 
     res=len(orb)*final_stab_size
+    return res
+
+def stabilizer_magic2(permutation_list):
+    gr_size=permutation_list[0].n
+    orbits=[]
+    transversals=[]
+    stabilizers=[]
+    non_trivial_orbit=-1
+    for i in range(gr_size):
+        o,trans=Orbit(permutation_list,i,True)
+        if len(o)>1:
+            non_trivial_orbit=i
+        s=Stabilizer(permutation_list,i)
+        orbits.append(o)
+        transversals.append(trans)
+        stabilizers.append(s)
+
+    new_stabilizers=[]
+    current_stabilizers: list[permutation]=stabilizers[non_trivial_orbit]
+    for stab in current_stabilizers:
+
+        for nr in range(gr_size):
+            if stab.P[nr]!=nr:
+                #todo check if u0->2 ^-1 * f in h
+                composition = -transversals[nr][stab.P[nr]]*stab
+                if composition in stabilizers[nr]:
+
+                    new_stabilizers.append(stab)
+    if new_stabilizers==[]:
+        final_stab_size=1
+    else:
+        current_stab = new_stabilizers[0]
+        if current_stab.cycles==[] or current_stab.cycles()==[[]]:
+            final_stab_size=1
+        else:
+            final_stab_size=stabilizer_magic2([current_stab])
+
+    res = len(orbits[non_trivial_orbit]) * final_stab_size
     return res
 
 
@@ -279,6 +320,7 @@ def algebra_magic(input_cycles,gr_size):
     #todo if dihedral, just use s
 
     aaa=stabilizer_magic(gr_size,o,trans,s)
+    abb=stabilizer_magic2(permutations_list)
     big_s=generate_group(s)
     # print("big_s: "+  str(big_s))
 
