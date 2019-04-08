@@ -138,7 +138,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
             if not res: #if res is empty
                 if not [[]] in permutations:
                     permutations.append([[]])
-            else: #todo joint cycles (0,3)(1,2) should not get split up here, but a list of cycles should
+            else:
                 if not isinstance(res,permutation):
                     permutations.extend(res)
                 else:
@@ -161,32 +161,34 @@ def algebra_magic(input_cycles,gr_size):
     a:list = [1,2,3]
 
 
-    for cycle in input_cycles:
+    for cycle_composition in input_cycles:
 
 
         new_perm_list=[]
-        cycle_perm=permutation(gr_size,cycles=cycle)
+        cycle_perm=permutation(gr_size,cycles=cycle_composition)
         is_unique=True
-        try:
+
+        for cycle in cycle_composition:
             for nr in range(1,len(cycle)):
-                #todo fix that this doesnt respod well to (0,3)(1,2)
-                orb, trs = Orbit(permutations_list, cycle[nr-1], True)
-                print("trans:::::" + str(trs))
-                print("orb:::::" + str(orb))
-                print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
-                trans_cycle=trs[orb.index(cycle[nr])]
-                composition_perm=-trans_cycle*cycle_perm
-                print("composition perm:" + str(composition_perm))
-                print("permutation list cycles:" + str(permutations_list))
-                if composition_perm in permutations_list: #todo
-                    is_unique=False
-                    break
+                try:
+                    #todo fix that this doesnt respod well to (0,3)(1,2)
+                    orb, trs = Orbit(permutations_list, cycle[nr-1], True)
+                    print("trans:::::" + str(trs))
+                    print("orb:::::" + str(orb))
+                    print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
+                    trans_cycle=trs[orb.index(cycle[nr])]
+                    composition_perm=-trans_cycle*cycle_perm
+                    print("composition perm:" + str(composition_perm))
+                    print("permutation list cycles:" + str(permutations_list))
+                    if composition_perm in permutations_list: #todo
+                        is_unique=False
+                        break
 
-                # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
-                print("yeahh")
+                    # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
+                    print("yeahh")
 
-        except ValueError:
-            pass
+                except ValueError:
+                    pass
         print("new_perm::: " + str(new_perm_list))
         # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
 
@@ -208,6 +210,8 @@ def algebra_magic(input_cycles,gr_size):
     # i=i+1
     print(i)
     s=Stabilizer(permutations_list,i)
+
+
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s)) #todo this is actually a generating set
     print("permutations: " + str(permutations_list))
@@ -226,12 +230,41 @@ def algebra_magic(input_cycles,gr_size):
     #         cycle_list_new.append(new_cycle)
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
-    o=generate_group_recursive(o)
+    s=generate_group_recursive(s)
+    permutation(3)
+    new_s = []
+    for s_perm in s:
+        cycle_composition=s_perm.cycles()
+        is_in_generators=False
+        for cycle in cycle_composition:
+            for nr in range(1, len(cycle)):
+                try:
+                    # todo fix that this doesnt respod well to (0,3)(1,2)
+                    orb, trs = Orbit(permutations_list, cycle[nr - 1], True)
+                    print("trans:::::" + str(trs))
+                    print("orb:::::" + str(orb))
+                    print("stab::::" + str(Stabilizer(permutations_list, cycle[0])))
+                    trans_cycle = trs[orb.index(cycle[nr])]
+                    composition_perm = -trans_cycle * s_perm
+                    print("composition perm:" + str(composition_perm))
+                    print("permutation list cycles:" + str(permutations_list))
+                    if composition_perm in permutations_list:  # todo
+                        is_in_generators = True
+                        break
+
+                    # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
+                    print("yeahh")
+
+                except ValueError:
+                    pass
+        if is_in_generators:
+            new_s.append(s_perm)
+
     if not o:
         o=[0]
-    if not s:
-        s=[0]
-    return len(o)*len(s)
+    if not new_s:
+        new_s=[0]
+    return len(o)*len(new_s)
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
     cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
