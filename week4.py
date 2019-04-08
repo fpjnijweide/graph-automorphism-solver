@@ -39,9 +39,24 @@ def are_twins(v0, v1):
     return False
 
 def reduce_twins(G: Graph, twins_G):
+    # we keep one of the twins with index 0, all others will be deleted and their edges will be added to the twin that is kept.
     for i in twins_G:
-        # TODO: fix thiss
-        print("todo")
+        for vertex in range(1, len(i)):
+            for e in vertex.edges:
+                if (e.head == vertex and e.tail in i) or (e.tail == vertex and e.head in i):
+                    print("TODOD")
+                elif e.head == vertex:
+                    edge = Edge(e.tail, i[0])
+                    G.add_edge(edge)
+                    G.del_edge(G, e)
+                elif e.tail == vertex:
+                    edge = Edge(i[0], e.head)
+                    G.add_edge(edge)
+                    G.del_edge(G, e)
+    for j in twins_G:
+        for x in range(1, len(j)):
+            G.del_vertex(x)
+
 
 
 
