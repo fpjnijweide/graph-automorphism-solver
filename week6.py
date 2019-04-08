@@ -232,22 +232,25 @@ def algebra_magic(input_cycles,gr_size):
     #         cycle_list_new.append(new_cycle)
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
+    #todo if dihedral, just use s
+
     big_s=generate_group_recursive(s)
     print("big_s: "+  str(big_s))
 
     # permutation(3)
     new_s = []
-    for s_perm in big_s:
+    for s_perm in big_s: #just using S works for dihedral groups
         cycle_composition=s_perm.cycles()
         is_in_generators=False
         for cycle in cycle_composition:
-            for nr in range(1, len(cycle)):
+            for nr in range(0, len(cycle)):
                 try:
                     # todo fix that this doesnt respod well to (0,3)(1,2)
 
 
                     trans_cycle = trans[o.index(cycle[nr])]
                     composition_perm = -trans_cycle * s_perm
+                    comp_perm2 = s_perm * -trans_cycle
 
                     if composition_perm in permutations_list:  # todo
                         is_in_generators = True
@@ -286,10 +289,11 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
+    # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
 
-    # G1=create_graph_with_cycle(5)
-    # G2=G1
+
+    G1=create_complete_graph(5)
+    G2=G1
 
 
 

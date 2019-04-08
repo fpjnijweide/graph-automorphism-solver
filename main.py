@@ -10,6 +10,8 @@ class Settings:
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
 
+    #TODO add checks for dihedral graph, en complete graph
+
 if __name__ == '__main__':
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
