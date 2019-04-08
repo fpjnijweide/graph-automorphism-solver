@@ -408,16 +408,6 @@ if __name__ == "__main__":
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
 
-'''
-bigtrees1:
-[0,2] 442368 but gives 110592
-[1,3] 5308416 correct fak yesss
-
-bigtrees3:
-
-[0, 2] 2772351862699137701073289910157312 correct fak yeeessssss
-[1, 3] 462058643783189616845548318359552 correct whooooopppp
-'''
 
 
     # DEBUGGING CODE

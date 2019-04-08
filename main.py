@@ -2,13 +2,15 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/trees90.grl"
 
 class Settings:
-    FAST = True # Todo sneller maken (doubly linked list)
-    PREPROCESSING = True
-    TREE_CHECK = True #Todo fix
-    TWIN_CHECK= True # Todo sneller maken
+    FAST = False # Todo sneller maken (doubly linked list)
+    PREPROCESSING = False
+    TREE_CHECK = False
+    TWIN_CHECK= False # Todo sneller maken
+
+    #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
