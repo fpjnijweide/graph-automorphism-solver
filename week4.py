@@ -321,7 +321,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/bigtrees3.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/products72.grl", 0, 6)
 
     # from week2 import *
     # G1=create_complete_graph(4)
