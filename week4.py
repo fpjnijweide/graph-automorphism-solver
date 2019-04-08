@@ -6,14 +6,45 @@ from week5 import *
 from graph import *
 import math
 
-def find_twins(vertices_list):
-    list = []
-    for i in range(0, len(vertices_list)):
-        V = vertices_list[i]
-        for W in vertices_list[i:len(vertices_list)]:
-            if V.neighbors == W.neighbors:
-                list.append([V, W])
-    return list
+def find_twins(G: Graph): # will return groups of twins and groups of false twins in a list
+    v = G.vertices
+
+    result = [[v[0]]]
+    for i in range(1, len(v)):
+        added = False
+        for j in result:
+            if v[i].neighbors == j[0].neighbors:
+                j.append(v[i])
+                added = True
+            elif are_twins(v[i], j[0]):
+                j.append(v[i])
+                added = True
+        if not added:
+            result.append([v[i]])
+
+    trueResult = []
+    for i in result:
+        if len(i) > 1:
+            trueResult.append(i)
+
+    return trueResult
+
+def are_twins(v0, v1):
+    s1 = set(v1.neighbors)
+    s2 = set(v0.neighbors)
+
+    if v0 in s1 and v1 in s2:
+        s1.remove(v0)
+        s2.remove(v1)
+        if s1 == s2:  # the only difference should be each other when they are true twins
+            return True
+    return False
+
+def reduce_twins(G: Graph, twins_G):
+    for i in twins_G:
+        # TODO: fix thiss
+        print("todo")
+
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -49,16 +80,30 @@ def color_by_partition(partition: List):
 
 
 def countTreeIsomorphism(G: Graph):
-    # if the tree is in string form, we can return 2
-    degree1 = 0
-    degreemorethan2 = 0
+    # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
+    degree1 = []
+    strings = []
     for v in G.vertices:
         if v.degree == 1:
-            degree1 += 1
-        if v.degree > 2:
-            degreemorethan2 += 1
-    if degree1 == 2 and degreemorethan2 == 0:
-        return 2
+            degree1.append(v)
+    for w in degree1:
+        next = w.neighbors
+        string = [w]
+        while len(next) != 0:
+            check = next.pop(0)
+            string.append(check)
+            if len(check.neighbors) > 2:
+                break
+            else:
+                for x in check.neighbors:
+                    if x not in string:
+                        next.append(x)
+        if string[0] in degree1 and string[len(string)-1] in degree1:
+            strings.append(string)
+            degree1.remove(string[0])
+            degree1.remove(string[len(string)-1])
+            for z in string:
+                G.del_vertex(z)
 
     result = 1  # result depends on position of the root, so we check for every vertex as root
     for v in G.vertices:
@@ -97,6 +142,8 @@ def countTreeIsomorphism(G: Graph):
 
         if num > result:
             result = num
+    for x in strings:
+        result = result * 2
     return result
 
 def compareSubtrees(parent1, parent2, children): #children of first generation
@@ -118,16 +165,6 @@ def compareSubtrees(parent1, parent2, children): #children of first generation
     else: # parents do not have same neighbourhood so subtrees can not be equal
         comp = False
     return comp
-
-
-def find_twins (vertices_list):
-    for i in range(0, len(vertices_list)):
-        V = vertices_list[i]
-        for W in vertices_list[i:len(vertices_list)]:
-            if V.neighbors == W.neighbors:
-                print("found a twin")
-                return V
-    return vertices_list[0]
 
 
 def disconnectedVertices(G: Graph): # to return a list of all not connected vertices
@@ -189,18 +226,18 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not is_isomorphism(G, H):
         return 0
     else:
-        # Else, check if all colors are unique. If so, it is an isomorph
+        # Else, check if all colors are unique. If so, it is an isomorph.
         all_colors_are_unique = True
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
                 all_colors_are_unique = False
                 break
-        if all_colors_are_unique:
+        if all_colors_are_unique: # everything unique except for groups of twins, when twin check is True.
             return 1
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refignment
+    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refinement
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
@@ -211,8 +248,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
 
+
     # Choose a color that is not unique
     chosen_color = -1
+
     for i in range(len(G.partition)):
         Gcolor = G.partition[i][:]  # list with vertices of same color
         Hcolor = H.partition[i][:]
@@ -223,12 +262,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         # If no color has been chosen something obviously went wrong
         return 0
 
-    # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
-    # if they are isomorphs
-    if Settings.TWIN_CHECK:
-        x = find_twins(G.partition[chosen_color])
-    else:
-        x = G.partition[chosen_color][0]
+    # Choose a vertex of this color in G and check for all y of this color in H
+    x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphisms = 0
 
@@ -243,9 +278,14 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     for y in H_partition_chosen_color:
         nr_of_isomorphisms += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
-
     return nr_of_isomorphisms
 
+def is_twin(v, list_of_twins):
+    result = False
+    for i in list_of_twins:
+        if v in i:
+            result = True
+    return result
 
 def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
@@ -278,7 +318,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     if not is_isomorphism(G, H):
         return 0
     else:
-        # Else, check if all colors are unique. If so, it is an isomorph
+        # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
         all_colors_are_unique = True
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
@@ -297,12 +337,19 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
         for v in disconnectedH:
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
-        # print("goes to check")
-        # print(isTree(G))
-        # print(isTree(H))
         if isTree(G) and isTree(H):
-            # print("it is a tree")
             return countTreeIsomorphism(G)
+    if Settings.TWIN_CHECK and len(D) == 0:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantG = 1
+        constantH = 1
+        for i in twins_G:
+            constantG = constantG * math.factorial(len(i))
+        for j in twins_H:
+            constantH = constantH * math.factorial(len(j))
+        reduce_twins(G, twins_G)
+        reduce_twins(H, twins_H)
 
     # Choose a color that is not unique
     chosen_color = -1
@@ -314,14 +361,13 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
             break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
+        print("ERROR CHOOSING COLOR")
         return 0
 
-    # Choose a twin vertex of this color in G (and first vertex if this does not exist) and check for all y of this color in H
+
     # if they are isomorphs
-    if Settings.TWIN_CHECK:
-        x = find_twins(G.partition[chosen_color])
-    else:
-        x = G.partition[chosen_color][0]
+
+    x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
@@ -333,15 +379,15 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
+
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
-
     return nr_of_isomorphs
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes3.grl", 0, 0)
+    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
