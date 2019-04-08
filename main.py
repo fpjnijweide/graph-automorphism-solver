@@ -5,9 +5,9 @@ from week5 import *
 FILENAME = "graphs/trees90.grl"
 
 class Settings:
-    FAST = True # Todo sneller maken (doubly linked list)
+    FAST = False # Todo sneller maken (doubly linked list)
     PREPROCESSING = False
-    TREE_CHECK = True
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
 
 if __name__ == '__main__':

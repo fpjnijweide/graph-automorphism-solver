@@ -206,12 +206,15 @@ def algebra_magic(input_cycles,gr_size):
     o,trans = Orbit(permutations_list, i,True)
     while len(o)<2:
         i+=1
-        o = Orbit(permutations_list, i)
+        o,trans = Orbit(permutations_list, i,True)
     # i=i+1
     print(i)
     s=Stabilizer(permutations_list,i)
+    # big_perm=generate_group_recursive(permutations_list)
+    # new_big_perm=[]
 
     print("permutations: " + str(permutations_list))
+    # print("big_perm: " + str(generate_group_recursive(permutations_list)))
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s)) #todo this is actually a generating set
 
@@ -230,6 +233,8 @@ def algebra_magic(input_cycles,gr_size):
     #         permutations = permutations * permutation(gr_size, cycles=[new_cycle])
 
     big_s=generate_group_recursive(s)
+    print("big_s: "+  str(big_s))
+
     # permutation(3)
     new_s = []
     for s_perm in big_s:
@@ -239,9 +244,9 @@ def algebra_magic(input_cycles,gr_size):
             for nr in range(1, len(cycle)):
                 try:
                     # todo fix that this doesnt respod well to (0,3)(1,2)
-                    orb, trs = Orbit(permutations_list, cycle[nr - 1], True)
 
-                    trans_cycle = trs[orb.index(cycle[nr])]
+
+                    trans_cycle = trans[o.index(cycle[nr])]
                     composition_perm = -trans_cycle * s_perm
 
                     if composition_perm in permutations_list:  # todo
@@ -258,10 +263,12 @@ def algebra_magic(input_cycles,gr_size):
 
     print("new_s: " + str(new_s))
 
+    trivial_perm=permutation(gr_size)
     if not o:
         o=[0]
-    if not new_s:
-        new_s=[0]
+    if trivial_perm not in new_s:
+        new_s.append(trivial_perm)
+
     return len(o)*len(new_s)
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
@@ -279,10 +286,10 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    # G1, G2 = load_graphs("graphs/slides.gr", 0,0)
+    G1, G2 = load_graphs("graphs/trees36.grl", 1,1)
 
-    G1=create_graph_with_cycle(5)
-    G2=G1
+    # G1=create_graph_with_cycle(5)
+    # G2=G1
 
 
 
