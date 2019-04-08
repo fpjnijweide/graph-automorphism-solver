@@ -10,7 +10,7 @@ class Settings:
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
 
-    #TODO add checks for dihedral graph, en complete graph
+    #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
 if __name__ == '__main__':
     with open(FILENAME) as file:
