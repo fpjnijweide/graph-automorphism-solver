@@ -31,13 +31,20 @@ def find_twins(G: Graph): # will return groups of twins and groups of false twin
 
 def are_twins(v0, v1):
     s1 = set(v1.neighbors)
-    difference1 = [x for x in v0.neighbors if x not in s1]  # everything that is in v0.neighbours and not in v1.neighbours
     s2 = set(v0.neighbors)
-    difference2 = [x for x in v1.neighbors if x not in s2]  # everything that is in v1.neighbours and not in v0.neighbours
 
-    if difference1 == [v1] and difference2 == [v0]:  # the only difference should be each other when they are true twins
-        return True
+    if v0 in s1 and v1 in s2:
+        s1.remove(v0)
+        s2.remove(v1)
+        if s1 == s2:  # the only difference should be each other when they are true twins
+            return True
     return False
+
+def reduce_twins(G: Graph, twins_G):
+    for i in twins_G:
+        # TODO: fix thiss
+        print("todo")
+
 
 def copy_graph(inputG: Graph):
     # Copies a graph
@@ -73,16 +80,30 @@ def color_by_partition(partition: List):
 
 
 def countTreeIsomorphism(G: Graph):
-    # if the tree is in string form, we can return 2
-    degree1 = 0
-    degreemorethan2 = 0
+    # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
+    degree1 = []
+    strings = []
     for v in G.vertices:
         if v.degree == 1:
-            degree1 += 1
-        if v.degree > 2:
-            degreemorethan2 += 1
-    if degree1 == 2 and degreemorethan2 == 0:
-        return 2
+            degree1.append(v)
+    for w in degree1:
+        next = w.neighbors
+        string = [w]
+        while len(next) != 0:
+            check = next.pop(0)
+            string.append(check)
+            if len(check.neighbors) > 2:
+                break
+            else:
+                for x in check.neighbors:
+                    if x not in string:
+                        next.append(x)
+        if string[0] in degree1 and string[len(string)-1] in degree1:
+            strings.append(string)
+            degree1.remove(string[0])
+            degree1.remove(string[len(string)-1])
+            for z in string:
+                G.del_vertex(z)
 
     result = 1  # result depends on position of the root, so we check for every vertex as root
     for v in G.vertices:
@@ -121,6 +142,8 @@ def countTreeIsomorphism(G: Graph):
 
         if num > result:
             result = num
+    for x in strings:
+        result = result * 2
     return result
 
 def compareSubtrees(parent1, parent2, children): #children of first generation
@@ -255,7 +278,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     for y in H_partition_chosen_color:
         nr_of_isomorphisms += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
-
     return nr_of_isomorphisms
 
 def is_twin(v, list_of_twins):
@@ -297,27 +319,13 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
         return 0
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
-        if Settings.TWIN_CHECK:
-            all_colors_are_unique = True
-            twins_G = find_twins(G)
-            twins_H = find_twins(H)
-            for i in range(len(G.partition)):
-                if (len(G.partition[i]) > 1 and G.partition[i] not in twins_G) or (len(H.partition[i]) > 1 and H.partition[i] not in twins_H):
-                    all_colors_are_unique = False
-                    break
-            if all_colors_are_unique:
-                result = 1
-                for i in twins_G:
-                    result = result * math.factorial(len(i))
-                return result
-        else:
-            all_colors_are_unique = True
-            for i in range(len(G.partition)):
-                if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
-                    all_colors_are_unique = False
-                    break
-            if all_colors_are_unique:
-                return 1
+        all_colors_are_unique = True
+        for i in range(len(G.partition)):
+            if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
+                all_colors_are_unique = False
+                break
+        if all_colors_are_unique:
+            return 1
 
     # We have now found a stable coloring that has non-unique colors
 
@@ -331,37 +339,35 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
+    if Settings.TWIN_CHECK and len(D) == 0:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantG = 1
+        constantH = 1
+        for i in twins_G:
+            constantG = constantG * math.factorial(len(i))
+        for j in twins_H:
+            constantH = constantH * math.factorial(len(j))
+        reduce_twins(G, twins_G)
+        reduce_twins(H, twins_H)
 
     # Choose a color that is not unique
     chosen_color = -1
-    twinsofg = find_twins(G)
-    x = None
-    if Settings.TWIN_CHECK:  # pick a vertex that is not any kind of twin with a color that is not unique
-        for i in G.partition:
-            if len(i) > 1:  # color is not unique
-                for j in i:
-                    if not is_twin(j, twinsofg):
-                        chosen_color = j.colornum
-                        x = j
-    else:
-        for i in range(len(G.partition)):
-            Gcolor = G.partition[i][:]  # list with vertices of same color
-            Hcolor = H.partition[i][:]
-            if len(Gcolor) + len(Hcolor) >= 4:
-                chosen_color = i
-                break
-    if chosen_color == -1 and not Settings.TWIN_CHECK:
+    for i in range(len(G.partition)):
+        Gcolor = G.partition[i][:]  # list with vertices of same color
+        Hcolor = H.partition[i][:]
+        if len(Gcolor) + len(Hcolor) >= 4:
+            chosen_color = i
+            break
+    if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
         print("ERROR CHOOSING COLOR")
         return 0
-    if chosen_color == -1 and Settings.TWIN_CHECK:
-        # they are all twins of each other
-        print("Fak")
 
 
     # if they are isomorphs
-    if not Settings.TWIN_CHECK:
-        x = G.partition[chosen_color][0]
+
+    x = G.partition[chosen_color][0]
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
@@ -373,21 +379,15 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-    twinsofh = find_twins(H)
-    for y in H_partition_chosen_color:
-        if Settings.TWIN_CHECK:
-            if not is_twin(y, twinsofh):
-                nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                                       new_H_partition)
-        else:
-            nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                                   new_H_partition)
 
+    for y in H_partition_chosen_color:
+        nr_of_isomorphs += count_automorphisms_fast(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+                                               new_H_partition)
     return nr_of_isomorphs
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/products72.grl", 0, 6)
+    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -403,7 +403,7 @@ if __name__ == "__main__":
 
     H_partition_backup = create_partition(G2.vertices)
     print(is_isomorphism(G1,G2))
-    print(count_automorphisms_fast(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
