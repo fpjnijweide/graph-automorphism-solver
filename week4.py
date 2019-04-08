@@ -95,6 +95,7 @@ def color_by_partition(partition: List):
 
 def countTreeIsomorphism(G: Graph):
     # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
+    '''
     degree1 = []
     strings = []
     for v in G.vertices:
@@ -118,6 +119,7 @@ def countTreeIsomorphism(G: Graph):
             degree1.remove(string[len(string)-1])
             for z in string:
                 G.del_vertex(z)
+    '''
 
     result = 1  # result depends on position of the root, so we check for every vertex as root
     for v in G.vertices:
@@ -156,8 +158,10 @@ def countTreeIsomorphism(G: Graph):
 
         if num > result:
             result = num
+            '''
     for x in strings:
         result = result * 2
+        '''
     return result
 
 def compareSubtrees(parent1, parent2, children): #children of first generation
@@ -352,6 +356,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
+            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
@@ -401,7 +406,7 @@ def count_automorphisms_fast(G: Graph, H: Graph, D, I, G_partition_backup, H_par
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/bigtrees3.grl", 0, 2)
 
     # from week2 import *
     # G1=create_complete_graph(4)
