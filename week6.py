@@ -87,6 +87,34 @@ def membership_check(element,group):
     return False
     # if element in group
 
+
+def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
+    new_stab=[]
+    for stab_element in stab:
+        if membership_check(stab_element,permutations_list):
+            new_stab.append(stab_element)
+
+    current_stab=new_stab[0]
+
+
+
+    first_stab_el=current_stab.cycles()[0][0]
+    new_orb,new_trans=Orbit(new_stab,first_stab_el,True)
+    next_stab=Stabilizer(new_stab,first_stab_el)
+
+    # if len(new_stab)==0 or len(new_stab)==1:
+    #     final_stab_size=len(new_orb)*len(new_stab)
+    if next_stab==[]:
+        final_stab_size=len(new_orb)
+    else:
+
+        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,next_stab,permutations_list)
+
+
+    res=len(orb)*final_stab_size
+    return res
+#
+
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
     old_D=D[:]
@@ -217,25 +245,6 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
 
 
-def stabilizer_magic(gr_size, orb, trans,stab):
-    current_stab=stab[0]
-
-    first_stab_el=current_stab.cycles()[0][0]
-    new_orb,new_trans=Orbit(stab,first_stab_el,True)
-    new_stab=Stabilizer(stab,first_stab_el)
-
-    # if len(new_stab)==0 or len(new_stab)==1:
-    #     final_stab_size=len(new_orb)*len(new_stab)
-    if new_stab==[]:
-        final_stab_size=len(new_orb)
-    else:
-        # if membership_check(new_stab,permutations)
-        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,new_stab)
-
-
-    res=len(orb)*final_stab_size
-    return res
-#
 # def stabilizer_magic2(permutation_list):
 #     gr_size=permutation_list[0].n
 #     orbits=[]
@@ -357,7 +366,7 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
-    abb=stabilizer_magic(gr_size,o,trans,s)
+    abb=stabilizer_magic(gr_size,o,trans,s,permutations_list)
     # abb=stabilizer_magic2(permutations_list)
     return abb
     # big_s=generate_group(s)
