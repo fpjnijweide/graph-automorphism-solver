@@ -180,6 +180,24 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
     return permutations
 
+def stabilizer_magic(gr_size, orb, trans,stab):
+    current_stab=stab[0]
+
+    first_stab_el=current_stab.cycles()[0][0]
+    new_orb,new_trans=Orbit(stab,first_stab_el,True)
+    new_stab=Stabilizer(stab,first_stab_el)
+    # if len(new_stab)==0 or len(new_stab)==1:
+    #     final_stab_size=len(new_orb)*len(new_stab)
+    if new_stab==[]:
+        final_stab_size=len(new_orb)
+    else:
+        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,new_stab)
+
+
+    res=len(orb)*final_stab_size
+    return res
+
+
 def algebra_magic(input_cycles,gr_size):
     print(input_cycles)
 
@@ -248,7 +266,6 @@ def algebra_magic(input_cycles,gr_size):
     print("reduced: " + str(Reduce(permutations_list)))
     print("transversal:" + str(trans))
 
-    #todo maybe actually generate H and check which ones are in it via membership testing? (or recursive membership testing)
 
     # cycle_list_new = []
     # permutations = permutation(gr_size)
@@ -261,25 +278,26 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
-    # big_s=generate_group(s)
+    aaa=stabilizer_magic(gr_size,o,trans,s)
+    big_s=generate_group(s)
     # print("big_s: "+  str(big_s))
 
     # permutation(3)
     new_s = []
-    for s_perm in s: #just using S works for dihedral groups.
+    for s_perm in big_s: #just using S works for dihedral groups. generate S recursive works for complete.
         cycle_composition=s_perm.cycles()
         is_in_generators=False
         for cycle in cycle_composition:
             for nr in range(0, len(cycle)):
                 try:
-                    # todo fix that this doesnt respod well to (0,3)(1,2)
+
 
 
                     trans_cycle = trans[o.index(cycle[nr])]
                     composition_perm = -trans_cycle * s_perm
                     # comp_perm2 = s_perm * -trans_cycle
 
-                    if composition_perm in permutations_list:  # todo
+                    if composition_perm in permutations_list:
                         is_in_generators = True
                         break
 
@@ -301,6 +319,8 @@ def algebra_magic(input_cycles,gr_size):
 
     return len(o)*len(new_s)
 
+
+
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
     cycle_list=automorphisms_cycles(G1, G2, D,I, G_partition_backup, H_partition_backup)
     print("--- finished finding unique permutations ---")
@@ -319,9 +339,8 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
 
 
-    G1=create_graph_with_path(30)
+    G1=create_graph_with_cycle(5)
     G2=G1
-    check_complete(G1)
 
 
     if (G1==G2):
