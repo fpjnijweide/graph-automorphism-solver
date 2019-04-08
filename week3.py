@@ -131,8 +131,8 @@ def write_graph_to_dot_file(G: Graph, title: str):
         write_dot(G, f)
 
 
-def is_isomorphism(g1: Graph, g2: Graph):
-    # Compares graphs by their partitions to see if they are the same
+def is_stable(g1: Graph, g2: Graph):
+    # Returns true as soon as we find 1 isomorphism
     g1.partition = create_partition(g1.vertices)
     g2.partition = create_partition(g2.vertices)
     for i in range(len(g1.partition)):
