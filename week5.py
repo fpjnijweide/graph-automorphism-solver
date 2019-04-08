@@ -1,6 +1,6 @@
 from week3 import *
 import time
-from graphviz import render
+#from graphviz import render
 
 
 def fast_refinement(G: Graph, H: Graph):
