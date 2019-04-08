@@ -1,19 +1,21 @@
 # Number of vertices:
 5
 # Edge list:
+0,1
 1,2
 2,3
-2,4
+2,3
+3,4
 3,4
 4,0
-1,0
 --- Next graph:
 # Number of vertices:
 5
 # Edge list:
+0,1
 1,2
 2,3
-2,4
-1,0
+2,3
+3,4
 3,4
 4,0
