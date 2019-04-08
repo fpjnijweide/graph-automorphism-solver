@@ -6,10 +6,10 @@ FILENAME = "graphs/cubes5.grl"
 
 
 class Settings:
-    AUTOMORPHISMS = False
-    FAST = True
+    AUTOMORPHISMS = True
+    FAST = False
     PREPROCESSING = False
-    TREE_CHECK = True
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
@@ -56,16 +56,21 @@ if __name__ == '__main__':
         for graph in isomorphisms.keys() or notisomorphic:
             sys.stdout.write('\n')
             graphcopy = copy_graph(graphs[graph])
+            graphs[graph]=initialize_colors(graphs[graph])
+            graphcopy=initialize_colors(graphcopy)
+            g_partition_backup=create_partition(graphs[graph])
+            gcopy_partition_backup=create_partition(graphcopy)
+
             if Settings.FAST:
-                graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
-                g_partition_backup = graphs[graph].partition[:]
-                gcopy_partition_backup = graphcopy.partition[:]
+                # graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
+                # g_partition_backup = graphs[graph].partition[:]
+                # gcopy_partition_backup = graphcopy.partition[:]
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                          g_partition_backup, gcopy_partition_backup)
             else:
-                graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
-                g_partition_backup = graphs[graph].partition[:]
-                gcopy_partition_backup = graphcopy.partition[:]
+                # graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
+                # g_partition_backup = graphs[graph].partition[:]
+                # gcopy_partition_backup = graphcopy.partition[:]
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
