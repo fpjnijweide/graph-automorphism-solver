@@ -77,7 +77,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
                     P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
             # print(P2)
             if D:
-                print(P2)
+                # print(P2)
                 return P2
             else:
                 return None
@@ -210,11 +210,11 @@ def algebra_magic(input_cycles,gr_size):
     # i=i+1
     print(i)
     s=Stabilizer(permutations_list,i)
-    # big_perm=generate_group_recursive(permutations_list)
+    big_perm=generate_group(permutations_list)
     # new_big_perm=[]
 
     print("permutations: " + str(permutations_list))
-    # print("big_perm: " + str(generate_group_recursive(permutations_list)))
+    print("big_perm: " + str(big_perm))
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s)) #todo this is actually a generating set
 
@@ -234,12 +234,12 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
-    big_s=generate_group_recursive(s)
-    print("big_s: "+  str(big_s))
+    # big_s=generate_group(s)
+    # print("big_s: "+  str(big_s))
 
     # permutation(3)
     new_s = []
-    for s_perm in big_s: #just using S works for dihedral groups
+    for s_perm in s: #just using S works for dihedral groups.
         cycle_composition=s_perm.cycles()
         is_in_generators=False
         for cycle in cycle_composition:
@@ -250,7 +250,7 @@ def algebra_magic(input_cycles,gr_size):
 
                     trans_cycle = trans[o.index(cycle[nr])]
                     composition_perm = -trans_cycle * s_perm
-                    comp_perm2 = s_perm * -trans_cycle
+                    # comp_perm2 = s_perm * -trans_cycle
 
                     if composition_perm in permutations_list:  # todo
                         is_in_generators = True
@@ -292,7 +292,7 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
 
 
-    G1=create_complete_graph(5)
+    G1=create_graph_with_cycle(30)
     G2=G1
 
 
