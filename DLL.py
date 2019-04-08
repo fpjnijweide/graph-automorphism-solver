@@ -36,13 +36,13 @@ class DoubleLinkedList:
     # return next in iteration
     def __next__(self):
         if self.current_node == self.tail:
-            current_data = self.current_node.data
+            returnable_node = self.current_node
             self.current_node = Node(None,None,"stop")
-            return  current_data
+            return  returnable_node
         if self.current_node.next is not None:
-            current_data = self.current_node.data
+            returnable_node = self.current_node
             self.current_node = self.current_node.next
-            return current_data
+            return returnable_node
         else:
             raise StopIteration
 
@@ -123,19 +123,21 @@ class DoubleLinkedList:
         if not isinstance(removable_node, Node):
             removable_node = self.find(removable_node)
 
-        if removable_node is not None:
-            if removable_node.prev is None:
+        if removable_node is not None or self.head is None:
+            if removable_node == self.head:
                 self.head = removable_node.next
-                removable_node.next.prev = None
+
+            if removable_node == self.tail:
+                self.tail = removable_node.prev
+
             if removable_node.prev is not None:
                 removable_node.prev.next = removable_node.next
-            if removable_node.next is None:
-                self.tail = removable_node.prev
-                removable_node.prev.next = None
-            else:
+
+            if removable_node.next is not None:
                 removable_node.next.prev = removable_node.prev
+
         else:
-            return "ERROR: could not find the item removable_node in list"
+            return "ERROR: could not find the item removable_node in list or list was already empty"
 
     def find(self, data):
         current_node = self.head
@@ -146,4 +148,3 @@ class DoubleLinkedList:
             current_node = current_node.next
 
         return None
-

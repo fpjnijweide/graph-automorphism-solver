@@ -13,6 +13,7 @@ class Settings:
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
 if __name__ == '__main__':
+    start = time.time()
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -69,7 +70,7 @@ if __name__ == '__main__':
             sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
         else:
             sys.stdout.write(str(graph) + ": " + str(automorphisms))
-
-
+    print(" \n ")
+    print(time.time() - start)
 
 

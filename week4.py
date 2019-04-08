@@ -1,8 +1,6 @@
 from main import *
 from week3 import *
 from graphviz import render
-
-from week5 import *
 from graph import *
 import math
 
@@ -44,6 +42,7 @@ def reduce_twins(G: Graph, twins_G):
     for i in twins_G:
         # TODO: fix thiss
         print("todo")
+
 
 
 def copy_graph(inputG: Graph):
