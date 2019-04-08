@@ -1,16 +1,19 @@
-from week5 import *
-from week4 import *
 from week3 import *
+from week4 import *
+from week5 import *
 
-FILENAME = "graphs/trees36.grl"
+FILENAME = "graphs/trees90.grl"
 
 class Settings:
     FAST = False # Todo sneller maken (doubly linked list)
-    PREPROCESSING = True
-    TREE_CHECK = False #Todo fix
+    PREPROCESSING = False
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
 
+    #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
+
 if __name__ == '__main__':
+    start = time.time()
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -67,7 +70,7 @@ if __name__ == '__main__':
             sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
         else:
             sys.stdout.write(str(graph) + ": " + str(automorphisms))
-
-
+    print(" \n ")
+    print(time.time() - start)
 
 

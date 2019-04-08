@@ -1,8 +1,8 @@
 from graph import *
 from graph_io import *
 
-from week5 import *
 from DLL import *
+# from week5 import *
 
 def load_graphs(filename: str, nr1: int, nr2: int):
     # loads two graphs from a file, where nr1 and nr2 specify which graphs to load from the file

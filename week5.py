@@ -1,5 +1,4 @@
 from graph import *
-
 from week3 import *
 from week4 import *
 import time
@@ -8,14 +7,17 @@ import time
 
 def neighbors_of_colour(v: Vertex, colour):
     sum = 0
-    for col in v.neighbor_colors:
-        if col == colour:
+    for c in v.neighbor_colors:
+        if c == colour:
             sum += 1
     return sum
 
 
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition_DLL(G.vertices + H.vertices)
+
+    for vertex in (G.vertices + H.vertices):
+        vertex.neighbor_colors = neighbor_colors(vertex)
 
     queue = []
     queueindex = 0
@@ -35,9 +37,9 @@ def fast_refinement(G: Graph, H: Graph):
         colours_neighbouring_queue0 = []
 
         for v_col0 in vertices_col0_dll:
-            for n in v_col0.neighbors:
-                if n.colornum not in colours_neighbouring_queue0:
-                    colours_neighbouring_queue0.append(n.colornum)
+            for col in v_col0.data.neighbor_colors:
+                if col not in colours_neighbouring_queue0:
+                    colours_neighbouring_queue0.append(col)
 
         for colour in colours_neighbouring_queue0:
 
@@ -45,22 +47,18 @@ def fast_refinement(G: Graph, H: Graph):
 
             vertex0 = vertices_dll.head
 
-            vertex0.data.neighbor_colors = neighbor_colors(vertex0.data)
-            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, colour)
-
-            #num_col0neighbours_group1 = neighbor_colors(vertex0.data).count(queue[queueindex])
+            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, queue[queueindex])
 
             group1 = []
             group2 = []
 
             for v in vertices_dll:
-                v.neighbor_colors = neighbor_colors(v)
-                num_col0neighbours_group2 = neighbors_of_colour(v, colour)
+                num_col0neighbours_group2 = neighbors_of_colour(v.data, queue[queueindex])
                 if num_col0neighbours_group2 == num_col0neighbours_group1:
                     # Has the same number of neighbours with colour queue[0] as vertex0
-                    group1.append(v)
+                    group1.append(v.data)
                 else:
-                    group2.append(v)
+                    group2.append(v.data)
                     vertices_dll.remove(v)
 
             if len(group2) != 0:
@@ -72,6 +70,14 @@ def fast_refinement(G: Graph, H: Graph):
                     node.colornum = new_colour
                     node.label = new_colour
                     partitions[new_colour].append(node)
+
+                # Change the neighbor_colors stuff since this isn't correct anymore
+                for vtx in vertices_dll:
+                    if queue[queueindex] in vtx.data.neighbor_colors:
+                        vtx.data.neighbor_colors = neighbor_colors(vtx.data)
+                for vtx0 in vertices_col0_dll:
+                    if queue[queueindex] in vtx0.data.neighbor_colors:
+                        vtx0.data.neighbor_colors = neighbor_colors(vtx0.data)
 
                 # Add to queue
                 if colour in queue or len(group2) < len(group1):
@@ -94,7 +100,7 @@ def fast_refinement(G: Graph, H: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G1, G2 = load_graphs("graphs/threepaths640.gr", 0, 0)
 
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
@@ -104,7 +110,7 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    '''G3, G4 = load_graphs("graphs/threepaths320.gr", 0, 0)
+    G3, G4 = load_graphs("graphs/threepaths640.gr", 0, 0)
     G3 = initialize_colors(G3)
     G4 = initialize_colors(G4)
     start = time.time()
@@ -112,7 +118,7 @@ if __name__ == "__main__":
     end = time.time()
     print("normal:", end - start)
 
-    write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")'''
-    #render('dot', 'png', 'graphG1.dot')
-    #render('dot', 'png', 'graphG2.dot')
+    write_graph_to_dot_file(G1, "G11")
+    write_graph_to_dot_file(G2, "G22")
+    #render('dot', 'png', 'graphG11.dot')
+    #render('dot', 'png', 'graphG22.dot')
