@@ -3,7 +3,7 @@ from graph import *
 from week3 import *
 from week4 import *
 import time
-from graphviz import render
+#from graphviz import render
 
 
 def neighbors_of_colour(v: Vertex, colour):
