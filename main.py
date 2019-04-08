@@ -2,15 +2,18 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/products72.grl"
+FILENAME = "graphs/cubes5.grl"
+
 
 class Settings:
-    FAST = False # Todo sneller maken (doubly linked list)
+    AUTOMORPHISMS = False
+    FAST = False
     PREPROCESSING = False
     TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
+
 
 if __name__ == '__main__':
     start = time.time()
@@ -20,8 +23,7 @@ if __name__ == '__main__':
     mapped = []
 
     # GI problem:
-    sys.stdout.write("Sets of isomorphic graphs and number of automorphisms:")
-
+    sys.stdout.write("Sets of isomorphic graphs:")
     isomorphisms = {}
     for graph1 in range(0, len(graphs) - 1):
         if graph1 not in mapped:
@@ -40,10 +42,10 @@ if __name__ == '__main__':
                 g1_partition_backup = graphs[graph1].partition[:]
                 g2_partition_backup = graphs[graph2].partition[:]
 
-
-                if is_isomorphism(graphs[graph1], graphs[graph2]):
-                        isomorphisms.get(graph1).append(graph2)
-                        mapped.append(graph2)
+                if is_isomorphic(graphs[graph1], graphs[graph2], [], [],
+                                       g1_partition_backup, g2_partition_backup) > 0:
+                    isomorphisms.get(graph1).append(graph2)
+                    mapped.append(graph2)
 
             if len(isomorphisms.get(graph1)) == 0:
                 isomorphisms.popitem()
