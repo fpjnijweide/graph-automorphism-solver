@@ -1,11 +1,11 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/bigtrees1.grl"
+FILENAME = "graphs/cographs1.grl"
 
 
 class Settings:
-    AUTOMORPHISMS = False
+    AUTOMORPHISMS = True
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
