@@ -326,6 +326,8 @@ class Graph(object):
 
         edge.head._add_incidence(edge)
         edge.tail._add_incidence(edge)
+        if edge.tail==edge.head:
+            pass
         edge.head._add_neighbor(edge.tail)
         edge.tail._add_neighbor(edge.head)
 

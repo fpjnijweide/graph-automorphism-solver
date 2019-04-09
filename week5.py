@@ -31,8 +31,9 @@ def fast_refinement(G: Graph, H: Graph):
 
     # Loop while we have a non-empty queue, each loop will take queue[0] as the colour to compare everything with
     # (how many neighbours of this colour a vertex has)
+    k=0
     while queueindex < len(queue):
-
+        k+=1
         # Find all colours of the neighbours of queue[0]
         vertices_col0_dll = partitions[queue[queueindex]]
         colours_neighbouring_queue0 = []
@@ -42,8 +43,9 @@ def fast_refinement(G: Graph, H: Graph):
                 # if col not in colours_neighbouring_queue0:
                 colours_neighbouring_queue0.append(col)
 
+        h=0
         for colour in set(colours_neighbouring_queue0):
-
+            h+=1
             vertices_dll = partitions[colour]
 
             vertex0 = vertices_dll.head
@@ -67,14 +69,25 @@ def fast_refinement(G: Graph, H: Graph):
                 # Change the colour of the vertices in group2, let group1 keep the old colour
                 new_colour = len(partitions)
                 partitions.append(DoubleLinkedList())
+                j=0
                 for node in group2:
+                    # j+=1
                     partitions[node.colornum].remove(node)
-                    # for neighbor in node._neighborset:
-                    #     try:
-                    #         neighbor.neighbor_colors.remove(node.colornum)
-                    #     except ValueError:
-                    #         pass
-                    #     neighbor.neighbor_colors.append(new_colour)
+                    # i=0
+                    for neighbor in node.neighbors:
+                        # try:
+                        # i+=1
+                        # if node.colornum not in neighbor.neighbor_colors:
+                            # pass
+                        # neighbor.neighbor_colors.remove(node.colornum)
+                        # try:
+                        neighbor.neighbor_colors.remove(node.colornum)
+                        neighbor.neighbor_colors.append(new_colour)
+                        # except ValueError:
+                        #     pass
+                        # except ValueError:
+                        #     pass
+
 
                     node.colornum = new_colour
                     node.label = new_colour
@@ -82,12 +95,12 @@ def fast_refinement(G: Graph, H: Graph):
 
 
                 # Change the neighbor_colors stuff since this isn't correct anymore
-                for vtx in vertices_dll:
-                    if queue[queueindex] in vtx.data.neighbor_colors:
-                        vtx.data.neighbor_colors = neighbor_colors(vtx.data)
-                for vtx0 in vertices_col0_dll:
-                    if queue[queueindex] in vtx0.data.neighbor_colors:
-                        vtx0.data.neighbor_colors = neighbor_colors(vtx0.data)
+                # for vtx in vertices_dll:
+                #     if queue[queueindex] in vtx.data.neighbor_colors:
+                #         vtx.data.neighbor_colors = neighbor_colors(vtx.data)
+                # for vtx0 in vertices_col0_dll:
+                #     if queue[queueindex] in vtx0.data.neighbor_colors:
+                #         vtx0.data.neighbor_colors = neighbor_colors(vtx0.data)
 
                 # Add to queue
                 if colour in queue or len(group2) < group1_int:
