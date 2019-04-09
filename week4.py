@@ -272,7 +272,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 break
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
-                return 1 * constant
+                return 1 * constantGH
             else:
                 return 1
 
