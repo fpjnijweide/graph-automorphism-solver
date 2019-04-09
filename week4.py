@@ -25,7 +25,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in result:
         if len(i) > 1:
             trueResult.append(i)
-    if len(trueResult) > 1:
+    if len(trueResult) > 0:
         print("twins in graph")
     return trueResult
 
@@ -96,7 +96,7 @@ def color_by_partition(partition: List):
 
 def countTreeIsomorphism(G: Graph):
     # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
-    """degree1 = []
+    degree1 = []
     strings = []
     for v in G.vertices:
         if v.degree == 1:
@@ -118,7 +118,7 @@ def countTreeIsomorphism(G: Graph):
             degree1.remove(string[0])
             degree1.remove(string[len(string) - 1])
             for z in string:
-                G.del_vertex(z)"""
+                G.del_vertex(z)
 
     result = 1  # result depends on position of the root, so we check for every vertex as root
     for v in G.vertices:
@@ -157,8 +157,8 @@ def countTreeIsomorphism(G: Graph):
 
         if num > result:
             result = num
-    #for x in strings:
-     #   result = result * 2
+    for x in strings:
+       result = result * 2
     return result
 
 
@@ -287,6 +287,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
+            print("graph has tree shape")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
@@ -375,6 +376,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
+            print("Graph has tree shape")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
@@ -425,7 +427,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cographs1.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
 
     # from week2 import *
     # G1=create_complete_graph(4)
