@@ -40,6 +40,9 @@ def membership_check(element,group,recursive=True):
     if group==[] or group==[[]]:
         print("FALSE: group is empty")
         return False
+    if element==permutation(group[0].n):
+        print("TRUE: trivial perm")
+        return True
 
     orbits=[None]*element.n
     traversals=[None]*element.n
@@ -436,7 +439,7 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    G1=create_complete_graph(4)
+    G1=create_graph_with_cycle(4)
     G2=G1
 
 
