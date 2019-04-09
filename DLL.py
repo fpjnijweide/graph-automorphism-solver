@@ -37,8 +37,8 @@ class DoubleLinkedList:
     def __next__(self):
         if self.current_node == self.tail:
             returnable_node = self.current_node
-            self.current_node = Node(None,None,"stop")
-            return  returnable_node
+            self.current_node = Node(None, None, "stop")
+            return returnable_node
         if self.current_node.next is not None:
             returnable_node = self.current_node
             self.current_node = self.current_node.next
@@ -93,7 +93,6 @@ class DoubleLinkedList:
             return new_node
         else:
             return "ERROR: could not find the item old_node in list"
-
 
     """ add an element before old_node """
 

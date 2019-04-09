@@ -6,10 +6,10 @@ FILENAME = "graphs/bigtrees1.grl"
 class Settings:
     AUTOMORPHISMS = True
     FAST = False
-    PREPROCESSING = True
+    PREPROCESSING = False
     TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CHECK = True
+    DIHEDRAL_COMPLETE_CHECK = False
 
     # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
@@ -77,6 +77,6 @@ if __name__ == '__main__':
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
             print('{:>26}'.format(graph_str))
 
-    print("\n" + '{:>20} {:<}s'.format("time it took:", time.time() - start))
+    print("\n" + '{:>20} {:.2f}s'.format("time it took:", time.time() - start))
     if len(FOUND_TYPE) >= 1:
         print("type of graph found: {:>}".format(", ".join(i for i in set(FOUND_TYPE))))
