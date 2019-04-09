@@ -18,6 +18,7 @@ def fast_refinement(G: Graph, H: Graph):
 
     for vertex in (G.vertices + H.vertices):
         vertex.neighbor_colors = neighbor_colors(vertex)
+        # vertex.neighbors_of_colour={}
 
     queue = []
     queueindex = 0
@@ -38,25 +39,25 @@ def fast_refinement(G: Graph, H: Graph):
 
         for v_col0 in vertices_col0_dll:
             for col in v_col0.data.neighbor_colors:
-                if col not in colours_neighbouring_queue0:
-                    colours_neighbouring_queue0.append(col)
+                # if col not in colours_neighbouring_queue0:
+                colours_neighbouring_queue0.append(col)
 
-        for colour in colours_neighbouring_queue0:
+        for colour in set(colours_neighbouring_queue0):
 
             vertices_dll = partitions[colour]
 
             vertex0 = vertices_dll.head
 
-            num_col0neighbours_group1 = neighbors_of_colour(vertex0.data, queue[queueindex])
+            vertex0_neigbors_of_color = neighbors_of_colour(vertex0.data, queue[queueindex])
 
-            group1 = []
+            group1_int=0
             group2 = []
 
             for v in vertices_dll:
-                num_col0neighbours_group2 = neighbors_of_colour(v.data, queue[queueindex])
-                if num_col0neighbours_group2 == num_col0neighbours_group1:
+                vertex1_neighbors_of_color = neighbors_of_colour(v.data, queue[queueindex])
+                if vertex0_neigbors_of_color == vertex1_neighbors_of_color:
                     # Has the same number of neighbours with colour queue[0] as vertex0
-                    group1.append(v.data)
+                    group1_int+=1
                 else:
                     group2.append(v.data)
                     vertices_dll.remove(v)
@@ -67,9 +68,18 @@ def fast_refinement(G: Graph, H: Graph):
                 new_colour = len(partitions)
                 partitions.append(DoubleLinkedList())
                 for node in group2:
+                    partitions[node.colornum].remove(node)
+                    # for neighbor in node._neighborset:
+                    #     try:
+                    #         neighbor.neighbor_colors.remove(node.colornum)
+                    #     except ValueError:
+                    #         pass
+                    #     neighbor.neighbor_colors.append(new_colour)
+
                     node.colornum = new_colour
                     node.label = new_colour
                     partitions[new_colour].append(node)
+
 
                 # Change the neighbor_colors stuff since this isn't correct anymore
                 for vtx in vertices_dll:
@@ -80,7 +90,7 @@ def fast_refinement(G: Graph, H: Graph):
                         vtx0.data.neighbor_colors = neighbor_colors(vtx0.data)
 
                 # Add to queue
-                if colour in queue or len(group2) < len(group1):
+                if colour in queue or len(group2) < group1_int:
                     addtoqueue = new_colour
                 else:
                     addtoqueue = colour
