@@ -374,11 +374,6 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             return False
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
-        if count_automorphisms(G, H, D, I, G_partition_backup, H_partition_backup) > 1:
-            print("hier")
-
-
-
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
@@ -404,11 +399,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     else:
         G.partition = create_partition(G.vertices)
         H.partition = create_partition(H.vertices)
-        if count_automorphisms(G, H, D, I, G.partition, H.partition) > 1:
-            print("hier2")
-        G, H = color_refinement(G, H) #TODO: hier gaat het fout!!
-        if count_automorphisms(G, H, D, I, G.partition, H.partition) > 1:
-            print("hier3")
+        G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
@@ -421,7 +412,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-            return 1
+            return True
 
     # We have now found a stable coloring that has non-unique colors
 
