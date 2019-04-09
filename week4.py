@@ -26,7 +26,8 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
         if len(i) > 1:
             trueResult.append(i)
     if len(trueResult) > 0:
-        print("twins in graph")
+        Settings.FOUND_TYPE = "Twins"
+
     return trueResult
 
 
@@ -314,6 +315,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
+        if len(disconnectedG) > 0:
+            Settings.FOUND_TYPE = "Disconnected"
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
@@ -321,7 +324,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if not D and Settings.TREE_CHECK:
         if isTree(G) and isTree(H):
-            print("graph has tree shape")
+            Settings.FOUND_TYPE = "Tree"
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
@@ -358,6 +361,19 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+    # Returns true as soon as we find an isomorphism (count_automorphism maar dan anders)
+    if Settings.TWIN_CHECK and len(D) == 0:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantG = 1
+        constantH = 1
+        for i in twins_G:
+            constantG = constantG * math.factorial(len(i))
+        for j in twins_H:
+            constantH = constantH * math.factorial(len(j))
+        reduce_twins(G, twins_G)
+        reduce_twins(H, twins_H)
+
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
     G.partition = G_partition_backup
@@ -408,18 +424,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
+            Settings.FOUND_TYPE = "Tree"
             return countTreeIsomorphism(G)
-    if Settings.TWIN_CHECK and not D:
-        twins_G = find_twins(G)
-        twins_H = find_twins(H)
-        constantG = 1
-        constantH = 1
-        for i in twins_G:
-            constantG = constantG * math.factorial(len(i))
-        for j in twins_H:
-            constantH = constantH * math.factorial(len(j))
-        reduce_twins(G, twins_G)
-        reduce_twins(H, twins_H)
 
     # Choose a color that is not unique
     chosen_color = -1
