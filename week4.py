@@ -218,6 +218,28 @@ def is_twin(v, list_of_twins):
             result = True
     return result
 
+def check_dihedral(G: Graph):
+
+    is_cycle=True
+
+    for i in range(len(G._v)):
+        v=G._v[i]
+        if len(v.neighbors)==2:
+            pass
+        else:
+            is_cycle=False
+            break
+    return is_cycle
+
+def check_complete(G: Graph):
+    is_complete=True
+    G_size=len(G._v)
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if not len(v.neighbors)==G_size-1:
+            is_complete=False
+            break
+    return is_complete
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant):
     # Recursively counts all isomorphs of this graph
@@ -252,19 +274,19 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Refine the colors of G and H
 
-    G.partition = create_partition(G.vertices)
-    H.partition = create_partition(H.vertices)
-
     if Settings.FAST:
         G, H = fast_refinement(G, H)
     else:
+        G.partition = create_partition(G.vertices)
+        H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
         return 0
     else:
-        # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
+        # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those
+        # in the end when twin check is True.
         all_colors_are_unique = True
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
@@ -324,7 +346,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
-    # Returns true as soon as we find an isomorphism (count_automorphism maar dan anders)
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
     G.partition = G_partition_backup
@@ -344,12 +365,11 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     # Refine the colors of G and H
 
-    G.partition = create_partition(G.vertices)
-    H.partition = create_partition(H.vertices)
-
     if Settings.FAST:
         G, H = fast_refinement(G, H)
     else:
+        G.partition = create_partition(G.vertices)
+        H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
@@ -418,10 +438,10 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     # H.partition = H_partition_backup
 
     for y in H_partition_chosen_color:
-        if nr_of_isomorphs > 0:
+        if (nr_of_isomorphs > 0):
             return True
         else:
-            nr_of_isomorphs += is_isomorphic(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+            nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition)
     return False
 
