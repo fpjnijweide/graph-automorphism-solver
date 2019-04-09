@@ -2,7 +2,7 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/cographs1.grl"
 
 
 class Settings:
@@ -10,7 +10,8 @@ class Settings:
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = True
-    TWIN_CHECK= False # Todo sneller maken
+    TWIN_CHECK= True # Todo sneller maken
+    FOUND_TYPE= None
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
