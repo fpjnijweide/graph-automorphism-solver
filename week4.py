@@ -241,7 +241,7 @@ def check_complete(G: Graph):
             break
     return is_complete
 
-def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant):
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
     # Recursively counts all isomorphs of this graph
 
     if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
