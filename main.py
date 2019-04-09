@@ -6,7 +6,7 @@ FILENAME = "graphs/bigtrees1.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = True
+    FAST = False
     PREPROCESSING = False
     TREE_CHECK = True
     TWIN_CHECK = False  # Todo sneller maken
@@ -22,7 +22,6 @@ if __name__ == '__main__':
     mapped = []
 
     # GI problem:
-    print('{:>30}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
     isomorphisms = {}
     for graph1 in range(0, len(graphs) - 1):
         if graph1 not in mapped:
@@ -51,6 +50,7 @@ if __name__ == '__main__':
 
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
+        print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
         for graph in isomorphisms.keys() or notisomorphic:
             graphcopy = copy_graph(graphs[graph])
             graphs[graph] = initialize_colors(graphs[graph])
@@ -73,14 +73,15 @@ if __name__ == '__main__':
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
-                print('{:>30}   {:<}'.format(graph_str, automorphisms))
+                print('{:>26}   {:<}'.format(graph_str, automorphisms))
             else:
                 print(str(graph) + ": " + str(automorphisms))
     else:
         # Print isomorphisms without the number of automorphisms
+        print('{:>}'.format("Sets of isomorphic graphs:"))
         for g in isomorphisms.keys():
             isomorphisms.get(g).insert(0, g)
-            print('\n')
-            print('[' + ', '.join(str(x) for x in isomorphisms.get(g)) + ']')
+            graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
+            print('{:>26}'.format(graph_str))
 
-    print("\n" + str(time.time() - start))
+    print("\n" + '{} {}s'.format("time it took:", time.time() - start))
