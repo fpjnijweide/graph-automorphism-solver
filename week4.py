@@ -4,9 +4,12 @@ from week3 import *
 from graph import *
 import math
 
+FOUND_TYPE = []
+
 
 def find_twins(G: Graph):  # will return groups of twins and groups of false twins in a list
     v = G.vertices
+    global FOUND_TYPE
 
     result = [[v[0]]]
     for i in range(1, len(v)):
@@ -26,8 +29,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
         if len(i) > 1:
             trueResult.append(i)
     if len(trueResult) > 0:
-        Settings.FOUND_TYPE = "Twins"
-
+        FOUND_TYPE.append("Twins")
     return trueResult
 
 
@@ -222,47 +224,50 @@ def is_twin(v, list_of_twins):
             result = True
     return result
 
-def check_dihedral(G: Graph):
 
-    is_cycle=True
+def check_dihedral(G: Graph):
+    is_cycle = True
+    global FOUND_TYPE
 
     for i in range(len(G._v)):
         v=G._v[i]
         if len(v.neighbors)==2:
             pass
         else:
-            is_cycle=False
+            is_cycle = False
             break
     if is_cycle:
-        Settings.FOUND_TYPE+="Dihedral"
+        FOUND_TYPE.append("Dihedral")
     return is_cycle
 
+
 def check_complete(G: Graph):
-    is_complete=True
-    G_size=len(G._v)
+    is_complete = True
+    G_size = len(G._v)
+    global FOUND_TYPE
+
     for i in range(len(G._v)):
         v = G._v[i]
-        if not len(v.neighbors)==G_size-1:
-            is_complete=False
+        if not len(v.neighbors) == G_size-1:
+            is_complete = False
             break
     if is_complete:
-        Settings.FOUND_TYPE+="Complete"
+        FOUND_TYPE.append("Complete")
     return is_complete
+
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
     # Recursively counts all isomorphs of this graph
-
     if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
-        if len(G._v)==len(H._v):
+        if len(G._v) == len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
             elif check_complete(G) and check_complete(H):
-                fact=1
+                fact = 1
 
                 for i in range(1, len(G._v) + 1):
                     fact = fact * i
                 return fact
-
 
     if not D and Settings.TWIN_CHECK:
         twins_G = find_twins(G)
@@ -321,8 +326,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
+        global FOUND_TYPE
+
         if len(disconnectedG) > 0:
-            Settings.FOUND_TYPE = "Disconnected"
+            FOUND_TYPE.append("Disconnected")
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
@@ -330,7 +337,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if not D and Settings.TREE_CHECK:
         if isTree(G) and isTree(H):
-            Settings.FOUND_TYPE = "Tree"
+            FOUND_TYPE.append("Tree")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
@@ -421,6 +428,10 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     if Settings.PREPROCESSING and not D:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
+        global FOUND_TYPE
+
+        if len(disconnectedG) > 0:
+            FOUND_TYPE.append("Disconnected")
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
@@ -428,7 +439,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
-            Settings.FOUND_TYPE = "Tree"
+            FOUND_TYPE.append("Tree")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique

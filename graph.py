@@ -227,7 +227,7 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, directed: bool, n: int=0, simple: bool=False):
+    def __init__(self, directed: bool, n: int = 0, simple: bool = False):
         """
         Creates a graph.
         :param directed: Whether the graph should behave as a directed graph.

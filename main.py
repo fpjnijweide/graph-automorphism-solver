@@ -1,8 +1,7 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
-
+FILENAME = "graphs/modulesC.grl"
 
 class Settings:
     AUTOMORPHISMS = True
@@ -10,13 +9,14 @@ class Settings:
     PREPROCESSING = False
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CHECK = False
+    DIHEDRAL_COMPLETE_CHECK = True
 
     # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
 
 if __name__ == '__main__':
     start = time.time()
+    print("isomorphisms for {}\n".format(FILENAME.split('/')[1]))
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -66,17 +66,17 @@ if __name__ == '__main__':
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
                 print('{:>26}   {:<}'.format(graph_str, automorphisms))
             else:
-                print(str(graph) + ": " + str(automorphisms))
+                print('{:>26}   {:<}'.format(str(graph), automorphisms))
     else:
+        print('{:>}'.format("Sets of isomorphic graphs:"))
         # Print isomorphisms without the number of automorphisms
         if len(isomorphisms.keys()) == 0:
-            sys.stdout.write('\n')
-            sys.stdout.write("There are no isomorphic graphs")
+            print("There are no isomorphic graphs")
         for g in isomorphisms.keys():
             isomorphisms.get(g).insert(0, g)
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
             print('{:>26}'.format(graph_str))
 
-    print("\n" + '{:>20} {:<}s'.format("time it took:", time.time() - start))
-    if not None:
-        print("type of graph found: {:>}".format("trees"))
+    print("\n" + '{:>20} {:.2f}s'.format("time it took:", time.time() - start))
+    if len(FOUND_TYPE) >= 1:
+        print("type of graph found: {:>}".format(", ".join(i for i in set(FOUND_TYPE))))
