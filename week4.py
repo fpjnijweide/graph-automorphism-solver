@@ -27,6 +27,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
             trueResult.append(i)
     if len(trueResult) > 0:
         Settings.FOUND_TYPE = "Twins"
+
     return trueResult
 
 
