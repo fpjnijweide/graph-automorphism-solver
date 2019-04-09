@@ -371,9 +371,14 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
         for j in twins_H:
             constantH = constantH * math.factorial(len(j))
         if constantG != constantH:
-            return 0
+            return False
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
+        if count_automorphisms(G, H, D, I, G_partition_backup, H_partition_backup) > 1:
+            print("hier")
+
+
+
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
@@ -399,7 +404,11 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     else:
         G.partition = create_partition(G.vertices)
         H.partition = create_partition(H.vertices)
-        G, H = color_refinement(G, H)
+        if count_automorphisms(G, H, D, I, G.partition, H.partition) > 1:
+            print("hier2")
+        G, H = color_refinement(G, H) #TODO: hier gaat het fout!!
+        if count_automorphisms(G, H, D, I, G.partition, H.partition) > 1:
+            print("hier3")
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
@@ -481,8 +490,8 @@ if __name__ == "__main__":
 
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
-    # print(is_isomorphic(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(is_isomorphic(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    #print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")

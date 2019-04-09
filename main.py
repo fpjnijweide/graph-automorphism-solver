@@ -5,7 +5,7 @@ FILENAME = "graphs/cographs1.grl"
 
 
 class Settings:
-    AUTOMORPHISMS = True
+    AUTOMORPHISMS = False
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
@@ -62,6 +62,7 @@ if __name__ == '__main__':
 
             automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
+            print(graph)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
