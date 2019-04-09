@@ -305,7 +305,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
-        #TODO: or after reducing graph, colors are now unique and we have a problemos
         print("ERROR CHOOSING COLOR")
         return 0
 
