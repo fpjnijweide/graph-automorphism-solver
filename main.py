@@ -2,7 +2,7 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/Autom2.grl"
+FILENAME = "graphs/bigtrees1.grl"
 
 
 class Settings:
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     mapped = []
 
     # GI problem:
-    sys.stdout.write("Sets of isomorphic graphs:")
+    print('{:>30}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
     isomorphisms = {}
     for graph1 in range(0, len(graphs) - 1):
         if graph1 not in mapped:
@@ -54,7 +54,6 @@ if __name__ == '__main__':
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
         for graph in isomorphisms.keys() or notisomorphic:
-            sys.stdout.write('\n')
             graphcopy = copy_graph(graphs[graph])
             graphs[graph]=initialize_colors(graphs[graph])
             graphcopy=initialize_colors(graphcopy)
@@ -75,17 +74,17 @@ if __name__ == '__main__':
                                                     g_partition_backup, gcopy_partition_backup, None)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
-                sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
+                graph_str ="[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
+                print('{:>30}   {:<}'.format(graph_str, automorphisms))
             else:
-                sys.stdout.write(str(graph) + ": " + str(automorphisms))
+                print(str(graph) + ": " + str(automorphisms))
     else:
         # Print isomorphisms without the number of automorphisms
         for g in isomorphisms.keys():
             isomorphisms.get(g).insert(0, g)
-            sys.stdout.write('\n')
-            sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(g)) + ']')
+            print('\n')
+            print('[' + ', '.join(str(x) for x in isomorphisms.get(g)) + ']')
 
-    print(" \n ")
-    print(time.time() - start)
+    print("\n" + str(time.time() - start))
 
 

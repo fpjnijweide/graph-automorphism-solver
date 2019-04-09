@@ -390,7 +390,6 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
-            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
