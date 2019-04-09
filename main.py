@@ -5,10 +5,10 @@ FILENAME = "graphs/cographs1.grl"
 
 
 class Settings:
-    AUTOMORPHISMS = False
+    AUTOMORPHISMS = True
     FAST = False
     PREPROCESSING = False
-    TREE_CHECK = False
+    TREE_CHECK = True
     TWIN_CHECK= True # Todo sneller maken
     DIHEDRAL_COMPLETE_CHECK = False
     FOUND_TYPE = []
@@ -22,7 +22,7 @@ if __name__ == '__main__':
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
     mapped = []
-
+    #TODO: we need a graph copy
     # GI problem:
     isomorphisms = {}
     for graph1 in range(0, len(graphs)):
@@ -49,7 +49,6 @@ if __name__ == '__main__':
             if len(isomorphisms.get(graph1)) == 0:
                 isomorphisms.popitem()
                 notisomorphic.append(graph1)
-
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
         print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
@@ -62,7 +61,6 @@ if __name__ == '__main__':
 
             automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
-            print(graph)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"

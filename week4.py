@@ -372,8 +372,12 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             constantH = constantH * math.factorial(len(j))
         if constantG != constantH:
             return False
-        reduce_twins(G, twins_G)
-        reduce_twins(H, twins_H)
+        count = count_automorphisms(G, H, D, I, G_partition_backup, H_partition_backup)
+        if (count>0):
+            return True
+        else:
+            return False
+
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
@@ -412,7 +416,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-            return True
+            return 1
 
     # We have now found a stable coloring that has non-unique colors
 
@@ -479,10 +483,11 @@ if __name__ == "__main__":
     G2 = initialize_colors(G2)
 
 
+
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
-    print(is_isomorphic(G1, G2, [], [], G_partition_backup, H_partition_backup))
-    #print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    #print(is_isomorphic(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
