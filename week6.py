@@ -115,7 +115,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
 
-    if len(D)==0 and Settings.DIHEDRAL_COMPLETE_CHECK:
+    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
         if len(G._v)==len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
@@ -183,14 +183,14 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of fast refignment
+    if Settings.PREPROCESSING and not D:  # only once, after first call of fast refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if Settings.TREE_CHECK and len(D) == 0:
+    if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
 

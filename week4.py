@@ -244,7 +244,19 @@ def check_complete(G: Graph):
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant):
     # Recursively counts all isomorphs of this graph
 
-    if Settings.TWIN_CHECK and len(D) == 0:
+    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
+        if len(G._v)==len(H._v):
+            if check_dihedral(G) and check_dihedral(H):
+                return 2*len(G._v)
+            elif check_complete(G) and check_complete(H):
+                fact=1
+
+                for i in range(1, len(G._v) + 1):
+                    fact = fact * i
+                return fact
+
+
+    if not D and Settings.TWIN_CHECK:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
         constantGH = 1
@@ -300,14 +312,14 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of refignment
+    if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if Settings.TREE_CHECK and len(D) == 0:
+    if not D and Settings.TREE_CHECK:
         if isTree(G) and isTree(H):
             print("graph has tree shape")
             return countTreeIsomorphism(G)
@@ -387,18 +399,18 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of refignment
+    if Settings.PREPROCESSING and not D:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if Settings.TREE_CHECK and len(D) == 0:
+    if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
             print("Graph has tree shape")
             return countTreeIsomorphism(G)
-    if Settings.TWIN_CHECK and len(D) == 0:
+    if Settings.TWIN_CHECK and not D:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
         constantG = 1
@@ -447,7 +459,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
