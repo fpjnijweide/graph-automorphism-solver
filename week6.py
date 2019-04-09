@@ -30,9 +30,11 @@ def generate_group_recursive(generators):
     else:
         return generate_group_recursive(res)
 
-def membership_check(element,group):
+
+
+def membership_check(element,group,recursive=True):
     print("membership check for " + str(element) + " in " + str(group))
-    if element in group:
+    if recursive and element in group:
         print("TRUE: element is simply in group")
         return True
     if group==[] or group==[[]]:
@@ -53,6 +55,9 @@ def membership_check(element,group):
         if len(orbits[orbit_and_image[0]])>1:
             non_trivial_orbit_nr=orbit_and_image[0]
             break
+    if non_trivial_orbit_nr==-1:
+        print("FALSE: no non trivial orbit")
+        return False
 
     group_stabilizer=Stabilizer(group,non_trivial_orbit_nr)
 
@@ -80,7 +85,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
     new_stab=[]
     for stab_element in stab:
         print("starting checking for " + str(stab_element))
-        if membership_check(stab_element,permutations_list):
+        if membership_check(stab_element,permutations_list,recursive=False):
             new_stab.append(stab_element)
     print("new_stab: "+ str(new_stab))
     current_stab=new_stab[0]
@@ -92,7 +97,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
     next_stab=Stabilizer(new_stab,first_stab_el)
 
     # if len(new_stab)==0 or len(new_stab)==1:
-    #     final_stab_size=len(new_orb)*len(new_stab)
+    #     3final_stab_size=len(new_orb)*len(new_stab)
     if next_stab==[]:
         final_stab_size=len(new_orb)
     else:
@@ -431,7 +436,7 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    G1=create_graph_with_cycle(4)
+    G1=create_complete_graph(4)
     G2=G1
 
 
