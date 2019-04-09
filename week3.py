@@ -152,5 +152,5 @@ if __name__ == "__main__":
     write_graph_to_dot_file(G2, "G2")
     # render('dot', 'png', 'graphG1.dot')
     # render('dot', 'png', 'graphG2.dot')
-    result = is_isomorphism(G1, G2)
+    result = is_isomorphic(G1, G2)
     print(result)
