@@ -255,7 +255,7 @@ def check_cube(G: Graph):
             is_cube = False
             break
     if is_cube:
-        FOUND_TYPE.append("Cube")
+        FOUND_TYPE.append("Cube/Torus")
         return first_degree
     else:
         return 0
@@ -444,7 +444,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 def is_isomorphism(G: Graph, H: Graph):
-    return count_automorphisms(G,H,[],[],G.partition[:],H.partition[:],do_not_check_automorphism=True)
+    return count_automorphisms(G,H,[],[],G.partition[:],H.partition[:],do_not_check_automorphism=True) > 0
 
 
 

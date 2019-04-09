@@ -1,17 +1,17 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes6.grl"
+FILENAME = "graphs/Isom1.grl"
 
 class Settings:
-    AUTOMORPHISMS = True
-    FAST = False
+    AUTOMORPHISMS = False
+    FAST = True
     PREPROCESSING = True
     TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
     DIHEDRAL_COMPLETE_CUBE_CHECK = True
 
-    # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
+
 
 
 if __name__ == '__main__':
