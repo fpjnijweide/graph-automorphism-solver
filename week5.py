@@ -5,12 +5,12 @@ import time
 #from graphviz import render
 
 
-def neighbors_of_colour(v: Vertex, colour):
-    sum = 0
-    for c in v.neighbor_colors:
-        if c == colour:
-            sum += 1
-    return sum
+# def neighbors_of_colour(v: Vertex, colour):
+#     sum = 0
+#     for c in v.neighbor_colors:
+#         if c == colour:
+#             sum += 1
+#     return sum
 
 
 def fast_refinement(G: Graph, H: Graph):
@@ -50,14 +50,15 @@ def fast_refinement(G: Graph, H: Graph):
 
             vertex0 = vertices_dll.head
 
-            vertex0_neigbors_of_color = neighbors_of_colour(vertex0.data, queue[queueindex])
+            # vertex0_neigbors_of_color = neighbors_of_colour(vertex0.data, queue[queueindex])
 
             group1_int=0
             group2 = []
 
             for v in vertices_dll:
-                vertex1_neighbors_of_color = neighbors_of_colour(v.data, queue[queueindex])
-                if vertex0_neigbors_of_color == vertex1_neighbors_of_color:
+                # vertex1_neighbors_of_color = neighbors_of_colour(v.data, queue[queueindex])
+                # if vertex0_neigbors_of_color == vertex1_neighbors_of_color:
+                if vertex0.data.neighbor_colors.count(queue[queueindex])==v.data.neighbor_colors.count(queue[queueindex]):
                     # Has the same number of neighbours with colour queue[0] as vertex0
                     group1_int+=1
                 else:
@@ -74,7 +75,7 @@ def fast_refinement(G: Graph, H: Graph):
                     # j+=1
                     partitions[node.colornum].remove(node)
                     # i=0
-                    for neighbor in node.neighbors:
+                    for neighbor in node._neighborset:
                         # try:
                         # i+=1
                         # if node.colornum not in neighbor.neighbor_colors:
@@ -138,21 +139,21 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    # G3, G4 = load_graphs("graphs/cubes5.grl", 0, 1)
-    # G3 = initialize_colors(G3)
-    # G4 = initialize_colors(G4)
-    # start = time.time()
-    # G3, G4 = color_refinement(G3, G4)
-    # g1_partition_backup = G3.partition[:]
-    # g2_partition_backup = G4.partition[:]
-    # #print(is_isomorphic(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
-    #
-    # #print(count_automorphisms(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
-    # end = time.time()
-    # print("normal:", end - start)
-    #
-    # write_graph_to_dot_file(G1, "G1")
-    # write_graph_to_dot_file(G2, "G2")
+    G3, G4 = load_graphs("graphs/cubes5.grl", 0, 1)
+    G3 = initialize_colors(G3)
+    G4 = initialize_colors(G4)
+    start = time.time()
+    G3, G4 = color_refinement(G3, G4)
+    g1_partition_backup = G3.partition[:]
+    g2_partition_backup = G4.partition[:]
+    #print(is_isomorphic(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
+
+    #print(count_automorphisms(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
+    end = time.time()
+    print("normal:", end - start)
+
+    write_graph_to_dot_file(G1, "G1")
+    write_graph_to_dot_file(G2, "G2")
 
 
 

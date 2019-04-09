@@ -79,11 +79,13 @@ def copy_graph(inputG: Graph):
 
         G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
         G._v[i]._incidence = {}  # Reset its incidence
+        G._v[i]._neighborset=[]
 
     # Re-add all edges
     for edge in inputG._e:
         new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
         G.add_edge(new_edge)
+
 
     return G
 
