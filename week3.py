@@ -25,7 +25,7 @@ def initialize_colors(G: Graph):
     # sets the colornum and label of all vertices to equal to their degree (amount of neighbors)
     for v in G.vertices:
         v.change_color(v.degree)
-    # G.partition = create_partition(G.vertices)
+    G.partition = create_partition(G.vertices)
     return G
 
 
@@ -42,7 +42,23 @@ def color_refinement(G: Graph, H: Graph):
     return G, H
 
 
+def create_partition(vertices: list):
+    # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
+    partition = []
 
+    for v in vertices:
+        # if the degree is not found in partition, add empty lists to it
+        add_to_partition(v,partition)
+
+    return partition
+
+def add_to_partition(v: Vertex, partition):
+    if v.colornum > len(partition) - 1:
+        diff = v.colornum - (len(partition) - 1)
+        for i in range(diff):
+            partition.append([])
+    # add the vertex to its respective index in partition
+    partition[v.colornum].append(v)
 
 def create_partition_DLL(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
@@ -106,8 +122,8 @@ def refine_colors(G: Graph, H: Graph):
                 partition[changing_vertex.colornum].remove(changing_vertex)
                 changing_vertex.change_color(new_color)
 
-    # G.partition = create_partition(G.vertices)
-    # H.partition = create_partition(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
 
 
 def write_graph_to_dot_file(G: Graph, title: str):
@@ -117,8 +133,8 @@ def write_graph_to_dot_file(G: Graph, title: str):
 
 def is_stable(g1: Graph, g2: Graph):
     # Returns true as soon as we find 1 isomorphism
-    # g1.partition = create_partition(g1.vertices)
-    # g2.partition = create_partition(g2.vertices)
+    g1.partition = create_partition(g1.vertices)
+    g2.partition = create_partition(g2.vertices)
     for i in range(len(g1.partition)):
         # Check if the amount of vertices in this partition are equal in both graphs
         if len(g1.partition[i]) != len(g2.partition[i]):

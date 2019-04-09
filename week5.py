@@ -101,8 +101,8 @@ def fast_refinement(G: Graph, H: Graph):
 
         queueindex += 1
 
-    # G.partition = create_partition(G.vertices)
-    # H.partition = create_partition(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
 
     return G, H
 

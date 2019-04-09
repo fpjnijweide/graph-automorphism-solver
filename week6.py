@@ -145,8 +145,8 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
     # Refine the colors of G and H
 
-    # G.partition = create_partition(G.vertices)
-    # H.partition = create_partition(H.vertices)
+    G.partition = create_partition(G.vertices)
+    H.partition = create_partition(H.vertices)
 
     if Settings.FAST:
         G, H = fast_refinement(G, H)
@@ -213,8 +213,8 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     H_partition_chosen_color = H.partition[chosen_color][:]
     permutations=[]
 
-    new_G_partition = G.partition[:]
-    new_H_partition = H.partition[:]
+    new_G_partition = G.partition
+    new_H_partition = H.partition
     # color_by_partition(G_partition_backup)
     # color_by_partition(H_partition_backup)
     #
