@@ -53,6 +53,7 @@ class Vertex(object):
 
 
 
+
     def __repr__(self):
         """
         A programmer-friendly representation of the vertex.
@@ -241,6 +242,8 @@ class Graph(object):
 
         for i in range(n):
             self.add_vertex(Vertex(self))
+
+        self.partition={}
 
     def __repr__(self):
         """

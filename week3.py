@@ -48,14 +48,17 @@ def create_partition(vertices: list):
 
     for v in vertices:
         # if the degree is not found in partition, add empty lists to it
-        if v.colornum > len(partition) - 1:
-            diff = v.colornum - (len(partition) - 1)
-            for i in range(diff):
-                partition.append([])
-        # add the vertex to its respective index in partition
-        partition[v.colornum].append(v)
+        add_to_partition(v,partition)
 
     return partition
+
+def add_to_partition(v: Vertex, partition):
+    if v.colornum > len(partition) - 1:
+        diff = v.colornum - (len(partition) - 1)
+        for i in range(diff):
+            partition.append([])
+    # add the vertex to its respective index in partition
+    partition[v.colornum].append(v)
 
 def create_partition_DLL(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
