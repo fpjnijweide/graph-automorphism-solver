@@ -296,8 +296,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if Settings.FAST:
         G, H = fast_refinement(G, H)
     else:
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
+        # G.partition = create_partition(G.vertices)
+        # H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
@@ -352,8 +352,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
-    new_G_partition = G.partition
-    new_H_partition = H.partition
+    new_G_partition = G.partition[:]
+    new_H_partition = H.partition[:]
     # color_by_partition(G_partition_backup)
     # color_by_partition(H_partition_backup)
     #
@@ -400,8 +400,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     if Settings.FAST:
         G, H = fast_refinement(G, H)
     else:
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
+        # G.partition = create_partition(G.vertices)
+        # H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
@@ -450,8 +450,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
-    new_G_partition = G.partition
-    new_H_partition = H.partition
+    new_G_partition = G.partition[:]
+    new_H_partition = H.partition[:]
     # color_by_partition(G_partition_backup)
     # color_by_partition(H_partition_backup)
     #

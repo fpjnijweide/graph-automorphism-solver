@@ -131,6 +131,12 @@ class Vertex(object):
             neighbor._neighbor_colors_sum-=self.colornum
             neighbor._neighbor_colors.append(color)
             neighbor._neighbor_colors_sum += color
+
+        if self.colornum>(len(self.graph.partition)-1):
+            print("a")
+        self.graph.partition[self.colornum].remove(self)
+        add_to_partition(self,self.graph.partition)
+
         self.colornum=color
         self.label=color
 
@@ -225,8 +231,26 @@ class Edge(object):
         """
         return self.head == vertex or self.tail == vertex
 
+def create_partition(vertices: list):
+    # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
+    partition = []
+
+    for v in vertices:
+        # if the degree is not found in partition, add empty lists to it
+        add_to_partition(v,partition)
+
+    return partition
+
+def add_to_partition(v: Vertex, partition):
+    if v.colornum > len(partition) - 1:
+        diff = v.colornum - (len(partition) - 1)
+        for i in range(diff):
+            partition.append([])
+    # add the vertex to its respective index in partition
+    partition[v.colornum].append(v)
 
 class Graph(object):
+    partition=[]
     def __init__(self, directed: bool, n: int=0, simple: bool=False):
         """
         Creates a graph.
@@ -243,7 +267,7 @@ class Graph(object):
         for i in range(n):
             self.add_vertex(Vertex(self))
 
-        self.partition={}
+        self.partition=create_partition(self._v)
 
     def __repr__(self):
         """
@@ -320,6 +344,7 @@ class Graph(object):
             raise GraphError("A vertex must belong to the graph it is added to")
 
         self._v.append(vertex)
+        add_to_partition(vertex,self.partition)
 
     def del_vertex(self, vertex: "Vertex"):
         for edge in vertex.incidence:
