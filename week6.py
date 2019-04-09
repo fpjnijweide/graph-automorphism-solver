@@ -67,11 +67,14 @@ def membership_check(element,group,recursive=True):
     for orbit_and_image in orbit_nrs:
         orbit_nr=orbit_and_image[0]
         image=orbit_and_image[1]
-        image_orbit_index=orbits[orbit_nr].index(image)
+        try:
+            image_orbit_index=orbits[orbit_nr].index(image)
+        except ValueError:
+            return False
         traversal_perm=traversals[orbit_nr][image_orbit_index]
         if traversal_perm is not None:
             # traversal_perm=traversals[orbit_nr][image]
-            composition_perm = -traversal_perm * element
+            composition_perm = -traversal_perm* element
             if membership_check(composition_perm, group_stabilizer):
                 return True
 
@@ -82,33 +85,43 @@ def membership_check(element,group,recursive=True):
     # if element in group
 
 
-def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
-    print("stab: " + str(stab))
-    print("orb: " + str(orb))
+def group_size(group):
+    nontriv_orbit=-1
+    i=0
+    while nontriv_orbit==-1:
+        orbit,transversals=Orbit(group,i,True)
+
+        if len(orbit)>1:
+            nontriv_orbit=i
+        else:
+            i += 1
+    if nontriv_orbit==-1:
+        return 1 #todo maybe turn 0
+    stab=Stabilizer(group,nontriv_orbit)
     new_stab=[]
     for stab_element in stab:
         print("starting checking for " + str(stab_element))
-        if membership_check(stab_element,permutations_list,recursive=False):
+        if membership_check(stab_element,group):
             new_stab.append(stab_element)
     print("new_stab: "+ str(new_stab))
-    current_stab=new_stab[0]
+    # current_stab=new_stab[0]
 
 
 
-    first_stab_el=current_stab.cycles()[0][0]
-    new_orb,new_trans=Orbit(new_stab,first_stab_el,True)
-    next_stab=Stabilizer(new_stab,first_stab_el)
+    # first_stab_el=current_stab.cycles()[0][0]
+    # new_orb,new_trans=Orbit(new_stab,first_stab_el,True)
+    # next_stab=Stabilizer(new_stab,first_stab_el)
 
     # if len(new_stab)==0 or len(new_stab)==1:
     #     3final_stab_size=len(new_orb)*len(new_stab)
-    if next_stab==[]:
-        final_stab_size=len(new_orb)
+    if new_stab==[] or new_stab==[[]]:
+        final_stab_size=1
     else:
 
-        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,next_stab,permutations_list)
+        final_stab_size=group_size(new_stab)
 
-    print("size of orbit: " + str(len(orb)))
-    res=len(orb)*final_stab_size
+    print("size of orbit: " + str(len(orbit)))
+    res=len(orbit)*final_stab_size
     return res
 #
 
@@ -209,7 +222,11 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     if Settings.TWIN_CHECK:
         x = find_twins(G.partition[chosen_color])
     else:
-        x = G.partition[chosen_color][0]
+        i=0
+        x = G.partition[chosen_color][i]
+        while G._v.index(x) in D or G._v.index(x) in I:
+            i+=1
+            x = G.partition[chosen_color][i]
     H_partition_chosen_color = H.partition[chosen_color][:]
     permutations=[]
 
@@ -221,8 +238,10 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-
+    # for
     for y in H_partition_chosen_color:
+        if H._v.index(y) in I or H._v.index(y) in D:
+            continue
         D= old_D[:] + [G._v.index(x)]
 
         I= old_I[:] + [H._v.index(y)]
@@ -241,9 +260,9 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
                 else:
                     permutations.append(res.cycles())
                 ### this code makes it return to previous instance
-                if old_D:
-                    if old_D[-1] != old_I[-1]: #if this iteration is not trivial
-                        return permutations
+        if old_D:
+            if old_D[-1] != old_I[-1]: #if this iteration is not trivial
+                return permutations
                 ### uncomment if needed
 
 
@@ -295,17 +314,20 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
 def algebra_magic(input_cycles,gr_size):
     print(input_cycles)
-
+    old_perms=[]
+    for cycle in input_cycles:
+        old_perms.append(permutation(gr_size,cycle))
     permutations_list=[]
 
     a:list = [1,2,3]
 
 
-    for cycle_composition in input_cycles:
-
+    for cycle_composition_nr in range(len(input_cycles)):
+        cycle_composition=input_cycles[cycle_composition_nr]
 
         new_perm_list=[]
         cycle_perm=permutation(gr_size,cycles=cycle_composition)
+        # if membership_check(cycle_perm,old_perms,recursive=False):
         is_unique=True
 
         for cycle in cycle_composition:
@@ -323,19 +345,19 @@ def algebra_magic(input_cycles,gr_size):
                     if composition_perm in permutations_list: #todo
                         is_unique=False
                         break
-
-                    # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
-                    # print("yeahh")
-
+        #
+        #             # new_perm_list.append = (trs(orb.index(cycle[nr])) * cycle)
+        #             # print("yeahh")
+        #
                 except ValueError:
                     pass
-        # print("new_perm::: " + str(new_perm_list))
-        # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
-
-        #     pass
-
-
-        # todo maybe just don't add permutation that is multiple oof 2 other (1,4,5)
+        # # print("new_perm::: " + str(new_perm_list))
+        # # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
+        #
+        # #     pass
+        #
+        #
+        # # todo maybe just don't add permutation that is multiple oof 2 other (1,4,5)
         if is_unique:
             permutations_list.append(cycle_perm)
 
@@ -350,6 +372,7 @@ def algebra_magic(input_cycles,gr_size):
     # i=i+1
     print(i)
     s=Stabilizer(permutations_list,i)
+    # permutations_list.remove(permutation(cycle_perm.n))
     big_perm=generate_group(permutations_list)
     # new_big_perm=[]
 
@@ -374,7 +397,7 @@ def algebra_magic(input_cycles,gr_size):
     #todo if dihedral, just use s
 
     print("#### ---- starting stabilizer magic ---- #####")
-    abb=stabilizer_magic(gr_size,o,trans,s,permutations_list)
+    abb=group_size(permutations_list)
     # abb=stabilizer_magic2(permutations_list)
     return abb
     # big_s=generate_group(s)
@@ -437,7 +460,7 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    G1=create_complete_graph(5)
+    G1=create_graph_with_cycle(4)
     G2=G1
 
 
