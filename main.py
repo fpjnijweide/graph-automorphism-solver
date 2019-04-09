@@ -1,7 +1,7 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/bigtrees1.grl"
 
 
 class Settings:
@@ -68,10 +68,10 @@ if __name__ == '__main__':
             else:
                 print(str(graph) + ": " + str(automorphisms))
     else:
+        print('{:>}'.format("Sets of isomorphic graphs:"))
         # Print isomorphisms without the number of automorphisms
         if len(isomorphisms.keys()) == 0:
-            sys.stdout.write('\n')
-            sys.stdout.write("There are no isomorphic graphs")
+            print("There are no isomorphic graphs")
         for g in isomorphisms.keys():
             isomorphisms.get(g).insert(0, g)
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
