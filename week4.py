@@ -13,15 +13,18 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
         added = False
         for j in result:
             if v[i].neighbors == j[0].neighbors:
+                print("false twin, color: ", v[i].colornum)
                 j.append(v[i])
                 added = True
             elif are_twins(v[i], j[0]):
+                print("true twin")
                 j.append(v[i])
                 added = True
         if not added:
             result.append([v[i]])
 
     trueResult = []
+    print(len(result))
     for i in result:
         if len(i) > 1:
             trueResult.append(i)
@@ -32,15 +35,10 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
 def are_twins(v0, v1):
     s1 = set(v1.neighbors)
     s2 = set(v0.neighbors)
-    s3 = list(s1 - s2)
-    #TODO: fix this method
+    s3 = s1.symmetric_difference(s2)
 
-    if v0 in s1 and v1 in s2:
-        print("oeh")
+    if v0 in s3 and v1 in s3 and len(s3) == 2:  # the only difference should be each other when they are true twins
         return True
-        if s1 == s2:  # the only difference should be each other when they are true twins
-            print("twins")
-            return True
     return False
 
 
@@ -260,12 +258,15 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
         all_colors_are_unique = True
+        print("check")
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
+                print("false")
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
+                print("true")
                 return 1 * constant
             else:
                 return 1
@@ -285,6 +286,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
+        print("huh")
         constantG = 1
         constantH = 1
         for i in twins_G:
@@ -300,12 +302,15 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         print("G: ", constantG, " H: ", constantH)
         G.partition = create_partition(G.vertices)
         H.partition = create_partition(H.vertices)
+
     else:
         constantG = constant
 
     # Choose a color that is not unique
     chosen_color = -1
     for i in range(len(G.partition)):
+        print("G: ", G.partition)
+        print("H: ", H.partition)
         Gcolor = G.partition[i][:]  # list with vertices of same color
         Hcolor = H.partition[i][:]
         if len(Gcolor) + len(Hcolor) >= 4:
@@ -313,6 +318,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             break
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
+        #TODO: or after reducing graph, colors are now unique and we have a problemos
         print("ERROR CHOOSING COLOR")
         return 0
 
@@ -337,7 +343,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/test.grl", 0, 1)
+    G1, G2 = load_graphs("graphs/cographs1.grl", 1, 2)
 
     # from week2 import *
     # G1=create_complete_graph(4)
