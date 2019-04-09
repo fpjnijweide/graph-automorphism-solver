@@ -11,6 +11,7 @@ class Settings:
     PREPROCESSING = False
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
+    DIHEDRAL_COMPLETE_CHECK = True
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 

@@ -218,9 +218,42 @@ def is_twin(v, list_of_twins):
             result = True
     return result
 
+def check_dihedral(G: Graph):
+
+    is_cycle=True
+
+    for i in range(len(G._v)):
+        v=G._v[i]
+        if len(v.neighbors)==2:
+            pass
+        else:
+            is_cycle=False
+            break
+    return is_cycle
+
+def check_complete(G: Graph):
+    is_complete=True
+    G_size=len(G._v)
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if not len(v.neighbors)==G_size-1:
+            is_complete=False
+            break
+    return is_complete
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
+
+    if len(D)==0 and Settings.DIHEDRAL_COMPLETE_CHECK:
+        if len(G._v)==len(H._v):
+            if check_dihedral(G) and check_dihedral(H):
+                return 2*len(G._v)
+            elif check_complete(G) and check_complete(H):
+                fact=1
+
+                for i in range(1, len(G._v) + 1):
+                    fact = fact * i
+                return fact
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
