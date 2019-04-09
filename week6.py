@@ -115,7 +115,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
 
-    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
+    if not D and Settings.DIHEDRAL_COMPLETE_CUBE_CHECK:
         if len(G._v)==len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)

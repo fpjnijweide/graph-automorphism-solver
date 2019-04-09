@@ -1,7 +1,7 @@
 from main import *
 from week2 import *
 from week3 import *
-#from graphviz import render
+from graphviz import render
 from graph import *
 import math
 
@@ -279,15 +279,40 @@ def generate_n_dimensional_cube(degree):
     square=create_graph_with_cycle(4)
     result=create_graph_with_cycle(4)
     for i in range (3,degree+1):
-        result=result+result
-        for i in range(len(result._v)//2):
-            result.add_edge(Edge(result._v[i],result._v[i+(len(result)//2)]))
+        # result=result+result
+        mapping={}
+        original_size=len(result._v)
+        for node in range(original_size):
+            new_vertex=Vertex(result)
+            mapping[result._v[node]]=new_vertex
+            result.add_vertex(new_vertex)
+
+        original_edge_size=len(result._e)
+        e_map={}
+        #add all edges
+        for node in range(original_size):
+            for edge in result._v[node].incidence:
+                if edge.head==result._v[node]:
+                    result.add_edge(Edge(mapping[edge.tail],mapping[edge.head]))
+            result.add_edge(Edge(mapping[result._v[node]],result._v[node]))
+
+        #add new edges
+
+        # result=result+result
+        # for i in range(len(result._v)//2):
+        #     result._v[i]._graph=result
+        #     result._v[i + (len(result) // 2)]._graph=result
+        #     result.add_edge(Edge(result._v[i],result._v[i+(len(result)//2)]))
+    # write_graph_to_dot_file(G1, "G1")
+    # write_graph_to_dot_file(G2, "G2")
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
     return result
 
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,do_not_check_automorphism=False):
     # Recursively counts all isomorphs of this graph
-    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
+    if not D and Settings.DIHEDRAL_COMPLETE_CUBE_CHECK:
         if len(G._v) == len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
@@ -301,7 +326,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 degree_G=check_cube(G)
                 if degree_G!=0:
                     if degree_G==check_cube(H):
-                        if is_isomorphism(G,generate_n_dimensional_cube(degree_G)):
+                        cube=generate_n_dimensional_cube(degree_G)
+                        # cube=copy_graph(cube)
+                        cube=initialize_colors(cube)
+                        if is_isomorphism(G,copy_graph(cube)):
                             fact = 1
 
                             for i in range(1, degree_G+1):
@@ -421,7 +449,7 @@ def is_isomorphism(G: Graph, H: Graph):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes3.grl", 0, 0)
+    G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -437,7 +465,7 @@ if __name__ == "__main__":
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
-
+    #
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
 
