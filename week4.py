@@ -12,26 +12,21 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in range(1, len(v)):
         added = False
         for j in result:
-            if v[i].colornum == 4 and j[0].colornum == 4:
-                print(v[i]._neighborset)
-                print(j[0]._neighborset)
             if set(v[i]._neighborset).symmetric_difference(set(j[0]._neighborset)) == set([]):
-                print("false twin, color: ", v[i].colornum)
                 j.append(v[i])
                 added = True
             elif are_twins(v[i], j[0]):
-                print("true twin")
                 j.append(v[i])
                 added = True
         if not added:
             result.append([v[i]])
 
     trueResult = []
-    print(len(result))
     for i in result:
         if len(i) > 1:
             trueResult.append(i)
-    print(trueResult)
+    if len(trueResult) > 1:
+        print("twins in graph")
     return trueResult
 
 
@@ -63,7 +58,6 @@ def reduce_twins(G: Graph, twins_G):
     for j in twins_G:
         for x in range(1, len(j)):
             if j[x] in G.vertices:
-                print(j[x])
                 G.del_vertex(j[x])
 
 
