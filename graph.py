@@ -105,7 +105,7 @@ class Vertex(object):
         """
         Returns the list of neighbors of the vertex.
         """
-        return list(self._incidence.keys())
+        return list(self._neighborset)
 
     def _add_neighbor(self, vertex: "Vertex"):
         """
