@@ -1,15 +1,15 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/bigtrees1.grl"
+FILENAME = "graphs/modulesC.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
+    FAST = True
     PREPROCESSING = False
-    TREE_CHECK = True
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CHECK = False
+    DIHEDRAL_COMPLETE_CHECK = True
 
     # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 

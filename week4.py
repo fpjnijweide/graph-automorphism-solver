@@ -223,7 +223,7 @@ def is_twin(v, list_of_twins):
 
 
 def check_dihedral(G: Graph):
-    is_cycle=True
+    is_cycle = True
     global FOUND_TYPE
 
     for i in range(len(G._v)):
@@ -231,7 +231,7 @@ def check_dihedral(G: Graph):
         if len(v.neighbors)==2:
             pass
         else:
-            is_cycle=False
+            is_cycle = False
             break
     if is_cycle:
         FOUND_TYPE.append("Dihedral")
@@ -239,14 +239,14 @@ def check_dihedral(G: Graph):
 
 
 def check_complete(G: Graph):
-    is_complete=True
-    G_size=len(G._v)
+    is_complete = True
+    G_size = len(G._v)
     global FOUND_TYPE
 
     for i in range(len(G._v)):
         v = G._v[i]
-        if not len(v.neighbors)==G_size-1:
-            is_complete=False
+        if not len(v.neighbors) == G_size-1:
+            is_complete = False
             break
     if is_complete:
         FOUND_TYPE.append("Complete")
@@ -256,7 +256,7 @@ def check_complete(G: Graph):
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
     # Recursively counts all isomorphs of this graph
     if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
-        if len(G._v)==len(H._v):
+        if len(G._v) == len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
             elif check_complete(G) and check_complete(H):
