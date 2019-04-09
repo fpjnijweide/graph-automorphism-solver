@@ -435,6 +435,7 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
+
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
