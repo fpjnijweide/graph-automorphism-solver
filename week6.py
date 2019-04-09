@@ -52,9 +52,12 @@ def generate_group_recursive(generators):
         return generate_group_recursive(res)
 
 def membership_check(element,group):
+    print("membership check for " + str(element) + " in " + str(group))
     if element in group:
+        print("TRUE: element is simply in group")
         return True
     if group==[] or group==[[]]:
+        print("FALSE: group is empty")
         return False
 
     orbits=[None]*element.n
@@ -93,11 +96,14 @@ def membership_check(element,group):
 
 
 def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
+    print("stab: " + str(stab))
+    print("orb: " + str(orb))
     new_stab=[]
     for stab_element in stab:
+        print("starting checking for " + str(stab_element))
         if membership_check(stab_element,permutations_list):
             new_stab.append(stab_element)
-
+    print("new_stab: "+ str(new_stab))
     current_stab=new_stab[0]
 
 
@@ -114,7 +120,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
 
         final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,next_stab,permutations_list)
 
-
+    print("size of orbit: " + str(len(orb)))
     res=len(orb)*final_stab_size
     return res
 #
@@ -151,7 +157,7 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
-    if not is_isomorphism(G, H):
+    if not is_stable(G, H):
         return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph
@@ -370,6 +376,7 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
+    print("#### ---- starting stabilizer magic ---- #####")
     abb=stabilizer_magic(gr_size,o,trans,s,permutations_list)
     # abb=stabilizer_magic2(permutations_list)
     return abb
@@ -430,11 +437,11 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/cubes5.grl", 2,3)
+    # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    # G1=create_complete_graph(6)
-    # G2=G1
+    G1=create_graph_with_cycle(4)
+    G2=G1
 
 
     if (G1==G2):
@@ -445,7 +452,7 @@ if __name__ == '__main__':
     G_partition_backup = create_partition(G1.vertices)
 
     H_partition_backup = create_partition(G2.vertices)
-    print(is_isomorphism(G1,G2))
+    # print(is_isomorphism(G1,G2))
     print("week 6 answer: "+ str(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup)))
     print("real nr: "+ str(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup)))
 
