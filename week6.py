@@ -437,7 +437,7 @@ if __name__ == '__main__':
     # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    G1=create_graph_with_cycle(4)
+    G1=create_complete_graph(5)
     G2=G1
 
 

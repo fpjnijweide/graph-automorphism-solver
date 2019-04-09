@@ -5,11 +5,11 @@ FILENAME = "graphs/Isom1.grl"
 
 class Settings:
     AUTOMORPHISMS = False
-    FAST = True
-    PREPROCESSING = True
-    TREE_CHECK = True
+    FAST = False
+    PREPROCESSING = False
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CUBE_CHECK = True
+    DIHEDRAL_COMPLETE_CUBE_CHECK = False
 
 
 
