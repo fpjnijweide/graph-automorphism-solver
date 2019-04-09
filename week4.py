@@ -1,6 +1,6 @@
 from main import *
 from week3 import *
-from graphviz import render
+#from graphviz import render
 from graph import *
 import math
 
@@ -12,7 +12,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in range(1, len(v)):
         added = False
         for j in result:
-            if v[i].neighbors == j[0].neighbors:
+            if set(v[i]._neighborset).symmetric_difference(set(j[0]._neighborset)) == set([]):
                 j.append(v[i])
                 added = True
             elif are_twins(v[i], j[0]):
@@ -25,19 +25,18 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in result:
         if len(i) > 1:
             trueResult.append(i)
-
+    if len(trueResult) > 0:
+        print("twins in graph")
     return trueResult
 
 
 def are_twins(v0, v1):
-    s1 = set(v1.neighbors)
-    s2 = set(v0.neighbors)
+    s1 = set(v1._neighborset)
+    s2 = set(v0._neighborset)
+    s3 = s1.symmetric_difference(s2)
 
-    if v0 in s1 and v1 in s2:
-        s1.remove(v0)
-        s2.remove(v1)
-        if s1 == s2:  # the only difference should be each other when they are true twins
-            return True
+    if v0 in s3 and v1 in s3 and len(s3) == 2:  # the only difference should be each other when they are true twins
+        return True
     return False
 
 
@@ -45,20 +44,21 @@ def reduce_twins(G: Graph, twins_G):
     # we keep one of the twins with index 0, all others will be deleted and their edges will be added to the twin that is kept.
     for i in twins_G:
         for vertex in range(1, len(i)):
-            for e in vertex.edges:
-                if (e.head == vertex and e.tail in i) or (e.tail == vertex and e.head in i):
-                    print("TODOD")
-                elif e.head == vertex:
-                    edge = Edge(e.tail, i[0])
-                    G.add_edge(edge)
-                    G.del_edge(G, e)
-                elif e.tail == vertex:
-                    edge = Edge(i[0], e.head)
-                    G.add_edge(edge)
-                    G.del_edge(G, e)
+            for e in i[vertex].incidence:
+                if (e.head == i[vertex] and e.tail in i) or (e.tail == i[vertex] and e.head in i): # connection between true twins can be left out
+                    break
+                else:
+                    if e.head == i[vertex]:
+                        edge = Edge(e.tail, i[0])
+                        G.add_edge(edge)
+                    elif e.tail == i[vertex]:
+                        edge = Edge(i[0], e.head)
+                        G.add_edge(edge)
+
     for j in twins_G:
         for x in range(1, len(j)):
-            G.del_vertex(x)
+            if j[x] in G.vertices:
+                G.del_vertex(j[x])
 
 
 def copy_graph(inputG: Graph):
@@ -96,7 +96,7 @@ def color_by_partition(partition: List):
 
 def countTreeIsomorphism(G: Graph):
     # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
-    """degree1 = []
+    degree1 = []
     strings = []
     for v in G.vertices:
         if v.degree == 1:
@@ -118,7 +118,7 @@ def countTreeIsomorphism(G: Graph):
             degree1.remove(string[0])
             degree1.remove(string[len(string) - 1])
             for z in string:
-                G.del_vertex(z)"""
+                G.del_vertex(z)
 
     result = 1  # result depends on position of the root, so we check for every vertex as root
     for v in G.vertices:
@@ -157,8 +157,8 @@ def countTreeIsomorphism(G: Graph):
 
         if num > result:
             result = num
-    #for x in strings:
-     #   result = result * 2
+    for x in strings:
+       result = result * 2
     return result
 
 
@@ -218,9 +218,54 @@ def is_twin(v, list_of_twins):
             result = True
     return result
 
+def check_dihedral(G: Graph):
 
-def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
+    is_cycle=True
+
+    for i in range(len(G._v)):
+        v=G._v[i]
+        if len(v.neighbors)==2:
+            pass
+        else:
+            is_cycle=False
+            break
+    return is_cycle
+
+def check_complete(G: Graph):
+    is_complete=True
+    G_size=len(G._v)
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if not len(v.neighbors)==G_size-1:
+            is_complete=False
+            break
+    return is_complete
+
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
     # Recursively counts all isomorphs of this graph
+
+    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
+        if len(G._v)==len(H._v):
+            if check_dihedral(G) and check_dihedral(H):
+                return 2*len(G._v)
+            elif check_complete(G) and check_complete(H):
+                fact=1
+
+                for i in range(1, len(G._v) + 1):
+                    fact = fact * i
+                return fact
+
+
+    if not D and Settings.TWIN_CHECK:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantGH = 1
+        for i in twins_G:
+            constantGH = constantGH * math.factorial(len(i))
+        reduce_twins(G, twins_G)
+        reduce_twins(H, twins_H)
+    else:
+        constantGH = constant
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
@@ -260,32 +305,24 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
-            return 1
+            if Settings.TWIN_CHECK:
+                return 1 * constantGH
+            else:
+                return 1
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of refignment
+    if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if Settings.TREE_CHECK and len(D) == 0:
+    if not D and Settings.TREE_CHECK:
         if isTree(G) and isTree(H):
-            print("start")
+            print("graph has tree shape")
             return countTreeIsomorphism(G)
-    if Settings.TWIN_CHECK and len(D) == 0:
-        twins_G = find_twins(G)
-        twins_H = find_twins(H)
-        constantG = 1
-        constantH = 1
-        for i in twins_G:
-            constantG = constantG * math.factorial(len(i))
-        for j in twins_H:
-            constantH = constantH * math.factorial(len(j))
-        reduce_twins(G, twins_G)
-        reduce_twins(H, twins_H)
 
     # Choose a color that is not unique
     chosen_color = -1
@@ -316,7 +353,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition)
+                                               new_H_partition, constantGH)
     return nr_of_isomorphs
 
 
@@ -362,18 +399,17 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     # We have now found a stable coloring that has non-unique colors
 
-    if Settings.PREPROCESSING and len(D) == 0:  # only once, after first call of refignment
+    if Settings.PREPROCESSING and not D:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
         for v in disconnectedH:
             H._v.remove(v)
-    if Settings.TREE_CHECK and len(D) == 0:
+    if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
-            print("start")
             return countTreeIsomorphism(G)
-    if Settings.TWIN_CHECK and len(D) == 0:
+    if Settings.TWIN_CHECK and not D:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
         constantG = 1
@@ -433,10 +469,11 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
+
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
@@ -445,7 +482,7 @@ if __name__ == "__main__":
     # copy to wherever needed
     # write_graph_to_dot_file(G1, "G1")
     # write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    #render('dot', 'png', 'graphG1.dot')
+    #render('dot', 'png', 'graphG2.dot')
 
     # END DEBUGGING CODE
