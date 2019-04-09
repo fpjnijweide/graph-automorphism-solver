@@ -9,7 +9,7 @@ class Settings:
     AUTOMORPHISMS = True
     FAST = True
     PREPROCESSING = False
-    TREE_CHECK = False
+    TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
     DIHEDRAL_COMPLETE_CHECK = False
 
