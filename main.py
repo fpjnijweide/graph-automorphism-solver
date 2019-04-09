@@ -1,14 +1,16 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/bigtrees1.grl"
+FILENAME = "graphs/torus72.grl"
+
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
+    FAST = True
     PREPROCESSING = False
     TREE_CHECK = True
-    TWIN_CHECK = False  # Todo sneller maken
+    TWIN_CHECK= False # Todo sneller maken
+    DIHEDRAL_COMPLETE_CHECK = False
 
     # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
@@ -22,7 +24,7 @@ if __name__ == '__main__':
 
     # GI problem:
     isomorphisms = {}
-    for graph1 in range(0, len(graphs) - 1):
+    for graph1 in range(0, len(graphs)):
         if graph1 not in mapped:
             isomorphisms[graph1] = []
 
@@ -32,10 +34,10 @@ if __name__ == '__main__':
                 graphs[graph2] = initialize_colors(graphs[graph2])
 
                 # Refinement, either colour or fast
-                '''if Settings.FAST:
+                if Settings.FAST:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
-                    graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])'''
+                    graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
                 g1_partition_backup = graphs[graph1].partition[:]
                 g2_partition_backup = graphs[graph2].partition[:]
 
@@ -57,18 +59,8 @@ if __name__ == '__main__':
             g_partition_backup = create_partition(graphs[graph])
             gcopy_partition_backup = create_partition(graphcopy)
 
-            if Settings.FAST:
-                # graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
-                # g_partition_backup = graphs[graph].partition[:]
-                # gcopy_partition_backup = graphcopy.partition[:]
-                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                    g_partition_backup, gcopy_partition_backup, None)
-            else:
-                # graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
-                # g_partition_backup = graphs[graph].partition[:]
-                # gcopy_partition_backup = graphcopy.partition[:]
-                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                    g_partition_backup, gcopy_partition_backup, None)
+            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+                                                    g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
@@ -77,7 +69,9 @@ if __name__ == '__main__':
                 print(str(graph) + ": " + str(automorphisms))
     else:
         # Print isomorphisms without the number of automorphisms
-        print('{:>}'.format("Sets of isomorphic graphs:"))
+        if len(isomorphisms.keys()) == 0:
+            sys.stdout.write('\n')
+            sys.stdout.write("There are no isomorphic graphs")
         for g in isomorphisms.keys():
             isomorphisms.get(g).insert(0, g)
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"

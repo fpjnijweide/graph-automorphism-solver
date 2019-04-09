@@ -44,6 +44,7 @@ class Vertex(object):
         self._graph = graph
         self.label = label
         self._incidence = {}
+        self._neighborset = []
 
     def __repr__(self):
         """
@@ -105,6 +106,13 @@ class Vertex(object):
         Returns the list of neighbors of the vertex.
         """
         return list(self._incidence.keys())
+
+    def _add_neighbor(self, vertex: "Vertex"):
+        """
+        For internal use only; adds an vertex to the neighbor list
+        :param vertex: The neighbor vertex that is added to the neighborset
+        """
+        self._neighborset.append(vertex)
 
     @property
     def degree(self) -> int:
@@ -290,6 +298,11 @@ class Graph(object):
 
         self._v.append(vertex)
 
+    def del_vertex(self, vertex: "Vertex"):
+        for edge in vertex.incidence:
+            self.del_edge(edge)
+        self._v.remove(vertex)
+
     def add_edge(self, edge: "Edge"):
         """
         Add an edge to the graph. And if necessary also the vertices.
@@ -313,6 +326,13 @@ class Graph(object):
 
         edge.head._add_incidence(edge)
         edge.tail._add_incidence(edge)
+        edge.head._add_neighbor(edge.tail)
+        edge.tail._add_neighbor(edge.head)
+
+    def del_edge(self, edge: "Edge"):
+        edge.tail._incidence[edge.head].remove(edge)
+        edge.head._incidence[edge.tail].remove(edge)
+        self._e.remove(edge)
 
     def __add__(self, other: "Graph") -> "Graph":
         """
