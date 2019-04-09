@@ -12,7 +12,10 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
     for i in range(1, len(v)):
         added = False
         for j in result:
-            if v[i].neighbors == j[0].neighbors:
+            if v[i].colornum == 4 and j[0].colornum == 4:
+                print(v[i]._neighborset)
+                print(j[0]._neighborset)
+            if set(v[i]._neighborset).symmetric_difference(set(j[0]._neighborset)) == set([]):
                 print("false twin, color: ", v[i].colornum)
                 j.append(v[i])
                 added = True
@@ -33,8 +36,8 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
 
 
 def are_twins(v0, v1):
-    s1 = set(v1.neighbors)
-    s2 = set(v0.neighbors)
+    s1 = set(v1._neighborset)
+    s2 = set(v0._neighborset)
     s3 = s1.symmetric_difference(s2)
 
     if v0 in s3 and v1 in s3 and len(s3) == 2:  # the only difference should be each other when they are true twins
@@ -225,6 +228,17 @@ def is_twin(v, list_of_twins):
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant):
     # Recursively counts all isomorphs of this graph
 
+    if Settings.TWIN_CHECK and len(D) == 0:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantGH = 1
+        for i in twins_G:
+            constantGH = constantGH * math.factorial(len(i))
+        reduce_twins(G, twins_G)
+        reduce_twins(H, twins_H)
+    else:
+        constantGH = constant
+
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
     G.partition = G_partition_backup
@@ -280,28 +294,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
             return countTreeIsomorphism(G)
-    if Settings.TWIN_CHECK and len(D) == 0:
-        twins_G = find_twins(G)
-        twins_H = find_twins(H)
-        print("huh")
-        constantG = 1
-        constantH = 1
-        for i in twins_G:
-            constantG = constantG * math.factorial(len(i))
-        for j in twins_H:
-            constantH = constantH * math.factorial(len(j))
-        if constantG != constantH: # sanity check
-            print("constanten niet gelijk: ", constantG, constantH)
-            return 0
-        reduce_twins(G, twins_G)
-        reduce_twins(H, twins_H)
-        print("heyaa")
-        print("G: ", constantG, " H: ", constantH)
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
-
-    else:
-        constantG = constant
 
     # Choose a color that is not unique
     chosen_color = -1
@@ -333,7 +325,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition, constantG)
+                                               new_H_partition, constantGH)
     return nr_of_isomorphs
 
 
@@ -440,7 +432,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cographs1.grl", 1, 2)
+    G1, G2 = load_graphs("graphs/cographs1.grl", 0, 3)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -455,7 +447,7 @@ if __name__ == "__main__":
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
@@ -464,7 +456,7 @@ if __name__ == "__main__":
     # copy to wherever needed
     # write_graph_to_dot_file(G1, "G1")
     # write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+    #render('dot', 'png', 'graphG1.dot')
+    #render('dot', 'png', 'graphG2.dot')
 
     # END DEBUGGING CODE

@@ -10,7 +10,7 @@ class Settings:
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
-    TWIN_CHECK= False # Todo sneller maken
+    TWIN_CHECK= True # Todo sneller maken
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
