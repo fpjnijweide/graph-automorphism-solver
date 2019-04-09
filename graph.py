@@ -121,8 +121,8 @@ class Vertex(object):
         """
         self._neighborset.append(vertex)
         # self._neighbor_colors.ap
-        self._neighbor_colors.append(vertex.colornum)
-        self._neighbor_colors_sum+=vertex.colornum
+        # self._neighbor_colors.append(vertex.colornum)
+        # self._neighbor_colors_sum+=vertex.colornum
 
     def change_color(self,color):
         for neighbor in self._neighborset:
@@ -350,8 +350,10 @@ class Graph(object):
             pass
         edge.head._add_neighbor(edge.tail)
         edge.head._neighbor_colors.append(edge.tail.colornum)
+        edge.head._neighbor_colors_sum+=edge.tail.colornum
         edge.tail._add_neighbor(edge.head)
         edge.tail._neighbor_colors.append(edge.head.colornum)
+        edge.tail._neighbor_colors_sum += edge.head.colornum
 
     def del_edge(self, edge: "Edge"):
         edge.tail._incidence[edge.head].remove(edge)

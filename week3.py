@@ -13,12 +13,12 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         return G1, G2
 
 
-def neighbor_colors(v: Vertex):
-    # returns a list of colors of the neighboring vertices
-    colors = []
-    for n in v.neighbors:
-        colors.append(n.colornum)
-    return colors
+# def neighbor_colors(v: Vertex):
+#     # returns a list of colors of the neighboring vertices
+#     colors = []
+#     for n in v.neighbors:
+#         colors.append(n.colornum)
+#     return colors
 
 
 def initialize_colors(G: Graph):

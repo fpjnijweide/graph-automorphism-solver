@@ -6,7 +6,7 @@ FILENAME = "graphs/cubes5.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
+    FAST = True
     PREPROCESSING = False
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken

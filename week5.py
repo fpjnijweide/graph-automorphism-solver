@@ -16,8 +16,8 @@ import time
 def fast_refinement(G: Graph, H: Graph):
     partitions = create_partition_DLL(G.vertices + H.vertices)
 
-    for vertex in (G.vertices + H.vertices):
-        vertex.neighbor_colors = neighbor_colors(vertex)
+    # for vertex in (G.vertices + H.vertices):
+    #     vertex.neighbor_colors = neighbor_colors(vertex)
         # vertex.neighbors_of_colour={}
 
     queue = []
@@ -39,7 +39,7 @@ def fast_refinement(G: Graph, H: Graph):
         colours_neighbouring_queue0 = []
 
         for v_col0 in vertices_col0_dll:
-            for col in v_col0.data.neighbor_colors:
+            for col in v_col0.data._neighbor_colors:
                 # if col not in colours_neighbouring_queue0:
                 colours_neighbouring_queue0.append(col)
 
@@ -58,7 +58,7 @@ def fast_refinement(G: Graph, H: Graph):
             for v in vertices_dll:
                 # vertex1_neighbors_of_color = neighbors_of_colour(v.data, queue[queueindex])
                 # if vertex0_neigbors_of_color == vertex1_neighbors_of_color:
-                if vertex0.data.neighbor_colors.count(queue[queueindex])==v.data.neighbor_colors.count(queue[queueindex]):
+                if vertex0.data._neighbor_colors.count(queue[queueindex])==v.data._neighbor_colors.count(queue[queueindex]):
                     # Has the same number of neighbours with colour queue[0] as vertex0
                     group1_int+=1
                 else:
@@ -75,20 +75,6 @@ def fast_refinement(G: Graph, H: Graph):
                     # j+=1
                     partitions[node.colornum].remove(node)
                     # i=0
-                    for neighbor in node._neighborset:
-                        # try:
-                        # i+=1
-                        # if node.colornum not in neighbor.neighbor_colors:
-                            # pass
-                        # neighbor.neighbor_colors.remove(node.colornum)
-                        # try:
-                        neighbor.neighbor_colors.remove(node.colornum)
-                        neighbor.neighbor_colors.append(new_colour)
-                        # except ValueError:
-                        #     pass
-                        # except ValueError:
-                        #     pass
-
 
                     node.change_color(new_colour)
                     partitions[new_colour].append(node)
