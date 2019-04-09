@@ -5,11 +5,11 @@ FILENAME = "graphs/bigtrees1.grl"
 
 
 class Settings:
-    AUTOMORPHISMS = True
-    FAST = True
+    AUTOMORPHISMS = False
+    FAST = False
     PREPROCESSING = False
-    TREE_CHECK = True
-    TWIN_CHECK= False # Todo sneller maken
+    TREE_CHECK = False
+    TWIN_CHECK= True # Todo sneller maken
     DIHEDRAL_COMPLETE_CHECK = False
     FOUND_TYPE = []
 

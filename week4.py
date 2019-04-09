@@ -6,6 +6,7 @@ import math
 
 
 def find_twins(G: Graph):  # will return groups of twins and groups of false twins in a list
+
     v = G.vertices
 
     result = [[v[0]]]
@@ -26,7 +27,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
         if len(i) > 1:
             trueResult.append(i)
     if len(trueResult) > 0:
-        Settings.FOUND_TYPE += "Twins"
+        print("change thing")
     return trueResult
 
 
@@ -283,6 +284,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # Refine the colors of G and H
 
     if Settings.FAST:
+        G.partition = create_partition(G.vertices)
+        H.partition = create_partition(H.vertices)
         G, H = fast_refinement(G, H)
     else:
         G.partition = create_partition(G.vertices)
@@ -302,7 +305,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 break
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
-                return 1 * constantGH
+                return 1 * constant
             else:
                 return 1
 
@@ -357,6 +360,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Returns true as soon as we find an isomorphism (count_automorphism maar dan anders)
+    '''
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
@@ -368,7 +372,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             constantH = constantH * math.factorial(len(j))
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
-
+    '''
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
     G.partition = G_partition_backup
@@ -461,7 +465,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
+    G1, G2 = load_graphs("graphs/cographs1.grl", 0, 3)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -476,7 +480,7 @@ if __name__ == "__main__":
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
+    print(is_isomorphic(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
