@@ -226,7 +226,11 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
         x = G.partition[chosen_color][i]
         while G._v.index(x) in D or G._v.index(x) in I:
             i+=1
-            x = G.partition[chosen_color][i]
+            try:
+                x = G.partition[chosen_color][i]
+            except IndexError:
+                return None
+
     H_partition_chosen_color = H.partition[chosen_color][:]
     permutations=[]
 
@@ -352,7 +356,7 @@ def algebra_magic(input_cycles,gr_size):
                 except ValueError:
                     pass
         # # print("new_perm::: " + str(new_perm_list))
-        # # if trs(orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
+        # # if trs( orb.index(cycle[1]))*cycle not in Stabilizer(permutations_list,cycle[0]):
         #
         # #     pass
         #
@@ -363,7 +367,7 @@ def algebra_magic(input_cycles,gr_size):
 
 
 
-
+    permutations_list=Reduce(permutations_list)
     i=0
     o,trans = Orbit(permutations_list, i,True)
     while len(o)<2:
@@ -378,6 +382,7 @@ def algebra_magic(input_cycles,gr_size):
 
     print("permutations: " + str(permutations_list))
     print("big_perm: " + str(big_perm))
+    print(" len: " + str(len(big_perm)))
     print("orbit: "+ str(o))
     print("stabilizer: "+ str(s)) #todo this is actually a generating set
 
@@ -457,11 +462,11 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    # G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
+    G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    G1=create_graph_with_cycle(4)
-    G2=G1
+    # G1=create_complete_graph(8)
+    # G2=G1
 
 
     if (G1==G2):
