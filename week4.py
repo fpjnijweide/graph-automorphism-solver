@@ -98,12 +98,6 @@ def color_by_partition(partition: List):
         for vertex in partition[color]:
             vertex.change_color(color)
 
-def copy_partition(partition):
-    new_part=partition[:]
-    for color in range(len(partition)):
-        new_part[color]=partition[color][:]
-    return new_part
-
 
 def countTreeIsomorphism(G: Graph):
     # if the tree contains string form, we can remove it and multiply result by amount of strings times 2
@@ -284,8 +278,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
-    # G.partition = G_partition_backup[:]
-    # H.partition = H_partition_backup[:]
+    G.partition = G_partition_backup
+    H.partition = H_partition_backup
 
     # Color the last instances of D and I
     if len(D) != 0:
@@ -359,8 +353,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
-    new_G_partition = copy_partition(G.partition)
-    new_H_partition = copy_partition(H.partition)
+    new_G_partition = G.partition[:]
+    new_H_partition = H.partition[:]
     # color_by_partition(G_partition_backup)
     # color_by_partition(H_partition_backup)
     #
@@ -389,8 +383,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
     color_by_partition(G_partition_backup)
     color_by_partition(H_partition_backup)
-    # G.partition = G_partition_backup
-    # H.partition = H_partition_backup
+    G.partition = G_partition_backup
+    H.partition = H_partition_backup
 
     # Color the last instances of D and I
     if len(D) != 0:
@@ -457,8 +451,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
     H_partition_chosen_color = H.partition[chosen_color][:]
     nr_of_isomorphs = 0
 
-    new_G_partition = copy_partition(G.partition)
-    new_H_partition = copy_partition(H.partition)
+    new_G_partition = G.partition[:]
+    new_H_partition = H.partition[:]
     # color_by_partition(G_partition_backup)
     # color_by_partition(H_partition_backup)
     #
@@ -475,7 +469,7 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes3.grl", 0, 0)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -487,8 +481,8 @@ if __name__ == "__main__":
     G2 = initialize_colors(G2)
 
 
-    G_partition_backup = copy_partition(G1.partition)
-    H_partition_backup = copy_partition(G2.partition)
+    G_partition_backup = create_partition(G1.vertices)
+    H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphic(G1, G2))
     print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
 
