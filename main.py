@@ -1,7 +1,7 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/torus72.grl"
+FILENAME = "graphs/cubes5.grl"
 
 
 class Settings:
