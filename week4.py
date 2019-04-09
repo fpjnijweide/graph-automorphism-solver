@@ -230,6 +230,8 @@ def check_dihedral(G: Graph):
         else:
             is_cycle=False
             break
+    if is_cycle:
+        Settings.FOUND_TYPE+="Dihedral"
     return is_cycle
 
 def check_complete(G: Graph):
@@ -240,6 +242,8 @@ def check_complete(G: Graph):
         if not len(v.neighbors)==G_size-1:
             is_complete=False
             break
+    if is_complete:
+        Settings.FOUND_TYPE+="Complete"
     return is_complete
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
