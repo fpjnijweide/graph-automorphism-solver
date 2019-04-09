@@ -1,13 +1,13 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/cubes3.grl"
 
 class Settings:
     AUTOMORPHISMS = False
     FAST = False
-    PREPROCESSING = False
-    TREE_CHECK = False
+    PREPROCESSING = True
+    TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
     DIHEDRAL_COMPLETE_CHECK = True
 

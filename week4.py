@@ -1,4 +1,5 @@
 from main import *
+from week2 import *
 from week3 import *
 #from graphviz import render
 from graph import *
@@ -241,6 +242,24 @@ def check_dihedral(G: Graph):
         FOUND_TYPE.append("Dihedral")
     return is_cycle
 
+def check_cube(G: Graph):
+    is_cube=True
+    global FOUND_TYPE
+
+    first_degree=G._v[0].degree
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if len(v.neighbors) == first_degree:
+            pass
+        else:
+            is_cube = False
+            break
+    if is_cube:
+        FOUND_TYPE.append("Cube")
+        return first_degree
+    else:
+        return 0
+
 
 def check_complete(G: Graph):
     is_complete = True
@@ -256,6 +275,15 @@ def check_complete(G: Graph):
         FOUND_TYPE.append("Complete")
     return is_complete
 
+def generate_n_dimensional_cube(degree):
+    square=create_graph_with_cycle(4)
+    result=create_graph_with_cycle(4)
+    for i in range (3,degree+1):
+        result=result+result
+        for i in range(len(result._v)//2):
+            result.add_edge(Edge(result._v[i],result._v[i+(len(result)//2)]))
+    return result
+
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,do_not_check_automorphism=False):
     # Recursively counts all isomorphs of this graph
@@ -269,6 +297,17 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 for i in range(1, len(G._v) + 1):
                     fact = fact * i
                 return fact
+            elif not do_not_check_automorphism:
+                degree_G=check_cube(G)
+                if degree_G!=0:
+                    if degree_G==check_cube(H):
+                        if is_isomorphism(G,generate_n_dimensional_cube(degree_G)):
+                            fact = 1
+
+                            for i in range(1, degree_G+1):
+                                fact = fact * i
+                            return fact*len(G._v)
+
 
     if not D and Settings.TWIN_CHECK:
         twins_G = find_twins(G)
@@ -382,7 +421,7 @@ def is_isomorphism(G: Graph, H: Graph):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
+    G1, G2 = load_graphs("graphs/cubes3.grl", 0, 0)
 
     # from week2 import *
     # G1=create_complete_graph(4)
