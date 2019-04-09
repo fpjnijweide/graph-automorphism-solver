@@ -3,7 +3,6 @@ from week5 import *
 
 FILENAME = "graphs/bigtrees1.grl"
 
-
 class Settings:
     AUTOMORPHISMS = True
     FAST = False
@@ -84,4 +83,6 @@ if __name__ == '__main__':
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
             print('{:>26}'.format(graph_str))
 
-    print("\n" + '{} {}s'.format("time it took:", time.time() - start))
+    print("\n" + '{:>20} {:<}s'.format("time it took:", time.time() - start))
+    if not None:
+        print("type of graph found: {:>}".format("trees"))
