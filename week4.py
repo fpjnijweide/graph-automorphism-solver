@@ -1,6 +1,6 @@
 from main import *
 from week3 import *
-from graphviz import render
+#from graphviz import render
 from graph import *
 import math
 
@@ -408,7 +408,6 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and not D:
         if isTree(G) and isTree(H):
-            print("Graph has tree shape")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and not D:
         twins_G = find_twins(G)
