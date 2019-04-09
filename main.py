@@ -11,6 +11,7 @@ class Settings:
     TREE_CHECK = True
     TWIN_CHECK= False # Todo sneller maken
     DIHEDRAL_COMPLETE_CHECK = False
+    FOUND_TYPE = []
 
     # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
