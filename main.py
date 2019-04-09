@@ -1,18 +1,15 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/Isom1.grl"
+FILENAME = "graphs/cographs1.grl"
 
 class Settings:
-    AUTOMORPHISMS = False
-    FAST = True
-    PREPROCESSING = True
-    TREE_CHECK = True
-    TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CUBE_CHECK = True
-
-
-
+    AUTOMORPHISMS = True
+    FAST = False
+    PREPROCESSING = False
+    TREE_CHECK = False
+    TWIN_CHECK= True
+    DIHEDRAL_COMPLETE_CUBE_CHECK = False
 
 if __name__ == '__main__':
     start = time.time()
