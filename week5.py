@@ -90,8 +90,7 @@ def fast_refinement(G: Graph, H: Graph):
                         #     pass
 
 
-                    node.colornum = new_colour
-                    node.label = new_colour
+                    node.change_color(new_colour)
                     partitions[new_colour].append(node)
 
 

@@ -80,6 +80,8 @@ def copy_graph(inputG: Graph):
         G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
         G._v[i]._incidence = {}  # Reset its incidence
         G._v[i]._neighborset=[]
+        G._v[i]._neighbor_colors=[]
+        G._v[i]._neighbor_colors_sum=0
 
     # Re-add all edges
     for edge in inputG._e:
@@ -93,8 +95,7 @@ def copy_graph(inputG: Graph):
 def color_by_partition(partition: List):
     for color in range(len(partition)):
         for vertex in partition[color]:
-            vertex.colornum = color
-            vertex.label = color
+            vertex.change_color(color)
 
 
 def countTreeIsomorphism(G: Graph):
@@ -167,11 +168,11 @@ def countTreeIsomorphism(G: Graph):
 
 def compareSubtrees(parent1, parent2, children):  # children of first generation
     comp = True
-    sameNeighbors = len(parent1.neighbor_colors) == len(
-        parent2.neighbor_colors)  # to check if the parents have the same neighbourhood
+    sameNeighbors = len(parent1._neighbor_colors) == len(
+        parent2._neighbor_colors)  # to check if the parents have the same neighbourhood
     if sameNeighbors:
-        for x in set(parent1.neighbor_colors):
-            if parent1.neighbor_colors.count(x) != parent2.neighbor_colors.count(x):
+        for x in set(parent1._neighbor_colors):
+            if parent1._neighbor_colors.count(x) != parent2._neighbor_colors.count(x):
                 sameNeighbors = False
                 break
 
@@ -286,10 +287,9 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
 
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
+        last_D.change_color(newcol)
+        last_I.change_color(newcol)
+
 
     # Refine the colors of G and H
 
@@ -392,10 +392,8 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
 
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
+        last_D.change_color(newcol)
+        last_I.change_color(newcol)
 
     # Refine the colors of G and H
 

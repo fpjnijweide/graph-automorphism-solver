@@ -140,10 +140,8 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
 
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
+        last_D.change_color(newcol)
+        last_I.change_color(newcol)
 
     # Refine the colors of G and H
 

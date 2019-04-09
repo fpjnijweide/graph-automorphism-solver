@@ -45,6 +45,13 @@ class Vertex(object):
         self.label = label
         self._incidence = {}
         self._neighborset = []
+        self._neighbor_colors=[]
+        self.colornum=0
+        self.label=0
+        self._neighbor_colors_sum=0
+
+
+
 
     def __repr__(self):
         """
@@ -113,6 +120,19 @@ class Vertex(object):
         :param vertex: The neighbor vertex that is added to the neighborset
         """
         self._neighborset.append(vertex)
+        # self._neighbor_colors.ap
+        self._neighbor_colors.append(vertex.colornum)
+        self._neighbor_colors_sum+=vertex.colornum
+
+    def change_color(self,color):
+        for neighbor in self._neighborset:
+            neighbor._neighbor_colors.remove(self.colornum)
+            neighbor._neighbor_colors_sum-=self.colornum
+            neighbor._neighbor_colors.append(color)
+            neighbor._neighbor_colors_sum += color
+        self.colornum=color
+        self.label=color
+
 
     @property
     def degree(self) -> int:
@@ -329,11 +349,19 @@ class Graph(object):
         if edge.tail==edge.head:
             pass
         edge.head._add_neighbor(edge.tail)
+        edge.head._neighbor_colors.append(edge.tail.colornum)
         edge.tail._add_neighbor(edge.head)
+        edge.tail._neighbor_colors.append(edge.head.colornum)
 
     def del_edge(self, edge: "Edge"):
         edge.tail._incidence[edge.head].remove(edge)
         edge.head._incidence[edge.tail].remove(edge)
+        edge.tail._neighborset.remove(edge.head)
+        edge.head._neighborset.remove(edge.tail)
+        edge.tail._neighbor_colors.remove(edge.head.colornum)
+        edge.head._neighbor_colors.remove(edge.tail.colornum)
+        edge.tail._neighbor_colors_sum-=edge.head.colornum
+        edge.head._neighbor_colors_sum-=edge.tail.colornum
         self._e.remove(edge)
 
     def __add__(self, other: "Graph") -> "Graph":

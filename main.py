@@ -6,7 +6,7 @@ FILENAME = "graphs/cubes5.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = True
+    FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
@@ -56,8 +56,8 @@ if __name__ == '__main__':
             graphcopy = copy_graph(graphs[graph])
             graphs[graph] = initialize_colors(graphs[graph])
             graphcopy = initialize_colors(graphcopy)
-            g_partition_backup = create_partition(graphs[graph])
-            gcopy_partition_backup = create_partition(graphcopy)
+            g_partition_backup = create_partition(graphs[graph].vertices)
+            gcopy_partition_backup = create_partition(graphcopy.vertices)
 
             automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)

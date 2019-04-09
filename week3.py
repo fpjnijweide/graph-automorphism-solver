@@ -24,8 +24,7 @@ def neighbor_colors(v: Vertex):
 def initialize_colors(G: Graph):
     # sets the colornum and label of all vertices to equal to their degree (amount of neighbors)
     for v in G.vertices:
-        v.colornum = v.degree
-        v.label = v.colornum
+        v.change_color(v.degree)
     G.partition = create_partition(G.vertices)
     return G
 
@@ -92,9 +91,8 @@ def refine_colors(G: Graph, H: Graph):
             first_vertex = vertices_with_this_color[0]
 
             for other_vertex in vertices_with_this_color:
-                other_vertex.neighbor_colors=neighbor_colors(other_vertex)
-                other_vertex.neighbor_colors_sum=sum(other_vertex.neighbor_colors)
-                if other_vertex.neighbor_colors_sum < first_vertex.neighbor_colors_sum:
+
+                if other_vertex._neighbor_colors_sum < first_vertex._neighbor_colors_sum:
                     first_vertex = other_vertex
 
 
@@ -105,8 +103,8 @@ def refine_colors(G: Graph, H: Graph):
                 if first_vertex != current_vertex:
 
                     needs_change=False
-                    for x in set(first_vertex.neighbor_colors):
-                        if current_vertex.neighbor_colors.count(x) != first_vertex.neighbor_colors.count(x):
+                    for x in set(first_vertex._neighbor_colors):
+                        if current_vertex._neighbor_colors.count(x) != first_vertex._neighbor_colors.count(x):
                             needs_change=True
                             break
 
@@ -119,8 +117,7 @@ def refine_colors(G: Graph, H: Graph):
                     partition.append([])
                 partition[new_color].append(changing_vertex)
                 partition[changing_vertex.colornum].remove(changing_vertex)
-                changing_vertex.colornum = new_color
-                changing_vertex.label = changing_vertex.colornum
+                changing_vertex.change_color(new_color)
 
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)
