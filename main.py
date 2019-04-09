@@ -2,15 +2,15 @@ from week3 import *
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/Autom2.grl"
 
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
+    FAST = True
     PREPROCESSING = False
     TREE_CHECK = True
-    TWIN_CHECK= True # Todo sneller maken
+    TWIN_CHECK= False # Todo sneller maken
 
     #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
@@ -66,13 +66,13 @@ if __name__ == '__main__':
                 # g_partition_backup = graphs[graph].partition[:]
                 # gcopy_partition_backup = graphcopy.partition[:]
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                         g_partition_backup, gcopy_partition_backup)
+                                                         g_partition_backup, gcopy_partition_backup, None)
             else:
                 # graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
                 # g_partition_backup = graphs[graph].partition[:]
                 # gcopy_partition_backup = graphcopy.partition[:]
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                    g_partition_backup, gcopy_partition_backup)
+                                                    g_partition_backup, gcopy_partition_backup, None)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 sys.stdout.write('[' + ', '.join(str(x) for x in isomorphisms.get(graph)) + ']: ' + str(automorphisms))
