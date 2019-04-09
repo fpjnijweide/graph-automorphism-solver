@@ -13,19 +13,18 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         return G1, G2
 
 
-def neighbor_colors(v: Vertex):
-    # returns a list of colors of the neighboring vertices
-    colors = []
-    for n in v.neighbors:
-        colors.append(n.colornum)
-    return colors
+# def neighbor_colors(v: Vertex):
+#     # returns a list of colors of the neighboring vertices
+#     colors = []
+#     for n in v.neighbors:
+#         colors.append(n.colornum)
+#     return colors
 
 
 def initialize_colors(G: Graph):
     # sets the colornum and label of all vertices to equal to their degree (amount of neighbors)
     for v in G.vertices:
-        v.colornum = v.degree
-        v.label = v.colornum
+        v.change_color(v.degree)
     G.partition = create_partition(G.vertices)
     return G
 
@@ -49,14 +48,17 @@ def create_partition(vertices: list):
 
     for v in vertices:
         # if the degree is not found in partition, add empty lists to it
-        if v.colornum > len(partition) - 1:
-            diff = v.colornum - (len(partition) - 1)
-            for i in range(diff):
-                partition.append([])
-        # add the vertex to its respective index in partition
-        partition[v.colornum].append(v)
+        add_to_partition(v,partition)
 
     return partition
+
+def add_to_partition(v: Vertex, partition):
+    if v.colornum > len(partition) - 1:
+        diff = v.colornum - (len(partition) - 1)
+        for i in range(diff):
+            partition.append([])
+    # add the vertex to its respective index in partition
+    partition[v.colornum].append(v)
 
 def create_partition_DLL(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
@@ -92,9 +94,8 @@ def refine_colors(G: Graph, H: Graph):
             first_vertex = vertices_with_this_color[0]
 
             for other_vertex in vertices_with_this_color:
-                other_vertex.neighbor_colors=neighbor_colors(other_vertex)
-                other_vertex.neighbor_colors_sum=sum(other_vertex.neighbor_colors)
-                if other_vertex.neighbor_colors_sum < first_vertex.neighbor_colors_sum:
+
+                if other_vertex._neighbor_colors_sum < first_vertex._neighbor_colors_sum:
                     first_vertex = other_vertex
 
 
@@ -105,8 +106,8 @@ def refine_colors(G: Graph, H: Graph):
                 if first_vertex != current_vertex:
 
                     needs_change=False
-                    for x in set(first_vertex.neighbor_colors):
-                        if current_vertex.neighbor_colors.count(x) != first_vertex.neighbor_colors.count(x):
+                    for x in set(first_vertex._neighbor_colors):
+                        if current_vertex._neighbor_colors.count(x) != first_vertex._neighbor_colors.count(x):
                             needs_change=True
                             break
 
@@ -119,8 +120,7 @@ def refine_colors(G: Graph, H: Graph):
                     partition.append([])
                 partition[new_color].append(changing_vertex)
                 partition[changing_vertex.colornum].remove(changing_vertex)
-                changing_vertex.colornum = new_color
-                changing_vertex.label = changing_vertex.colornum
+                changing_vertex.change_color(new_color)
 
     G.partition = create_partition(G.vertices)
     H.partition = create_partition(H.vertices)

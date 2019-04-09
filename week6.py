@@ -115,7 +115,7 @@ def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
 
-    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
+    if not D and Settings.DIHEDRAL_COMPLETE_CUBE_CHECK:
         if len(G._v)==len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
@@ -140,10 +140,8 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
 
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
+        last_D.change_color(newcol)
+        last_I.change_color(newcol)
 
     # Refine the colors of G and H
 
