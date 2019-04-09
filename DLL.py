@@ -11,22 +11,23 @@ class Node:
 
 
 class DoubleLinkedList:
+
+
     head = None
     tail = None
 
+
+    def __init__(self):
+        self.length=0
+
+    def __len__(self):
+        return self.length
     # string representation for easier debugging
     def __str__(self) -> str:
         current_node = self.head
         output = "DLL: {"
-        len_list = 0
 
-        while current_node is not None:
-            string_to_add = current_node.data.__str__()
-            output += string_to_add + ", "
-            len_list += 1
-            current_node = current_node.next
-
-        return "len: " + str(len_list) + "  " + output[:len(output)-2] + "}"
+        return "len: " + str(len(self)) + "  " + output[:len(output)-2] + "}"
 
     # return iterable object of DLL
     def __iter__(self):
@@ -37,8 +38,8 @@ class DoubleLinkedList:
     def __next__(self):
         if self.current_node == self.tail:
             returnable_node = self.current_node
-            self.current_node = Node(None,None,"stop")
-            return  returnable_node
+            self.current_node = Node(None, None, "stop")
+            return returnable_node
         if self.current_node.next is not None:
             returnable_node = self.current_node
             self.current_node = self.current_node.next
@@ -59,6 +60,7 @@ class DoubleLinkedList:
             self.tail.next = new_node
             self.tail = new_node
 
+        self.length+=1
         return new_node
 
     """ add element to the start of the DLL """
@@ -71,7 +73,7 @@ class DoubleLinkedList:
             new_node = Node(self.head, None, data)
             self.head.prev = new_node
             self.head = new_node
-
+        self.length+=1
         return new_node
 
     """ add an element after old_node (if this is a Node """
@@ -89,11 +91,10 @@ class DoubleLinkedList:
             old_node.next = new_node
 
             new_node.next.prev = new_node
-
+            self.length+=1
             return new_node
         else:
             return "ERROR: could not find the item old_node in list"
-
 
     """ add an element before old_node """
 
@@ -111,7 +112,7 @@ class DoubleLinkedList:
             old_node.prev = new_node
 
             new_node.prev.next = new_node
-
+            self.length+=1
             return new_node
         else:
             return "ERROR: could not find the item old_node in list"
@@ -135,7 +136,7 @@ class DoubleLinkedList:
 
             if removable_node.next is not None:
                 removable_node.next.prev = removable_node.prev
-
+            self.length-=1
         else:
             return "ERROR: could not find the item removable_node in list or list was already empty"
 

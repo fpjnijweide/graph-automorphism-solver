@@ -1,23 +1,22 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cographs1.grl"
-
+FILENAME = "graphs/Isom1.grl"
 
 class Settings:
-    AUTOMORPHISMS = True
-    FAST = False
-    PREPROCESSING = False
+    AUTOMORPHISMS = False
+    FAST = True
+    PREPROCESSING = True
     TREE_CHECK = True
-    TWIN_CHECK= True # Todo sneller maken
-    DIHEDRAL_COMPLETE_CHECK = False
-    FOUND_TYPE = []
+    TWIN_CHECK= False # Todo sneller maken
+    DIHEDRAL_COMPLETE_CUBE_CHECK = True
 
-    # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
+
 
 
 if __name__ == '__main__':
     start = time.time()
+    print("isomorphisms for {}\n".format(FILENAME.split('/')[1]))
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -39,10 +38,10 @@ if __name__ == '__main__':
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
-                g1_partition_backup = graphs[graph1].partition[:]
-                g2_partition_backup = graphs[graph2].partition[:]
+                # g1_partition_backup = graphs[graph1].partition[:]
+                # g2_partition_backup = graphs[graph2].partition[:]
 
-                if is_isomorphic(graphs[graph1], graphs[graph2], [], [], g1_partition_backup, g2_partition_backup) > 0:
+                if is_isomorphism(graphs[graph1],graphs[graph2]):
                     isomorphisms.get(graph1).append(graph2)
                     mapped.append(graph2)
 
@@ -56,8 +55,8 @@ if __name__ == '__main__':
             graphcopy = copy_graph(graphs[graph])
             graphs[graph] = initialize_colors(graphs[graph])
             graphcopy = initialize_colors(graphcopy)
-            g_partition_backup = create_partition(graphs[graph])
-            gcopy_partition_backup = create_partition(graphcopy)
+            g_partition_backup = create_partition(graphs[graph].vertices)
+            gcopy_partition_backup = create_partition(graphcopy.vertices)
 
             automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
@@ -66,7 +65,7 @@ if __name__ == '__main__':
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
                 print('{:>26}   {:<}'.format(graph_str, automorphisms))
             else:
-                print(str(graph) + ": " + str(automorphisms))
+                print('{:>26}   {:<}'.format(str(graph), automorphisms))
     else:
         print('{:>}'.format("Sets of isomorphic graphs:"))
         # Print isomorphisms without the number of automorphisms
@@ -77,6 +76,6 @@ if __name__ == '__main__':
             graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(g)) + "]"
             print('{:>26}'.format(graph_str))
 
-    print("\n" + '{:>20} {:<}s'.format("time it took:", time.time() - start))
-    if not None:
-        print("type of graph found: {:>}".format("trees"))
+    print("\n" + '{:>20} {:.2f}s'.format("time it took:", time.time() - start))
+    if len(FOUND_TYPE) >= 1:
+        print("type of graph found: {:>}".format(", ".join(i for i in set(FOUND_TYPE))))

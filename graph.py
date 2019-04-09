@@ -45,6 +45,14 @@ class Vertex(object):
         self.label = label
         self._incidence = {}
         self._neighborset = []
+        self._neighbor_colors=[]
+        self.colornum=0
+        self.label=0
+        self._neighbor_colors_sum=0
+
+
+
+
 
     def __repr__(self):
         """
@@ -105,7 +113,7 @@ class Vertex(object):
         """
         Returns the list of neighbors of the vertex.
         """
-        return list(self._incidence.keys())
+        return list(self._neighborset)
 
     def _add_neighbor(self, vertex: "Vertex"):
         """
@@ -113,6 +121,19 @@ class Vertex(object):
         :param vertex: The neighbor vertex that is added to the neighborset
         """
         self._neighborset.append(vertex)
+        # self._neighbor_colors.ap
+        # self._neighbor_colors.append(vertex.colornum)
+        # self._neighbor_colors_sum+=vertex.colornum
+
+    def change_color(self,color):
+        for neighbor in self._neighborset:
+            neighbor._neighbor_colors.remove(self.colornum)
+            neighbor._neighbor_colors_sum-=self.colornum
+            neighbor._neighbor_colors.append(color)
+            neighbor._neighbor_colors_sum += color
+        self.colornum=color
+        self.label=color
+
 
     @property
     def degree(self) -> int:
@@ -206,7 +227,7 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, directed: bool, n: int=0, simple: bool=False):
+    def __init__(self, directed: bool, n: int = 0, simple: bool = False):
         """
         Creates a graph.
         :param directed: Whether the graph should behave as a directed graph.
@@ -221,6 +242,8 @@ class Graph(object):
 
         for i in range(n):
             self.add_vertex(Vertex(self))
+
+        self.partition={}
 
     def __repr__(self):
         """
@@ -326,12 +349,24 @@ class Graph(object):
 
         edge.head._add_incidence(edge)
         edge.tail._add_incidence(edge)
+        if edge.tail==edge.head:
+            pass
         edge.head._add_neighbor(edge.tail)
+        edge.head._neighbor_colors.append(edge.tail.colornum)
+        edge.head._neighbor_colors_sum+=edge.tail.colornum
         edge.tail._add_neighbor(edge.head)
+        edge.tail._neighbor_colors.append(edge.head.colornum)
+        edge.tail._neighbor_colors_sum += edge.head.colornum
 
     def del_edge(self, edge: "Edge"):
         edge.tail._incidence[edge.head].remove(edge)
         edge.head._incidence[edge.tail].remove(edge)
+        edge.tail._neighborset.remove(edge.head)
+        edge.head._neighborset.remove(edge.tail)
+        edge.tail._neighbor_colors.remove(edge.head.colornum)
+        edge.head._neighbor_colors.remove(edge.tail.colornum)
+        edge.tail._neighbor_colors_sum-=edge.head.colornum
+        edge.head._neighbor_colors_sum-=edge.tail.colornum
         self._e.remove(edge)
 
     def __add__(self, other: "Graph") -> "Graph":

@@ -1,13 +1,17 @@
 from main import *
+from week2 import *
 from week3 import *
-#from graphviz import render
+from graphviz import render
 from graph import *
 import math
+
+FOUND_TYPE = []
 
 
 def find_twins(G: Graph):  # will return groups of twins and groups of false twins in a list
 
     v = G.vertices
+    global FOUND_TYPE
 
     result = [[v[0]]]
     for i in range(1, len(v)):
@@ -27,7 +31,7 @@ def find_twins(G: Graph):  # will return groups of twins and groups of false twi
         if len(i) > 1:
             trueResult.append(i)
     if len(trueResult) > 0:
-        print("change thing")
+        FOUND_TYPE.append("Twins")
     return trueResult
 
 
@@ -79,11 +83,15 @@ def copy_graph(inputG: Graph):
 
         G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
         G._v[i]._incidence = {}  # Reset its incidence
+        G._v[i]._neighborset=[]
+        G._v[i]._neighbor_colors=[]
+        G._v[i]._neighbor_colors_sum=0
 
     # Re-add all edges
     for edge in inputG._e:
         new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
         G.add_edge(new_edge)
+
 
     return G
 
@@ -91,8 +99,7 @@ def copy_graph(inputG: Graph):
 def color_by_partition(partition: List):
     for color in range(len(partition)):
         for vertex in partition[color]:
-            vertex.colornum = color
-            vertex.label = color
+            vertex.change_color(color)
 
 
 def countTreeIsomorphism(G: Graph):
@@ -163,13 +170,14 @@ def countTreeIsomorphism(G: Graph):
     return result
 
 
+
 def compareSubtrees(parent1, parent2, children):  # children of first generation
     comp = True
-    sameNeighbors = len(parent1.neighbor_colors) == len(
-        parent2.neighbor_colors)  # to check if the parents have the same neighbourhood
+    sameNeighbors = len(parent1._neighbor_colors) == len(
+        parent2._neighbor_colors)  # to check if the parents have the same neighbourhood
     if sameNeighbors:
-        for x in set(parent1.neighbor_colors):
-            if parent1.neighbor_colors.count(x) != parent2.neighbor_colors.count(x):
+        for x in set(parent1._neighbor_colors):
+            if parent1._neighbor_colors.count(x) != parent2._neighbor_colors.count(x):
                 sameNeighbors = False
                 break
 
@@ -219,39 +227,116 @@ def is_twin(v, list_of_twins):
             result = True
     return result
 
+
 def check_dihedral(G: Graph):
-    is_cycle=True
+    is_cycle = True
+    global FOUND_TYPE
+
     for i in range(len(G._v)):
         v=G._v[i]
         if len(v.neighbors)==2:
             pass
         else:
-            is_cycle=False
+            is_cycle = False
             break
+    if is_cycle:
+        FOUND_TYPE.append("Dihedral")
     return is_cycle
 
-def check_complete(G: Graph):
-    is_complete=True
-    G_size=len(G._v)
+def check_cube(G: Graph):
+    is_cube=True
+    global FOUND_TYPE
+
+    first_degree=G._v[0].degree
     for i in range(len(G._v)):
         v = G._v[i]
-        if not len(v.neighbors)==G_size-1:
-            is_complete=False
+        if len(v.neighbors) == first_degree:
+            pass
+        else:
+            is_cube = False
             break
+    if is_cube:
+        FOUND_TYPE.append("Cube/Torus")
+        return first_degree
+    else:
+        return 0
+
+
+def check_complete(G: Graph):
+    is_complete = True
+    G_size = len(G._v)
+    global FOUND_TYPE
+
+    for i in range(len(G._v)):
+        v = G._v[i]
+        if not len(v.neighbors) == G_size-1:
+            is_complete = False
+            break
+    if is_complete:
+        FOUND_TYPE.append("Complete")
     return is_complete
 
-def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0):
+def generate_n_dimensional_cube(degree):
+    square=create_graph_with_cycle(4)
+    result=create_graph_with_cycle(4)
+    for i in range (3,degree+1):
+        # result=result+result
+        mapping={}
+        original_size=len(result._v)
+        for node in range(original_size):
+            new_vertex=Vertex(result)
+            mapping[result._v[node]]=new_vertex
+            result.add_vertex(new_vertex)
+
+        original_edge_size=len(result._e)
+        e_map={}
+        #add all edges
+        for node in range(original_size):
+            for edge in result._v[node].incidence:
+                if edge.head==result._v[node]:
+                    result.add_edge(Edge(mapping[edge.tail],mapping[edge.head]))
+            result.add_edge(Edge(mapping[result._v[node]],result._v[node]))
+
+        #add new edges
+
+        # result=result+result
+        # for i in range(len(result._v)//2):
+        #     result._v[i]._graph=result
+        #     result._v[i + (len(result) // 2)]._graph=result
+        #     result.add_edge(Edge(result._v[i],result._v[i+(len(result)//2)]))
+    # write_graph_to_dot_file(G1, "G1")
+    # write_graph_to_dot_file(G2, "G2")
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
+    return result
+
+
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,do_not_check_automorphism=False):
     # Recursively counts all isomorphs of this graph
-    if not D and Settings.DIHEDRAL_COMPLETE_CHECK:
-        if len(G._v)==len(H._v):
+    if not D and Settings.DIHEDRAL_COMPLETE_CUBE_CHECK:
+        if len(G._v) == len(H._v):
             if check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
             elif check_complete(G) and check_complete(H):
-                fact=1
+                fact = 1
 
                 for i in range(1, len(G._v) + 1):
                     fact = fact * i
                 return fact
+            elif not do_not_check_automorphism:
+                degree_G=check_cube(G)
+                if degree_G!=0:
+                    if degree_G==check_cube(H):
+                        cube=generate_n_dimensional_cube(degree_G)
+                        # cube=copy_graph(cube)
+                        cube=initialize_colors(cube)
+                        if is_isomorphism(G,copy_graph(cube)):
+                            fact = 1
+
+                            for i in range(1, degree_G+1):
+                                fact = fact * i
+                            return fact*len(G._v)
+
 
     if not D and Settings.TWIN_CHECK:
         twins_G = find_twins(G)
@@ -276,10 +361,9 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         last_D = G.vertices[D[i]]
         last_I = H.vertices[I[i]]
 
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
+        last_D.change_color(newcol)
+        last_I.change_color(newcol)
+
 
     # Refine the colors of G and H
 
@@ -313,8 +397,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
+        global FOUND_TYPE
+
         if len(disconnectedG) > 0:
-            Settings.FOUND_TYPE += "Disconnected"
+            FOUND_TYPE.append("Disconnected")
         for v in disconnectedG:
             G._v.remove(v)
         disconnectedH = disconnectedVertices(H)
@@ -322,7 +408,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             H._v.remove(v)
     if not D and Settings.TREE_CHECK:
         if isTree(G) and isTree(H):
-            Settings.FOUND_TYPE += "Tree"
+            FOUND_TYPE.append("Tree")
             return countTreeIsomorphism(G)
 
     # Choose a color that is not unique
@@ -355,119 +441,14 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     for y in H_partition_chosen_color:
         nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
                                                new_H_partition, constantGH)
+        if do_not_check_automorphism and nr_of_isomorphs>0:
+            return 1
     return nr_of_isomorphs
 
 
-def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
-    # Returns true as soon as we find an isomorphism (count_automorphism maar dan anders)
+def is_isomorphism(G: Graph, H: Graph):
+    return count_automorphisms(G,H,[],[],G.partition[:],H.partition[:],do_not_check_automorphism=True) > 0
 
-    if Settings.TWIN_CHECK and len(D) == 0:
-        twins_G = find_twins(G)
-        twins_H = find_twins(H)
-        constantG = 1
-        constantH = 1
-        for i in twins_G:
-            constantG = constantG * math.factorial(len(i))
-        for j in twins_H:
-            constantH = constantH * math.factorial(len(j))
-        if constantG != constantH:
-            return False
-        count = count_automorphisms(G, H, D, I, G_partition_backup, H_partition_backup)
-        if (count>0):
-            return True
-        else:
-            return False
-
-
-    color_by_partition(G_partition_backup)
-    color_by_partition(H_partition_backup)
-    G.partition = G_partition_backup
-    H.partition = H_partition_backup
-
-    # Color the last instances of D and I
-    if len(D) != 0:
-        newcol = len(G.partition)
-        i = len(D) - 1
-        last_D = G.vertices[D[i]]
-        last_I = H.vertices[I[i]]
-
-        last_D.colornum = newcol
-        last_I.colornum = newcol
-        last_D.label = last_D.colornum
-        last_I.label = last_I.colornum
-
-    # Refine the colors of G and H
-
-    if Settings.FAST:
-        G, H = fast_refinement(G, H)
-    else:
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
-        G, H = color_refinement(G, H)
-
-    # If this coloring is not stable, return 0
-    if not is_stable(G, H):
-        return 0
-    else:
-        # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
-        all_colors_are_unique = True
-        for i in range(len(G.partition)):
-            if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
-                all_colors_are_unique = False
-                break
-        if all_colors_are_unique:
-            return 1
-
-    # We have now found a stable coloring that has non-unique colors
-
-    if Settings.PREPROCESSING and not D:  # only once, after first call of refignment
-        disconnectedG = disconnectedVertices(G)
-        if len(disconnectedG) > 0:
-            Settings.FOUND_TYPE += "Disconnected"
-        for v in disconnectedG:
-            G._v.remove(v)
-        disconnectedH = disconnectedVertices(H)
-        for v in disconnectedH:
-            H._v.remove(v)
-    if Settings.TREE_CHECK and not D:
-        if isTree(G) and isTree(H):
-            Settings.FOUND_TYPE += "Tree"
-            return countTreeIsomorphism(G)
-
-    # Choose a color that is not unique
-    chosen_color = -1
-    for i in range(len(G.partition)):
-        Gcolor = G.partition[i][:]  # list with vertices of same color
-        Hcolor = H.partition[i][:]
-        if len(Gcolor) + len(Hcolor) >= 4:
-            chosen_color = i
-            break
-    if chosen_color == -1:
-        # If no color has been chosen something obviously went wrong
-        print("ERROR CHOOSING COLOR")
-        return 0
-
-    # if they are isomorphs
-
-    x = G.partition[chosen_color][0]
-    H_partition_chosen_color = H.partition[chosen_color][:]
-    nr_of_isomorphs = 0
-
-    new_G_partition = G.partition
-    new_H_partition = H.partition
-    # color_by_partition(G_partition_backup)
-    # color_by_partition(H_partition_backup)
-    #
-    # G.partition = G_partition_backup
-    # H.partition = H_partition_backup
-
-    for y in H_partition_chosen_color:
-        if (nr_of_isomorphs > 0):
-            return True
-        else:
-            nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition)
-    return False
 
 
 if __name__ == "__main__":
