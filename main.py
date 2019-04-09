@@ -1,15 +1,15 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/cographs1.grl"
+FILENAME = "graphs/bigtrees3.grl"
 
 class Settings:
     AUTOMORPHISMS = True
     FAST = False
-    PREPROCESSING = False
-    TREE_CHECK = False
-    TWIN_CHECK= True
-    DIHEDRAL_COMPLETE_CUBE_CHECK = False
+    PREPROCESSING = True
+    TREE_CHECK = True
+    TWIN_CHECK= False
+    DIHEDRAL_COMPLETE_CUBE_CHECK = True
 
 if __name__ == '__main__':
     start = time.time()
