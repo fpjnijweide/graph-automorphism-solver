@@ -52,8 +52,72 @@ def generate_group_recursive(generators):
         return generate_group_recursive(res)
 
 def membership_check(element,group):
+    if element in group:
+        return True
+    if group==[] or group==[[]]:
+        return False
+
+    orbits=[None]*element.n
+    traversals=[None]*element.n
+    orbit_nrs=[]
+    for nr in range(len(element.P)):
+        if element.P[nr]!=nr:
+            orb,trans=Orbit(group,nr,True)
+            orbits[nr]= orb
+            traversals[nr]= trans
+            orbit_nrs.append((nr,element.P[nr]))
+    non_trivial_orbit_nr=-1
+    for orbit_and_image in orbit_nrs:
+        if len(orbits[orbit_and_image[0]])>1:
+            non_trivial_orbit_nr=orbit_and_image[0]
+            break
+
+    group_stabilizer=Stabilizer(group,non_trivial_orbit_nr)
+
+    for orbit_and_image in orbit_nrs:
+        orbit_nr=orbit_and_image[0]
+        image=orbit_and_image[1]
+        image_orbit_index=orbits[orbit_nr].index(image)
+        traversal_perm=traversals[orbit_nr][image_orbit_index]
+        if traversal_perm is not None:
+            # traversal_perm=traversals[orbit_nr][image]
+            composition_perm = -traversal_perm * element
+            if membership_check(composition_perm, group_stabilizer):
+                return True
+
+
+
+
     return False
     # if element in group
+
+
+def stabilizer_magic(gr_size, orb, trans,stab,permutations_list):
+    new_stab=[]
+    for stab_element in stab:
+        if membership_check(stab_element,permutations_list):
+            new_stab.append(stab_element)
+
+    current_stab=new_stab[0]
+
+
+
+    first_stab_el=current_stab.cycles()[0][0]
+    new_orb,new_trans=Orbit(new_stab,first_stab_el,True)
+    next_stab=Stabilizer(new_stab,first_stab_el)
+
+    # if len(new_stab)==0 or len(new_stab)==1:
+    #     final_stab_size=len(new_orb)*len(new_stab)
+    if next_stab==[]:
+        final_stab_size=len(new_orb)
+    else:
+
+        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,next_stab,permutations_list)
+
+
+    res=len(orb)*final_stab_size
+    return res
+#
 
 def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):
     # Recursively counts all isomorphs of this graph
@@ -185,63 +249,45 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
 
 
 
-def stabilizer_magic(gr_size, orb, trans,stab):
-    current_stab=stab[0]
-
-    first_stab_el=current_stab.cycles()[0][0]
-    new_orb,new_trans=Orbit(stab,first_stab_el,True)
-    new_stab=Stabilizer(stab,first_stab_el)
-
-    # if len(new_stab)==0 or len(new_stab)==1:
-    #     final_stab_size=len(new_orb)*len(new_stab)
-    if new_stab==[]:
-        final_stab_size=len(new_orb)
-    else:
-        final_stab_size=stabilizer_magic(gr_size,new_orb,new_trans,new_stab)
-
-
-    res=len(orb)*final_stab_size
-    return res
-
-def stabilizer_magic2(permutation_list):
-    gr_size=permutation_list[0].n
-    orbits=[]
-    transversals=[]
-    stabilizers=[]
-    non_trivial_orbit=-1
-    for i in range(gr_size):
-        o,trans=Orbit(permutation_list,i,True)
-        if len(o)>1:
-            non_trivial_orbit=i
-        s=Stabilizer(permutation_list,i)
-        orbits.append(o)
-        transversals.append(trans)
-        stabilizers.append(s)
-
-    new_stabilizers=[]
-    current_stabilizers: list[permutation]=stabilizers[non_trivial_orbit]
-    for stab in current_stabilizers:
-
-        for nr in range(gr_size):
-            if stab.P[nr]!=nr:
-                #todo check if u0->2 ^-1 * f in h
-                composition = -transversals[nr][stab.P[nr]]*stab
-                # comp2=
-                if membership_check(composition,stabilizers[nr]):
-
-
-                    new_stabilizers.append(stab)
-    if new_stabilizers==[]:
-        final_stab_size=1
-    else:
-        current_stab = new_stabilizers[0]
-        if current_stab.cycles==[] or current_stab.cycles()==[[]]:
-            final_stab_size=1
-        else:
-            final_stab_size=stabilizer_magic2([current_stab])
-
-    res = len(orbits[non_trivial_orbit]) * final_stab_size
-    return res
+# def stabilizer_magic2(permutation_list):
+#     gr_size=permutation_list[0].n
+#     orbits=[]
+#     transversals=[]
+#     stabilizers=[]
+#     non_trivial_orbit=-1
+#     for i in range(gr_size):
+#         o,trans=Orbit(permutation_list,i,True)
+#         if len(o)>1:
+#             non_trivial_orbit=i
+#         s=Stabilizer(permutation_list,i)
+#         orbits.append(o)
+#         transversals.append(trans)
+#         stabilizers.append(s)
+#
+#     new_stabilizers=[]
+#     current_stabilizers: list[permutation]=stabilizers[non_trivial_orbit]
+#     for stab in current_stabilizers:
+#
+#         for nr in range(gr_size):
+#             if stab.P[nr]!=nr:
+#                 #todo check if u0->2 ^-1 * f in h
+#                 composition = -transversals[nr][stab.P[nr]]*stab
+#                 # comp2=
+#                 if membership_check(composition,stabilizers[nr]):
+#
+#
+#                     new_stabilizers.append(stab)
+#     if new_stabilizers==[]:
+#         final_stab_size=1
+#     else:
+#         current_stab = new_stabilizers[0]
+#         if current_stab.cycles==[] or current_stab.cycles()==[[]]:
+#             final_stab_size=1
+#         else:
+#             final_stab_size=stabilizer_magic2([current_stab])
+#
+#     res = len(orbits[non_trivial_orbit]) * final_stab_size
+#     return res
 
 
 def algebra_magic(input_cycles,gr_size):
@@ -324,7 +370,7 @@ def algebra_magic(input_cycles,gr_size):
 
     #todo if dihedral, just use s
 
-    abb=stabilizer_magic(gr_size,o,trans,s)
+    abb=stabilizer_magic(gr_size,o,trans,s,permutations_list)
     # abb=stabilizer_magic2(permutations_list)
     return abb
     # big_s=generate_group(s)
@@ -384,11 +430,11 @@ def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_back
 
 
 if __name__ == '__main__':
-    # G1, G2 = load_graphs("graphs/cubes4.grl", 1,1)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 2,3)
 
 
-    G1=create_graph_with_cycle(5)
-    G2=G1
+    # G1=create_complete_graph(6)
+    # G2=G1
 
 
     if (G1==G2):
