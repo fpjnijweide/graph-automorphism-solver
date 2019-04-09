@@ -1,4 +1,3 @@
-from week3 import *
 from week4 import *
 from week5 import *
 
@@ -10,9 +9,9 @@ class Settings:
     FAST = True
     PREPROCESSING = False
     TREE_CHECK = True
-    TWIN_CHECK= False # Todo sneller maken
+    TWIN_CHECK = False  # Todo sneller maken
 
-    #TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
+    # TODO add a setting for check_dihedral (answer =2*n) and check_complete (answer=n!)
 
 
 if __name__ == '__main__':
@@ -42,8 +41,7 @@ if __name__ == '__main__':
                 g1_partition_backup = graphs[graph1].partition[:]
                 g2_partition_backup = graphs[graph2].partition[:]
 
-                if is_isomorphic(graphs[graph1], graphs[graph2], [], [],
-                                       g1_partition_backup, g2_partition_backup) > 0:
+                if is_isomorphic(graphs[graph1], graphs[graph2], [], [], g1_partition_backup, g2_partition_backup) > 0:
                     isomorphisms.get(graph1).append(graph2)
                     mapped.append(graph2)
 
@@ -55,17 +53,17 @@ if __name__ == '__main__':
     if Settings.AUTOMORPHISMS:
         for graph in isomorphisms.keys() or notisomorphic:
             graphcopy = copy_graph(graphs[graph])
-            graphs[graph]=initialize_colors(graphs[graph])
-            graphcopy=initialize_colors(graphcopy)
-            g_partition_backup=create_partition(graphs[graph])
-            gcopy_partition_backup=create_partition(graphcopy)
+            graphs[graph] = initialize_colors(graphs[graph])
+            graphcopy = initialize_colors(graphcopy)
+            g_partition_backup = create_partition(graphs[graph])
+            gcopy_partition_backup = create_partition(graphcopy)
 
             if Settings.FAST:
                 # graphs[graph], graphcopy = fast_refinement(graphs[graph], graphcopy)
                 # g_partition_backup = graphs[graph].partition[:]
                 # gcopy_partition_backup = graphcopy.partition[:]
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                         g_partition_backup, gcopy_partition_backup, None)
+                                                    g_partition_backup, gcopy_partition_backup, None)
             else:
                 # graphs[graph], graphcopy = color_refinement(graphs[graph], graphcopy)
                 # g_partition_backup = graphs[graph].partition[:]
@@ -74,7 +72,7 @@ if __name__ == '__main__':
                                                     g_partition_backup, gcopy_partition_backup, None)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
-                graph_str ="[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
+                graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
                 print('{:>30}   {:<}'.format(graph_str, automorphisms))
             else:
                 print(str(graph) + ": " + str(automorphisms))
@@ -86,5 +84,3 @@ if __name__ == '__main__':
             print('[' + ', '.join(str(x) for x in isomorphisms.get(g)) + ']')
 
     print("\n" + str(time.time() - start))
-
-
