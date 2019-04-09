@@ -107,6 +107,13 @@ class Vertex(object):
         """
         return list(self._incidence.keys())
 
+    def _add_neighbor(self, vertex: "Vertex"):
+        """
+        For internal use only; adds an vertex to the neighbor list
+        :param vertex: The neighbor vertex that is added to the neighborset
+        """
+        self._neighborset.append(vertex)
+
     @property
     def degree(self) -> int:
         """
@@ -290,13 +297,6 @@ class Graph(object):
             raise GraphError("A vertex must belong to the graph it is added to")
 
         self._v.append(vertex)
-
-    def _add_neighbor(self, vertex: "Vertex"):
-        """
-        For internal use only; adds an vertex to the neighbor list
-        :param vertex: The neighbor vertex that is added to the neighborset
-        """
-        self._neighborset.append(vertex)
 
     def del_vertex(self, vertex: "Vertex"):
         for edge in vertex.incidence:

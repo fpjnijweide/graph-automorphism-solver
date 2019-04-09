@@ -258,15 +258,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those in the end when twin check is True.
         all_colors_are_unique = True
-        print("check")
         for i in range(len(G.partition)):
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
-                print("false")
                 all_colors_are_unique = False
                 break
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
-                print("true")
                 return 1 * constant
             else:
                 return 1
@@ -309,8 +306,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # Choose a color that is not unique
     chosen_color = -1
     for i in range(len(G.partition)):
-        print("G: ", G.partition)
-        print("H: ", H.partition)
         Gcolor = G.partition[i][:]  # list with vertices of same color
         Hcolor = H.partition[i][:]
         if len(Gcolor) + len(Hcolor) >= 4:
@@ -395,7 +390,6 @@ def is_isomorphic(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_back
             H._v.remove(v)
     if Settings.TREE_CHECK and len(D) == 0:
         if isTree(G) and isTree(H):
-            print("start")
             return countTreeIsomorphism(G)
     if Settings.TWIN_CHECK and len(D) == 0:
         twins_G = find_twins(G)
