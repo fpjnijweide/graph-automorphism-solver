@@ -1,10 +1,10 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/modulesC.grl"
+FILENAME = "graphs/cubes5.grl"
 
 class Settings:
-    AUTOMORPHISMS = True
+    AUTOMORPHISMS = False
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
@@ -38,10 +38,10 @@ if __name__ == '__main__':
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
-                g1_partition_backup = graphs[graph1].partition[:]
-                g2_partition_backup = graphs[graph2].partition[:]
+                # g1_partition_backup = graphs[graph1].partition[:]
+                # g2_partition_backup = graphs[graph2].partition[:]
 
-                if is_isomorphic(graphs[graph1], graphs[graph2], [], [], g1_partition_backup, g2_partition_backup) > 0:
+                if is_isomorphism(graphs[graph1],graphs[graph2]):
                     isomorphisms.get(graph1).append(graph2)
                     mapped.append(graph2)
 
