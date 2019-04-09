@@ -83,6 +83,7 @@ def copy_graph(inputG: Graph):
         G._v[i]._neighbor_colors=[]
         G._v[i]._neighbor_colors_sum=0
 
+    G.partition=create_partition(G.vertices)
     # Re-add all edges
     for edge in inputG._e:
         new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)

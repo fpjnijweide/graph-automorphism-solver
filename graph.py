@@ -135,10 +135,11 @@ class Vertex(object):
         if self.colornum>(len(self.graph.partition)-1):
             print("a")
         self.graph.partition[self.colornum].remove(self)
-        add_to_partition(self,self.graph.partition)
+
 
         self.colornum=color
         self.label=color
+        add_to_partition(self, self.graph.partition)
 
 
     @property
@@ -146,7 +147,7 @@ class Vertex(object):
         """
         Returns the degree of the vertex
         """
-        return sum(map(len, self._incidence.values()))
+        return len(self._neighborset)
 
 
 class Edge(object):
