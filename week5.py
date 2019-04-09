@@ -100,7 +100,7 @@ def fast_refinement(G: Graph, H: Graph):
 
 if __name__ == "__main__":
     # main method
-    G1, G2 = load_graphs("graphs/torus72.grl", 0, 2)
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 1)
 
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
@@ -115,20 +115,25 @@ if __name__ == "__main__":
     end = time.time()
     print("fast:", end - start)
 
-    G3, G4 = load_graphs("graphs/torus72.grl", 0, 2)
-    G3 = initialize_colors(G3)
-    G4 = initialize_colors(G4)
-    start = time.time()
-    G3, G4 = color_refinement(G3, G4)
-    g1_partition_backup = G3.partition[:]
-    g2_partition_backup = G4.partition[:]
-    #print(is_isomorphic(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
+    # G3, G4 = load_graphs("graphs/cubes5.grl", 0, 1)
+    # G3 = initialize_colors(G3)
+    # G4 = initialize_colors(G4)
+    # start = time.time()
+    # G3, G4 = color_refinement(G3, G4)
+    # g1_partition_backup = G3.partition[:]
+    # g2_partition_backup = G4.partition[:]
+    # #print(is_isomorphic(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
+    #
+    # #print(count_automorphisms(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
+    # end = time.time()
+    # print("normal:", end - start)
+    #
+    # write_graph_to_dot_file(G1, "G1")
+    # write_graph_to_dot_file(G2, "G2")
 
-    #print(count_automorphisms(G3, G4, [], [], g1_partition_backup, g2_partition_backup))
-    end = time.time()
-    print("normal:", end - start)
 
-    write_graph_to_dot_file(G1, "G1")
-    write_graph_to_dot_file(G2, "G2")
-    render('dot', 'png', 'graphG1.dot')
-    render('dot', 'png', 'graphG2.dot')
+
+
+
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
