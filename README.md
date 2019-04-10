@@ -32,3 +32,4 @@ TWIN_CHECK should be set to False, as it will have to effect on the execution of
 twin groups. Also, with big tree graphs, TWIN_CHECK should be set to False, since it slows down when running with main.
 Running it with week4 on its own, it executes fast. (To do this: replace the graph name in the directory and replace the
 numbers for which graphs you want to compare. Then execute file week4.py)
+
