@@ -1,16 +1,17 @@
 from week4 import *
 from week5 import *
+from week6 import *
 
-FILENAME = "graphs/Isom1.grl"
+FILENAME = "graphs/cubes5.grl"
 
 class Settings:
-    AUTOMORPHISMS = False
-    FAST = True
+    AUTOMORPHISMS = True
+    FAST_REFINEMENT = True
     PREPROCESSING = True
     TREE_CHECK = True
-    TWIN_CHECK= False # Todo sneller maken
+    TWIN_CHECK= False # Todo fix
     DIHEDRAL_COMPLETE_CUBE_CHECK = True
-
+    ALGEBRA_GROUPS=True
 
 
 
@@ -34,7 +35,7 @@ if __name__ == '__main__':
                 graphs[graph2] = initialize_colors(graphs[graph2])
 
                 # Refinement, either colour or fast
-                if Settings.FAST:
+                if Settings.FAST_REFINEMENT:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
@@ -58,8 +59,11 @@ if __name__ == '__main__':
             graphcopy = initialize_colors(graphcopy)
             g_partition_backup = create_partition(graphs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
-
-            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+            if Settings.ALGEBRA_GROUPS:
+                automorphisms=count_automorphisms_groups(graphs[graph], graphcopy, [], [],
+                                                    g_partition_backup, gcopy_partition_backup)
+            else:
+                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
