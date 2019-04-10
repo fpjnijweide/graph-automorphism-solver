@@ -176,19 +176,51 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
             if len(G.partition[i]) > 1 or len(H.partition[i]) > 1:
                 all_colors_are_unique = False
                 break
-        if all_colors_are_unique:
-            cycle_list = []
-            P2 = permutation(len(G._v))
-            for i in range(len(D)):
-                new_cycle = [D[i], I[i]]
+        #
+        # for i in range(len(D)):
+        #     first_vertex=G._v[D[i]]
+        #     current_vertex=H._v[I[i]]
+        #     for x in set(first_vertex._neighbor_colors):
+        #
+        #         if current_vertex._neighbor_colors.count(x) != first_vertex._neighbor_colors.count(x):
+        #             all_colors_are_unique = False
+        #             break
 
-                if [new_cycle[1], new_cycle[0]] not in cycle_list:
-                    cycle_list.append(new_cycle)
-                    P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
+        if all_colors_are_unique:
+
+            # cycle_list2 = []
+            # P = permutation(len(G._v))
+            # for color in range(len(G.partition)):
+            #     if G.partition[color]:
+            #         new_cycle = [G._v.index(G.partition[color][0]), H._v.index(H.partition[color][0])]
+            #
+            #         if [new_cycle[1], new_cycle[0]] not in cycle_list2:
+            #             cycle_list2.append(new_cycle)
+            #             P = P * permutation(len(G._v), cycles=[new_cycle])
+
+            cycle_list2 = list(range(len(G._v)))
+            # P = permutation(len(G._v))
+            for color in range(len(G.partition)):
+                if G.partition[color]:
+                    cycle_list2[G._v.index(G.partition[color][0])] = H._v.index(H.partition[color][0])
+
+                    # if [new_cycle[1], new_cycle[0]] not in cycle_list2:
+                    #     cycle_list2.append(new_cycle)
+                    #     P = P * permutation(len(G._v), cycles=[new_cycle])
+
+            P=permutation(len(G._v),mapping=cycle_list2)
+            # cycle_list = []
+            # P2 = permutation(len(G._v))
+            # for i in range(len(D)):
+            #     new_cycle = [D[i], I[i]]
+            #
+            #     if [new_cycle[1], new_cycle[0]] not in cycle_list:
+            #         cycle_list.append(new_cycle)
+            #         P2 = P2 * permutation(len(G._v), cycles=[new_cycle])
             # print(P2)
             if D:
                 # print(P2)
-                return P2
+                return P
             else:
                 return None
 
@@ -224,12 +256,12 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     else:
         i=0
         x = G.partition[chosen_color][i]
-        while G._v.index(x) in D or G._v.index(x) in I:
-            i+=1
-            try:
-                x = G.partition[chosen_color][i]
-            except IndexError:
-                return None
+        # while G._v.index(x) in I or G._v.index(x) in D:
+        #     i+=1
+        #     try:
+        #         x = G.partition[chosen_color][i]
+        #     except IndexError:
+        #         return None
 
     H_partition_chosen_color = H.partition[chosen_color][:]
     permutations=[]
@@ -243,9 +275,13 @@ def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partiti
     # H.partition = H_partition_backup
 
     # for
-    for y in H_partition_chosen_color:
-        if H._v.index(y) in I or H._v.index(y) in D:
-            continue
+    # i=0
+    while i<len(H_partition_chosen_color):
+    # for y in H_partition_chosen_color:
+        y = H_partition_chosen_color[i]
+        i+=1
+        # if H._v.index(y) in D or H._v.index(y) in I:
+        #     continue
         D= old_D[:] + [G._v.index(x)]
 
         I= old_I[:] + [H._v.index(y)]
@@ -367,7 +403,7 @@ def algebra_magic(input_cycles,gr_size):
 
 
 
-    permutations_list=Reduce(permutations_list)
+    # permutations_list=Reduce(permutations_list)
     i=0
     o,trans = Orbit(permutations_list, i,True)
     while len(o)<2:
@@ -465,7 +501,7 @@ if __name__ == '__main__':
     G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
 
 
-    # G1=create_complete_graph(8)
+    # G1=create_graph_with_cycle(5)
     # G2=G1
 
 
@@ -474,6 +510,8 @@ if __name__ == '__main__':
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
+    G1,G2=color_refinement(G1,G2)
+    # G2=color_refinement(G2)
     G_partition_backup = create_partition(G1.vertices)
 
     H_partition_backup = create_partition(G2.vertices)
