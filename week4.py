@@ -1,9 +1,14 @@
-from main import *
+from permv2 import *
+from basicpermutationgroup import *
+
 from week2 import *
 from week3 import *
 from graphviz import render
 from graph import *
 import math
+from main import *
+
+# from week6 import *
 
 FOUND_TYPE = []
 
@@ -391,9 +396,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Refine the colors of G and H
 
-    if Settings.FAST:
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
+    if Settings.FAST_REFINEMENT:
         G, H = fast_refinement(G, H)
     else:
         G.partition = create_partition(G.vertices)
@@ -402,7 +405,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
-        return 0
+        if do_not_check_automorphism or not Settings.ALGEBRA_GROUPS:
+            return 0
+        else:
+            return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those
         # in the end when twin check is True.
@@ -414,6 +420,15 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
                 return 1 * constantGH
+            elif not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+                cycle_list2 = list(range(len(G._v)))
+                # P = permutation(len(G._v))
+                for color in range(len(G.partition)):
+                    if G.partition[color]:
+                        cycle_list2[G._v.index(G.partition[color][0])] = H._v.index(H.partition[color][0])
+                P = permutation(len(G._v), mapping=cycle_list2)
+
+                return P
             else:
                 return 1
 
@@ -445,7 +460,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
         print("ERROR CHOOSING COLOR")
-        return 0
+        if not Settings.ALGEBRA_GROUPS or do_not_check_automorphism:
+            return 0
+        else:
+            return None
 
     # if they are isomorphs
 
@@ -461,12 +479,32 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
+    permutations=[]
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition, constantGH)
+        result = count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+                                               new_H_partition, constantGH,do_not_check_automorphism=do_not_check_automorphism)
+        if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+            if not result is None:  # if res is not None
+                # if not res: #if res is empty
+                #     if not [[]] in permutations:
+                #         permutations.append([[]])
+                # else:
+                if isinstance(result, list):
+                    permutations.extend(result)
+                else:
+                    permutations.append(result)
+                    ### this code makes it return to previous instance
+            if D:
+                if D[-1] != I[-1]:  # if this iteration is not trivial
+                    return permutations
+        else:
+            nr_of_isomorphs+=result
         if do_not_check_automorphism and nr_of_isomorphs>0:
             return 1
-    return nr_of_isomorphs
+    if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+        return permutations
+    else:
+        return nr_of_isomorphs
 
 
 def is_isomorphism(G: Graph, H: Graph):
