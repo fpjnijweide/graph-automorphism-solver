@@ -1,15 +1,21 @@
-from week4 import *
-from week5 import *
+import time
 
-FILENAME = "graphs/Isom1.grl"
+from graph_io import *
+from week3 import *
+from week4 import *
+from week5 import fast_refinement
+from week6 import count_automorphisms_groups
+
+FILENAME = "graphs/cubes5.grl"
 
 class Settings:
-    AUTOMORPHISMS = False
+    AUTOMORPHISMS = True
     FAST = False
     PREPROCESSING = False
     TREE_CHECK = False
     TWIN_CHECK= False # Todo sneller maken
     DIHEDRAL_COMPLETE_CUBE_CHECK = False
+    ALGEBRA_GROUPS=True
 
 
 
@@ -59,8 +65,12 @@ if __name__ == '__main__':
             g_partition_backup = create_partition(graphs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
 
-            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+            if Settings.ALGEBRA_GROUPS:
+                automorphisms = count_automorphisms_groups(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
+            else:
+                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+                                                        g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"
