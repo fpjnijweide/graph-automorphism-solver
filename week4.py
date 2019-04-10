@@ -1,9 +1,14 @@
-from main import *
+from permv2 import *
+from basicpermutationgroup import *
+
 from week2 import *
 from week3 import *
 from graphviz import render
 from graph import *
 import math
+from main import *
+
+# from week6 import *
 
 FOUND_TYPE = []
 
@@ -47,23 +52,23 @@ def are_twins(v0, v1):
 
 def reduce_twins(G: Graph, twins_G):
     # we keep one of the twins with index 0, all others will be deleted and their edges will be added to the twin that is kept.
+
     for i in twins_G:
-        for vertex in range(1, len(i)):
+        newVertex = Vertex(G)
+        G.add_vertex(newVertex)
+        for vertex in range(0, len(i)):
             for e in i[vertex].incidence:
-                if (e.head == i[vertex] and e.tail in i) or (e.tail == i[vertex] and e.head in i): # connection between true twins can be left out
-                    break
-                else:
-                    if e.head == i[vertex]:
-                        edge = Edge(e.tail, i[0])
-                        G.add_edge(edge)
-                    elif e.tail == i[vertex]:
-                        edge = Edge(i[0], e.head)
-                        G.add_edge(edge)
+                if e.head == i[vertex]:
+                    edge = Edge(e.tail, newVertex)
+                    G.add_edge(edge)
+                elif e.tail == i[vertex]:
+                    edge = Edge(newVertex, e.head)
+                    G.add_edge(edge)
 
     for j in twins_G:
-        for x in range(1, len(j)):
-            if j[x] in G.vertices:
-                G.del_vertex(j[x])
+           # if j[x] in G.vertices:
+        for i in j:
+            G.del_vertex(i)
 
 
 def copy_graph(inputG: Graph):
@@ -341,9 +346,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not D and Settings.TWIN_CHECK and not do_not_check_automorphism:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
+        if len(twins_G)>0 or len(twins_H)>0:
+            print("twins!")
         constantGH = 1
         for i in twins_G:
             constantGH = constantGH * math.factorial(len(i))
+        print("constant ", constantGH)
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
     elif not D and Settings.TWIN_CHECK and do_not_check_automorphism:
@@ -391,18 +399,23 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Refine the colors of G and H
 
-    if Settings.FAST:
-        G.partition = create_partition(G.vertices)
-        H.partition = create_partition(H.vertices)
+    if Settings.FAST_REFINEMENT:
         G, H = fast_refinement(G, H)
     else:
+        print("new amount vertices")
         G.partition = create_partition(G.vertices)
         H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
-        return 0
+        print("not stable")
+        if do_not_check_automorphism or not Settings.ALGEBRA_GROUPS:
+            print("uh oh")
+            return 0
+        else:
+            print("uh oh2")
+            return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those
         # in the end when twin check is True.
@@ -414,6 +427,15 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         if all_colors_are_unique:
             if Settings.TWIN_CHECK:
                 return 1 * constantGH
+            elif not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+                cycle_list2 = list(range(len(G._v)))
+                # P = permutation(len(G._v))
+                for color in range(len(G.partition)):
+                    if G.partition[color]:
+                        cycle_list2[G._v.index(G.partition[color][0])] = H._v.index(H.partition[color][0])
+                P = permutation(len(G._v), mapping=cycle_list2)
+
+                return P
             else:
                 return 1
 
@@ -445,7 +467,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
         print("ERROR CHOOSING COLOR")
-        return 0
+        if not Settings.ALGEBRA_GROUPS or do_not_check_automorphism:
+            return 0
+        else:
+            return None
 
     # if they are isomorphs
 
@@ -461,12 +486,32 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
+    permutations=[]
     for y in H_partition_chosen_color:
-        nr_of_isomorphs += count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition, constantGH)
+        result = count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
+                                               new_H_partition, constantGH,do_not_check_automorphism=do_not_check_automorphism)
+        if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+            if not result is None:  # if res is not None
+                # if not res: #if res is empty
+                #     if not [[]] in permutations:
+                #         permutations.append([[]])
+                # else:
+                if isinstance(result, list):
+                    permutations.extend(result)
+                else:
+                    permutations.append(result)
+                    ### this code makes it return to previous instance
+            if D:
+                if D[-1] != I[-1]:  # if this iteration is not trivial
+                    return permutations
+        else:
+            nr_of_isomorphs+=result
         if do_not_check_automorphism and nr_of_isomorphs>0:
             return 1
-    return nr_of_isomorphs
+    if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
+        return permutations
+    else:
+        return nr_of_isomorphs
 
 
 def is_isomorphism(G: Graph, H: Graph):
@@ -474,7 +519,7 @@ def is_isomorphism(G: Graph, H: Graph):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cographs1.grl", 1, 2)
+    G1, G2 = load_graphs("graphs/cographs1.grl", 0, 3)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -487,7 +532,7 @@ if __name__ == "__main__":
 
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, False))
+    print("ans:", count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, False))
     #print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")

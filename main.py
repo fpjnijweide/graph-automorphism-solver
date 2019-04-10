@@ -1,21 +1,33 @@
 from week4 import *
 from week5 import *
-
+from week6 import *
+filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
+filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
 FILENAME = "graphs/cographs1.grl"
+
 
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
-    PREPROCESSING = True
-    TREE_CHECK = True
-    TWIN_CHECK= True
-    DIHEDRAL_COMPLETE_CUBE_CHECK = True
+    FAST_REFINEMENT = False
+    PREPROCESSING = False
+    TREE_CHECK = False
+    TWIN_CHECK= True # Todo fix
+    DIHEDRAL_COMPLETE_CUBE_CHECK = False
+    ALGEBRA_GROUPS=False
+    # group_sizes = {}
+    # checked_memberships = {}
+
+# class Struct:
+
+
 
 
 if __name__ == '__main__':
+
+# for FILENAME in filenames:
     start = time.time()
-    print("isomorphisms for {}\n".format(FILENAME.split('/')[1]))
+    print("isomorphisms for " + FILENAME)
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
@@ -41,7 +53,7 @@ if __name__ == '__main__':
                 graphs[graph2] = initialize_colors(graphs[graph2])
 
                 # Refinement, either colour or fast
-                if Settings.FAST:
+                if Settings.FAST_REFINEMENT:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
@@ -64,8 +76,11 @@ if __name__ == '__main__':
             graphcopy = initialize_colors(graphcopy)
             g_partition_backup = create_partition(autographs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
-
-            automorphisms = count_automorphisms(autographs[graph], graphcopy, [], [],
+            if Settings.ALGEBRA_GROUPS:
+                automorphisms=count_automorphisms_groups(graphs[graph], graphcopy, [], [],
+                                                    g_partition_backup, gcopy_partition_backup)
+            else:
+                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
