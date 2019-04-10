@@ -244,8 +244,10 @@ def write_dot(graph: Graph, f: IO[str], directed=False):
 
     f.write('}')
 
+
 if __name__ == "__main__":
     from mygraphs import MyGraph
+
     with open('examplegraph.gr') as f:
         G = load_graph(f, MyGraph)
     print(G)

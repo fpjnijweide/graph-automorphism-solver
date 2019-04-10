@@ -2,6 +2,8 @@ from graph import *
 from graph_io import *
 
 from DLL import *
+
+
 # from week5 import *
 
 def load_graphs(filename: str, nr1: int, nr2: int):
@@ -11,14 +13,6 @@ def load_graphs(filename: str, nr1: int, nr2: int):
         G1 = graph_file[0][nr1]
         G2 = graph_file[0][nr2]
         return G1, G2
-
-
-# def neighbor_colors(v: Vertex):
-#     # returns a list of colors of the neighboring vertices
-#     colors = []
-#     for n in v.neighbors:
-#         colors.append(n.colornum)
-#     return colors
 
 
 def initialize_colors(G: Graph):
@@ -48,9 +42,10 @@ def create_partition(vertices: list):
 
     for v in vertices:
         # if the degree is not found in partition, add empty lists to it
-        add_to_partition(v,partition)
+        add_to_partition(v, partition)
 
     return partition
+
 
 def add_to_partition(v: Vertex, partition):
     if v.colornum > len(partition) - 1:
@@ -59,6 +54,7 @@ def add_to_partition(v: Vertex, partition):
             partition.append([])
     # add the vertex to its respective index in partition
     partition[v.colornum].append(v)
+
 
 def create_partition_DLL(vertices: list):
     # a list of lists, where the index equals the color and the list at that index is a list of vertices with that color
@@ -98,17 +94,16 @@ def refine_colors(G: Graph, H: Graph):
                 if other_vertex._neighbor_colors_sum < first_vertex._neighbor_colors_sum:
                     first_vertex = other_vertex
 
-
             vertices_needing_change = []
 
             for j in range(0, len(vertices_with_this_color)):
                 current_vertex = vertices_with_this_color[j]
                 if first_vertex != current_vertex:
 
-                    needs_change=False
+                    needs_change = False
                     for x in set(first_vertex._neighbor_colors):
                         if current_vertex._neighbor_colors.count(x) != first_vertex._neighbor_colors.count(x):
-                            needs_change=True
+                            needs_change = True
                             break
 
                     # if not compare(first_vertex.neighbor_colors, current_vertex.neighbor_colors):
