@@ -38,7 +38,7 @@ if __name__ == '__main__':
     if Settings.AUTOMORPHISMS:
         autographs = []
         for idx in range(0, len(graphs)):
-            print(idx)
+            # print(idx)
             autographs.append(copy_graph(graphs[idx]))
 
     # GI problem:
@@ -77,10 +77,10 @@ if __name__ == '__main__':
             g_partition_backup = create_partition(autographs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
             if Settings.ALGEBRA_GROUPS:
-                automorphisms=count_automorphisms_groups(graphs[graph], graphcopy, [], [],
+                automorphisms=count_automorphisms_groups(autographs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             else:
-                automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+                automorphisms = count_automorphisms(autographs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)

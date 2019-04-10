@@ -346,12 +346,12 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not D and Settings.TWIN_CHECK and not do_not_check_automorphism:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
-        if len(twins_G)>0 or len(twins_H)>0:
-            print("twins!")
+        # if len(twins_G)>0 or len(twins_H)>0:
+            # print("twins!")
         constantGH = 1
         for i in twins_G:
             constantGH = constantGH * math.factorial(len(i))
-        print("constant ", constantGH)
+        # print("constant ", constantGH)
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
     elif not D and Settings.TWIN_CHECK and do_not_check_automorphism:
@@ -364,20 +364,20 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         for j in twins_H:
             constantH = constantH * math.factorial(len(j))
         if constantG != constantH:
-            print("not iso")
+            # print("not iso")
             return False
         elif constantG > 0:
             #TODO: this should be positive number, dont know why not
             count = count_automorphisms(G, H, D, I, create_partition(G.vertices), create_partition(H.vertices), constantG, False)
-            print(count)
+            # print(count)
             if count > 0:
-                print("iso")
+                # print("iso")
                 return True
             else:
-                print("not iso 2")
+                # print("not iso 2")
                 return False
-        else:
-            print("constants", constantG, constantH)
+
+            # print("constants", constantG, constantH)
     else:
         constantGH = constant
 
@@ -402,19 +402,19 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if Settings.FAST_REFINEMENT:
         G, H = fast_refinement(G, H)
     else:
-        print("new amount vertices")
+        # print("new amount vertices")
         G.partition = create_partition(G.vertices)
         H.partition = create_partition(H.vertices)
         G, H = color_refinement(G, H)
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
-        print("not stable")
+        # print("not stable")
         if do_not_check_automorphism or not Settings.ALGEBRA_GROUPS:
-            print("uh oh")
+            # print("uh oh")
             return 0
         else:
-            print("uh oh2")
+            # print("uh oh2")
             return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those
