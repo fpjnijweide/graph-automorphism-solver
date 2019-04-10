@@ -58,7 +58,6 @@ if __name__ == '__main__':
             if len(isomorphisms.get(graph1)) == 0:
                 isomorphisms.popitem()
                 notisomorphic.append(graph1)
-
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
         print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))

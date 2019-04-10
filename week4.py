@@ -14,6 +14,7 @@ FOUND_TYPE = []
 
 
 def find_twins(G: Graph):  # will return groups of twins and groups of false twins in a list
+
     v = G.vertices
     global FOUND_TYPE
 
@@ -342,7 +343,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                             return fact*len(G._v)
 
 
-    if not D and Settings.TWIN_CHECK:
+    if not D and Settings.TWIN_CHECK and not do_not_check_automorphism:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
         constantGH = 1
@@ -350,6 +351,30 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
             constantGH = constantGH * math.factorial(len(i))
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
+    elif not D and Settings.TWIN_CHECK and do_not_check_automorphism:
+        twins_G = find_twins(G)
+        twins_H = find_twins(H)
+        constantG = 1
+        constantH = 1
+        for i in twins_G:
+            constantG = constantG * math.factorial(len(i))
+        for j in twins_H:
+            constantH = constantH * math.factorial(len(j))
+        if constantG != constantH:
+            print("not iso")
+            return False
+        elif constantG > 0:
+            #TODO: this should be positive number, dont know why not
+            count = count_automorphisms(G, H, D, I, create_partition(G.vertices), create_partition(H.vertices), constantG, False)
+            print(count)
+            if count > 0:
+                print("iso")
+                return True
+            else:
+                print("not iso 2")
+                return False
+        else:
+            print("constants", constantG, constantH)
     else:
         constantGH = constant
 
@@ -412,7 +437,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not D and Settings.PREPROCESSING:  # only once, after first call of refignment
         disconnectedG = disconnectedVertices(G)
         global FOUND_TYPE
-
         if len(disconnectedG) > 0:
             FOUND_TYPE.append("Disconnected")
         for v in disconnectedG:
@@ -487,9 +511,8 @@ def is_isomorphism(G: Graph, H: Graph):
     return count_automorphisms(G,H,[],[],G.partition[:],H.partition[:],do_not_check_automorphism=True) > 0
 
 
-
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cubes3.grl", 0,0)
+    G1, G2 = load_graphs("graphs/cographs1.grl", 1, 2)
 
     # from week2 import *
     # G1=create_complete_graph(4)
@@ -500,12 +523,11 @@ if __name__ == "__main__":
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
-
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
-    # print(is_isomorphic(G1, G2))
-    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, 0))
-    #
+    print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, False))
+    #print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
 
