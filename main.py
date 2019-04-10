@@ -3,12 +3,12 @@ from week5 import *
 from week6 import *
 filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
 filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
-FILENAME = "graphs/cubes6.grl"
+FILENAME = "graphs/bonus/bonusGI1.grl"
 
 
 
 class Settings:
-    AUTOMORPHISMS = True
+    AUTOMORPHISMS = False
     FAST_REFINEMENT = True
     PREPROCESSING = False
     TREE_CHECK = False
