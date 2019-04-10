@@ -22,6 +22,7 @@ class Settings:
 
 
 
+
 if __name__ == '__main__':
 
 # for FILENAME in filenames:
@@ -32,7 +33,15 @@ if __name__ == '__main__':
     notisomorphic = []
     mapped = []
 
-     # GI problem:
+    # Make a copy of all the graphs for the automorphism part since when we have twins we
+    # delete vertices in is_isomorphic
+    if Settings.AUTOMORPHISMS:
+        autographs = []
+        for idx in range(0, len(graphs)):
+            print(idx)
+            autographs.append(copy_graph(graphs[idx]))
+
+    # GI problem:
     isomorphisms = {}
     for graph1 in range(0, len(graphs)):
         if graph1 not in mapped:
@@ -61,11 +70,11 @@ if __name__ == '__main__':
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
         print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
-        for graph in list(isomorphisms.keys()) + notisomorphic:
-            graphcopy = copy_graph(graphs[graph])
-            graphs[graph] = initialize_colors(graphs[graph])
+        for graph in isomorphisms.keys() or notisomorphic:
+            graphcopy = copy_graph(autographs[graph])
+            autographs[graph] = initialize_colors(autographs[graph])
             graphcopy = initialize_colors(graphcopy)
-            g_partition_backup = create_partition(graphs[graph].vertices)
+            g_partition_backup = create_partition(autographs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
             if Settings.ALGEBRA_GROUPS:
                 automorphisms=count_automorphisms_groups(graphs[graph], graphcopy, [], [],
