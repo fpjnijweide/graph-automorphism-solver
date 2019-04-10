@@ -1,29 +1,38 @@
 from week4 import *
 from week5 import *
 from week6 import *
+filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
+filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
+FILENAME = "graphs/basic/basicAut1.gr"
 
-FILENAME = "graphs/cubes5.grl"
+
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST_REFINEMENT = True
-    PREPROCESSING = True
-    TREE_CHECK = True
+    FAST_REFINEMENT = False
+    PREPROCESSING = False
+    TREE_CHECK = False
     TWIN_CHECK= False # Todo fix
-    DIHEDRAL_COMPLETE_CUBE_CHECK = True
+    DIHEDRAL_COMPLETE_CUBE_CHECK = False
     ALGEBRA_GROUPS=True
+    # group_sizes = {}
+    # checked_memberships = {}
+
+# class Struct:
 
 
 
 if __name__ == '__main__':
+
+# for FILENAME in filenames:
     start = time.time()
-    print("isomorphisms for {}\n".format(FILENAME.split('/')[1]))
+    print("isomorphisms for " + FILENAME)
     with open(FILENAME) as file:
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
     mapped = []
 
-    # GI problem:
+     # GI problem:
     isomorphisms = {}
     for graph1 in range(0, len(graphs)):
         if graph1 not in mapped:
@@ -53,7 +62,7 @@ if __name__ == '__main__':
     # Aut problem: only need to calculate for the keys, and graphs not in the dictionary
     if Settings.AUTOMORPHISMS:
         print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
-        for graph in isomorphisms.keys() or notisomorphic:
+        for graph in list(isomorphisms.keys()) + notisomorphic:
             graphcopy = copy_graph(graphs[graph])
             graphs[graph] = initialize_colors(graphs[graph])
             graphcopy = initialize_colors(graphcopy)
