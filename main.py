@@ -1,15 +1,17 @@
 from week4 import *
 from week5 import *
 
-FILENAME = "graphs/bigtrees3.grl"
+FILENAME = "graphs/cographs1.grl"
+
 
 class Settings:
     AUTOMORPHISMS = True
     FAST = False
     PREPROCESSING = True
     TREE_CHECK = True
-    TWIN_CHECK= False
+    TWIN_CHECK= True
     DIHEDRAL_COMPLETE_CUBE_CHECK = True
+
 
 if __name__ == '__main__':
     start = time.time()
@@ -18,7 +20,15 @@ if __name__ == '__main__':
         graphs = load_graph(file, read_list=True)[0]
     notisomorphic = []
     mapped = []
-    #TODO: we need a graph copy
+
+    # Make a copy of all the graphs for the automorphism part since when we have twins we
+    # delete vertices in is_isomorphic
+    if Settings.AUTOMORPHISMS:
+        autographs = []
+        for idx in range(0, len(graphs)):
+            print(idx)
+            autographs.append(copy_graph(graphs[idx]))
+
     # GI problem:
     isomorphisms = {}
     for graph1 in range(0, len(graphs)):
@@ -49,13 +59,13 @@ if __name__ == '__main__':
     if Settings.AUTOMORPHISMS:
         print('{:>}   {:<}'.format("Sets of isomorphic graphs:", "Number of automorphisms:"))
         for graph in isomorphisms.keys() or notisomorphic:
-            graphcopy = copy_graph(graphs[graph])
-            graphs[graph] = initialize_colors(graphs[graph])
+            graphcopy = copy_graph(autographs[graph])
+            autographs[graph] = initialize_colors(autographs[graph])
             graphcopy = initialize_colors(graphcopy)
-            g_partition_backup = create_partition(graphs[graph].vertices)
+            g_partition_backup = create_partition(autographs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
 
-            automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
+            automorphisms = count_automorphisms(autographs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
