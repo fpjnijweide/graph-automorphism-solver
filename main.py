@@ -3,7 +3,7 @@ from week5 import *
 from week6 import *
 filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
 filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
-FILENAME = "graphs/bonus/bonusGI4.grl"
+FILENAME = "graphs/basic/basicGIAut.grl"
 
 
 
