@@ -360,7 +360,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         constantGH = 1
         for i in twins_G:
             constantGH = constantGH * factorial(len(i))
-        # print("constant ", constantGH)
+        #print("constant ", constantGH)
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
     elif not D and Settings.TWIN_CHECK and do_not_check_automorphism:
@@ -379,7 +379,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
             count = count_automorphisms(G, H, D, I, create_partition(G.vertices), create_partition(H.vertices),
                                         constantG, False)
-            # print(count)
+            #print(count)
             if count > 0:
                 # print("iso")
                 return True
@@ -420,7 +420,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if not is_stable(G, H):
         # print("not stable")
         if do_not_check_automorphism or not Settings.ALGEBRA_GROUPS:
-            # print("uh oh")
+            #print("uh oh")
             return 0
         else:
             # print("uh oh2")
@@ -514,12 +514,14 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 if D[-1] != I[-1]:  # if this iteration is not trivial
                     return permutations
         else:
+            #print("nr + result", nr_of_isomorphs, result)
             nr_of_isomorphs += result
         if do_not_check_automorphism and nr_of_isomorphs > 0:
             return 1
     if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
         return permutations
     else:
+        #print("return: ", nr_of_isomorphs)
         return nr_of_isomorphs
 
 
@@ -528,7 +530,7 @@ def is_isomorphism(G: Graph, H: Graph):
 
 
 if __name__ == "__main__":
-    G1, G2 = load_graphs("graphs/cographs1.grl", 0, 3)
+    G1, G2 = load_graphs("graphs/bigtrees1.grl", 1,3)
 
     # from week2 import *
     # G1=create_complete_graph(4)

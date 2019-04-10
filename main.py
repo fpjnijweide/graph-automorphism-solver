@@ -3,20 +3,20 @@ from week5 import *
 from week6 import *
 filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
 filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
-FILENAME = "graphs/trees90.grl"
+FILENAME = "graphs/bigtrees3.grl"
 
 
 
 class Settings:
     AUTOMORPHISMS = True
 
-    PREPROCESSING = True
-    TREE_CHECK = True
-    DIHEDRAL_COMPLETE_CHECK = True
+    PREPROCESSING = False
+    TREE_CHECK = False
+    DIHEDRAL_COMPLETE_CHECK = False
 
-    FAST_REFINEMENT = True
-    ALGEBRA_GROUPS=True
-    TWIN_CHECK = False  # does NOT work with FAST_REFINEMENT or ALGEBRA_GROUPS
+    FAST_REFINEMENT = False
+    ALGEBRA_GROUPS=False
+    TWIN_CHECK = True  # does NOT work with FAST_REFINEMENT or ALGEBRA_GROUPS
 
     CUBE_CHECK= False #unstable!
 
