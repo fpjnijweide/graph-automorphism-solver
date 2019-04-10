@@ -2,20 +2,20 @@ from week4 import *
 from week5 import *
 from week6 import *
 
-FILENAME = "graphs/cubes5.grl"
+FILENAME = "graphs/cubes6.grl"
 
 
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST_REFINEMENT = True
+    FAST_REFINEMENT = False
     PREPROCESSING = True
     TREE_CHECK = True
     TWIN_CHECK= False # Todo fix
-    DIHEDRAL_COMPLETE_CUBE_CHECK = True
+    DIHEDRAL_COMPLETE_CUBE_CHECK = False
     ALGEBRA_GROUPS=True
-    group_sizes = {}
-    checked_memberships = {}
+    # group_sizes = {}
+    # checked_memberships = {}
 
 # class Struct:
 

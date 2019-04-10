@@ -10,23 +10,26 @@ from basicpermutationgroup import *
 # global checked_memberships
 from main import *
 
+checked_memberships={}
+group_sizes={}
+
 def membership_check(element,group,recursive=True):
-    # global checked_memberships
-    from main import Settings
+    global checked_memberships
+    # from main import Settings
     try:
-        return Settings.checked_memberships[(element,str(set(group)))]
+        return checked_memberships[(element,str(set(group)))]
     except KeyError:
         pass
     # print("membership check for " + str(element) + " in " + str(group))
     if recursive and element in group:
         # print("TRUE: element is simply in group")
-        Settings.checked_memberships[(element,str(set(group)))]=True
+        checked_memberships[(element,str(set(group)))]=True
         return True
     if group==[] or group==[[]]:
         # print("FALSE: group is empty")
         return False
     if element==permutation(group[0].n):
-        Settings.checked_memberships[(element, str(set(group)))]=True
+        checked_memberships[(element, str(set(group)))]=True
         # print("TRUE: trivial perm")
         return True
 
@@ -62,17 +65,17 @@ def membership_check(element,group,recursive=True):
             # traversal_perm=traversals[orbit_nr][image]
             composition_perm = -traversal_perm* element
             if membership_check(composition_perm, group_stabilizer):
-                Settings.checked_memberships[(element, str(set(group)))]=True
+                checked_memberships[(element, str(set(group)))]=True
                 return True
     return False
     # if element in group
 
 
 def group_size(group):
-    # global group_sizes
-    from main import Settings
+    global group_sizes
+    # from main import Settings
     try:
-        return Settings.group_sizes[str(set(group))]
+        return group_sizes[str(set(group))]
     except KeyError:
         pass
     nontriv_orbit=-1
@@ -101,7 +104,7 @@ def group_size(group):
 
     # print("size of orbit: " + str(len(orbit)))
     res=len(orbit)*final_stab_size
-    Settings.group_sizes[str(set(group))]=res
+    group_sizes[str(set(group))]=res
     return res
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
