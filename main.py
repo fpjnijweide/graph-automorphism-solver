@@ -9,14 +9,14 @@ FILENAME = "graphs/cographs1.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST_REFINEMENT = True
-    PREPROCESSING = True
-    TREE_CHECK = True
-    DIHEDRAL_COMPLETE_CHECK = True
-    ALGEBRA_GROUPS=True
+    FAST_REFINEMENT = False
+    PREPROCESSING = False
+    TREE_CHECK = False
+    DIHEDRAL_COMPLETE_CHECK = False
+    ALGEBRA_GROUPS=False
 
     CUBE_CHECK=False #unstable!
-    TWIN_CHECK = False  # unstable!
+    TWIN_CHECK = True  # unstable!
 
     # group_sizes = {}
     # checked_memberships = {}
