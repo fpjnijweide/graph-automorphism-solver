@@ -4,6 +4,8 @@ from week6 import *
 
 FILENAME = "graphs/cubes5.grl"
 
+
+
 class Settings:
     AUTOMORPHISMS = True
     FAST_REFINEMENT = True
@@ -12,10 +14,16 @@ class Settings:
     TWIN_CHECK= False # Todo fix
     DIHEDRAL_COMPLETE_CUBE_CHECK = True
     ALGEBRA_GROUPS=True
+    group_sizes = {}
+    checked_memberships = {}
+
+# class Struct:
 
 
 
 if __name__ == '__main__':
+
+
     start = time.time()
     print("isomorphisms for {}\n".format(FILENAME.split('/')[1]))
     with open(FILENAME) as file:
@@ -23,7 +31,7 @@ if __name__ == '__main__':
     notisomorphic = []
     mapped = []
 
-    # GI problem:
+     # GI problem:
     isomorphisms = {}
     for graph1 in range(0, len(graphs)):
         if graph1 not in mapped:
