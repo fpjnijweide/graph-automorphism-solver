@@ -371,7 +371,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # Refine the colors of G and H
 
-    if Settings.FAST:
+    if Settings.FAST_REFINEMENT:
         G, H = fast_refinement(G, H)
     else:
         G.partition = create_partition(G.vertices)
@@ -380,7 +380,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
     # If this coloring is not stable, return 0
     if not is_stable(G, H):
-        return 0
+        if do_not_check_automorphism or not Settings.ALGEBRA_GROUPS:
+            return 0
+        else:
+            return None
     else:
         # Else, check if all colors are unique. If so, it is an isomorph. Also we ignore the twins and calculate those
         # in the end when twin check is True.
@@ -433,7 +436,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     if chosen_color == -1:
         # If no color has been chosen something obviously went wrong
         print("ERROR CHOOSING COLOR")
-        return 0
+        if not Settings.ALGEBRA_GROUPS or do_not_check_automorphism:
+            return 0
+        else:
+            return None
 
     # if they are isomorphs
 
@@ -459,7 +465,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 #     if not [[]] in permutations:
                 #         permutations.append([[]])
                 # else:
-                if not isinstance(result, permutation):
+                if isinstance(result, list):
                     permutations.extend(result)
                 else:
                     permutations.append(result)

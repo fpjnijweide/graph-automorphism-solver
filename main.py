@@ -1,22 +1,17 @@
-import time
-
-from graph_io import *
-from week3 import *
 from week4 import *
-from week5 import fast_refinement
-from week6 import count_automorphisms_groups
+from week5 import *
+from week6 import *
 
 FILENAME = "graphs/cubes5.grl"
 
 class Settings:
     AUTOMORPHISMS = True
-    FAST = False
-    PREPROCESSING = False
-    TREE_CHECK = False
-    TWIN_CHECK= False # Todo sneller maken
-    DIHEDRAL_COMPLETE_CUBE_CHECK = False
+    FAST_REFINEMENT = True
+    PREPROCESSING = True
+    TREE_CHECK = True
+    TWIN_CHECK= False # Todo fix
+    DIHEDRAL_COMPLETE_CUBE_CHECK = True
     ALGEBRA_GROUPS=True
-
 
 
 
@@ -40,7 +35,7 @@ if __name__ == '__main__':
                 graphs[graph2] = initialize_colors(graphs[graph2])
 
                 # Refinement, either colour or fast
-                if Settings.FAST:
+                if Settings.FAST_REFINEMENT:
                     graphs[graph1], graphs[graph2] = fast_refinement(graphs[graph1], graphs[graph2])
                 else:
                     graphs[graph1], graphs[graph2] = color_refinement(graphs[graph1], graphs[graph2])
@@ -64,13 +59,12 @@ if __name__ == '__main__':
             graphcopy = initialize_colors(graphcopy)
             g_partition_backup = create_partition(graphs[graph].vertices)
             gcopy_partition_backup = create_partition(graphcopy.vertices)
-
             if Settings.ALGEBRA_GROUPS:
-                automorphisms = count_automorphisms_groups(graphs[graph], graphcopy, [], [],
+                automorphisms=count_automorphisms_groups(graphs[graph], graphcopy, [], [],
                                                     g_partition_backup, gcopy_partition_backup)
             else:
                 automorphisms = count_automorphisms(graphs[graph], graphcopy, [], [],
-                                                        g_partition_backup, gcopy_partition_backup)
+                                                    g_partition_backup, gcopy_partition_backup)
             if graph in isomorphisms.keys():
                 isomorphisms.get(graph).insert(0, graph)
                 graph_str = "[" + ', '.join(str(x) for x in isomorphisms.get(graph)) + "]"

@@ -88,6 +88,7 @@ def group_size(group):
     return res
 
 def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
+    from week4 import count_automorphisms
     permutation_list=count_automorphisms(G1, G2, D,I, G_partition_backup, H_partition_backup)
     print(permutation_list)
     # print("--- finished finding unique permutations ---")
