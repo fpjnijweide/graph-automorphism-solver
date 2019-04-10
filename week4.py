@@ -317,17 +317,17 @@ def generate_n_dimensional_cube(degree):
 
 def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,do_not_check_automorphism=False):
     # Recursively counts all isomorphs of this graph
-    if not D and Settings.DIHEDRAL_COMPLETE_CUBE_CHECK:
+    if not D and (Settings.DIHEDRAL_COMPLETE_CHECK or Settings.CUBE_CHECK):
         if len(G._v) == len(H._v):
-            if check_dihedral(G) and check_dihedral(H):
+            if Settings.DIHEDRAL_COMPLETE_CHECK and check_dihedral(G) and check_dihedral(H):
                 return 2*len(G._v)
-            elif check_complete(G) and check_complete(H):
+            elif Settings.DIHEDRAL_COMPLETE_CHECK and check_complete(G) and check_complete(H):
                 fact = 1
 
                 for i in range(1, len(G._v) + 1):
                     fact = fact * i
                 return fact
-            elif not do_not_check_automorphism:
+            elif not do_not_check_automorphism and Settings.CUBE_CHECK:
                 degree_G=check_cube(G)
                 if degree_G!=0:
                     if degree_G==check_cube(H):
