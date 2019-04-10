@@ -1,4 +1,5 @@
 import copy
+
 """
 This is a module for working with directed and undirected multigraphs.
 """
@@ -45,14 +46,10 @@ class Vertex(object):
         self.label = label
         self._incidence = {}
         self._neighborset = []
-        self._neighbor_colors=[]
-        self.colornum=0
-        self.label=0
-        self._neighbor_colors_sum=0
-
-
-
-
+        self._neighbor_colors = []
+        self.colornum = 0
+        self.label = 0
+        self._neighbor_colors_sum = 0
 
     def __repr__(self):
         """
@@ -125,15 +122,14 @@ class Vertex(object):
         # self._neighbor_colors.append(vertex.colornum)
         # self._neighbor_colors_sum+=vertex.colornum
 
-    def change_color(self,color):
+    def change_color(self, color):
         for neighbor in self._neighborset:
             neighbor._neighbor_colors.remove(self.colornum)
-            neighbor._neighbor_colors_sum-=self.colornum
+            neighbor._neighbor_colors_sum -= self.colornum
             neighbor._neighbor_colors.append(color)
             neighbor._neighbor_colors_sum += color
-        self.colornum=color
-        self.label=color
-
+        self.colornum = color
+        self.label = color
 
     @property
     def degree(self) -> int:
@@ -243,7 +239,7 @@ class Graph(object):
         for i in range(n):
             self.add_vertex(Vertex(self))
 
-        self.partition={}
+        self.partition = {}
 
     def __repr__(self):
         """
@@ -349,11 +345,11 @@ class Graph(object):
 
         edge.head._add_incidence(edge)
         edge.tail._add_incidence(edge)
-        if edge.tail==edge.head:
+        if edge.tail == edge.head:
             pass
         edge.head._add_neighbor(edge.tail)
         edge.head._neighbor_colors.append(edge.tail.colornum)
-        edge.head._neighbor_colors_sum+=edge.tail.colornum
+        edge.head._neighbor_colors_sum += edge.tail.colornum
         edge.tail._add_neighbor(edge.head)
         edge.tail._neighbor_colors.append(edge.head.colornum)
         edge.tail._neighbor_colors_sum += edge.head.colornum
@@ -365,8 +361,8 @@ class Graph(object):
         edge.head._neighborset.remove(edge.tail)
         edge.tail._neighbor_colors.remove(edge.head.colornum)
         edge.head._neighbor_colors.remove(edge.tail.colornum)
-        edge.tail._neighbor_colors_sum-=edge.head.colornum
-        edge.head._neighbor_colors_sum-=edge.tail.colornum
+        edge.tail._neighbor_colors_sum -= edge.head.colornum
+        edge.head._neighbor_colors_sum -= edge.tail.colornum
         self._e.remove(edge)
 
     def __add__(self, other: "Graph") -> "Graph":
@@ -375,17 +371,16 @@ class Graph(object):
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        G=copy.copy(self)
-        d={}
+        G = copy.copy(self)
+        d = {}
         for v in other.vertices:
-            new_v=Vertex(G,v.label)
+            new_v = Vertex(G, v.label)
             G.add_vertex(new_v)
-            d[v]=new_v
+            d[v] = new_v
         for e in other.edges:
-            new_e=Edge(d[e.tail],d[e.head])
+            new_e = Edge(d[e.tail], d[e.head])
             G.add_edge(new_e)
         return G
-
 
     def __iadd__(self, other: Union[Edge, Vertex]) -> "Graph":
         """

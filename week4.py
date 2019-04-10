@@ -3,14 +3,23 @@ from basicpermutationgroup import *
 
 from week2 import *
 from week3 import *
-from graphviz import render
+
 from graph import *
-import math
+
 from main import *
+
+
 
 # from week6 import *
 
 FOUND_TYPE = []
+
+def factorial(nr):
+    fact = 1
+
+    for i in range(1, nr + 1):
+        fact = fact * i
+    return fact
 
 
 def find_twins(G: Graph):  # will return groups of twins and groups of false twins in a list
@@ -66,7 +75,7 @@ def reduce_twins(G: Graph, twins_G):
                     G.add_edge(edge)
 
     for j in twins_G:
-           # if j[x] in G.vertices:
+        # if j[x] in G.vertices:
         for i in j:
             G.del_vertex(i)
 
@@ -88,15 +97,14 @@ def copy_graph(inputG: Graph):
 
         G_copied_vertices[inputG._v[i]] = G._v[i]  # Add it to the dictionary
         G._v[i]._incidence = {}  # Reset its incidence
-        G._v[i]._neighborset=[]
-        G._v[i]._neighbor_colors=[]
-        G._v[i]._neighbor_colors_sum=0
+        G._v[i]._neighborset = []
+        G._v[i]._neighbor_colors = []
+        G._v[i]._neighbor_colors_sum = 0
 
     # Re-add all edges
     for edge in inputG._e:
         new_edge = Edge(tail=G_copied_vertices[edge.tail], head=G_copied_vertices[edge.head], weight=edge.weight)
         G.add_edge(new_edge)
-
 
     return G
 
@@ -166,14 +174,13 @@ def countTreeIsomorphism(G: Graph):
 
                 for q in equalChildren:
                     if len(q) > 1:
-                        num = num * math.factorial(len(q))
+                        num = num * factorial(len(q))
 
         if num > result:
             result = num
     for x in strings:
-       result = result * 2
+        result = result * 2
     return result
-
 
 
 def compareSubtrees(parent1, parent2, children):  # children of first generation
@@ -238,8 +245,8 @@ def check_dihedral(G: Graph):
     global FOUND_TYPE
 
     for i in range(len(G._v)):
-        v=G._v[i]
-        if len(v.neighbors)==2:
+        v = G._v[i]
+        if len(v.neighbors) == 2:
             pass
         else:
             is_cycle = False
@@ -248,11 +255,12 @@ def check_dihedral(G: Graph):
         FOUND_TYPE.append("Dihedral")
     return is_cycle
 
+
 def check_cube(G: Graph):
-    is_cube=True
+    is_cube = True
     global FOUND_TYPE
 
-    first_degree=G._v[0].degree
+    first_degree = G._v[0].degree
     for i in range(len(G._v)):
         v = G._v[i]
         if len(v.neighbors) == first_degree:
@@ -274,35 +282,36 @@ def check_complete(G: Graph):
 
     for i in range(len(G._v)):
         v = G._v[i]
-        if not len(v.neighbors) == G_size-1:
+        if not len(v.neighbors) == G_size - 1:
             is_complete = False
             break
     if is_complete:
         FOUND_TYPE.append("Complete")
     return is_complete
 
+
 def generate_n_dimensional_cube(degree):
-    square=create_graph_with_cycle(4)
-    result=create_graph_with_cycle(4)
-    for i in range (3,degree+1):
+    square = create_graph_with_cycle(4)
+    result = create_graph_with_cycle(4)
+    for i in range(3, degree + 1):
         # result=result+result
-        mapping={}
-        original_size=len(result._v)
+        mapping = {}
+        original_size = len(result._v)
         for node in range(original_size):
-            new_vertex=Vertex(result)
-            mapping[result._v[node]]=new_vertex
+            new_vertex = Vertex(result)
+            mapping[result._v[node]] = new_vertex
             result.add_vertex(new_vertex)
 
-        original_edge_size=len(result._e)
-        e_map={}
-        #add all edges
+        original_edge_size = len(result._e)
+        e_map = {}
+        # add all edges
         for node in range(original_size):
             for edge in result._v[node].incidence:
-                if edge.head==result._v[node]:
-                    result.add_edge(Edge(mapping[edge.tail],mapping[edge.head]))
-            result.add_edge(Edge(mapping[result._v[node]],result._v[node]))
+                if edge.head == result._v[node]:
+                    result.add_edge(Edge(mapping[edge.tail], mapping[edge.head]))
+            result.add_edge(Edge(mapping[result._v[node]], result._v[node]))
 
-        #add new edges
+        # add new edges
 
         # result=result+result
         # for i in range(len(result._v)//2):
@@ -316,12 +325,13 @@ def generate_n_dimensional_cube(degree):
     return result
 
 
-def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,do_not_check_automorphism=False):
+def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup, constant=0,
+                        do_not_check_automorphism=False):
     # Recursively counts all isomorphs of this graph
     if not D and (Settings.DIHEDRAL_COMPLETE_CHECK or Settings.CUBE_CHECK):
         if len(G._v) == len(H._v):
             if Settings.DIHEDRAL_COMPLETE_CHECK and check_dihedral(G) and check_dihedral(H):
-                return 2*len(G._v)
+                return 2 * len(G._v)
             elif Settings.DIHEDRAL_COMPLETE_CHECK and check_complete(G) and check_complete(H):
                 fact = 1
 
@@ -329,28 +339,27 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                     fact = fact * i
                 return fact
             elif not do_not_check_automorphism and Settings.CUBE_CHECK:
-                degree_G=check_cube(G)
-                if degree_G!=0:
-                    if degree_G==check_cube(H):
-                        cube=generate_n_dimensional_cube(degree_G)
+                degree_G = check_cube(G)
+                if degree_G != 0:
+                    if degree_G == check_cube(H):
+                        cube = generate_n_dimensional_cube(degree_G)
                         # cube=copy_graph(cube)
-                        cube=initialize_colors(cube)
-                        if is_isomorphism(G,copy_graph(cube)):
+                        cube = initialize_colors(cube)
+                        if is_isomorphism(G, copy_graph(cube)):
                             fact = 1
 
-                            for i in range(1, degree_G+1):
+                            for i in range(1, degree_G + 1):
                                 fact = fact * i
-                            return fact*len(G._v)
-
+                            return fact * len(G._v)
 
     if not D and Settings.TWIN_CHECK and not do_not_check_automorphism:
         twins_G = find_twins(G)
         twins_H = find_twins(H)
         # if len(twins_G)>0 or len(twins_H)>0:
-            # print("twins!")
+        # print("twins!")
         constantGH = 1
         for i in twins_G:
-            constantGH = constantGH * math.factorial(len(i))
+            constantGH = constantGH * factorial(len(i))
         # print("constant ", constantGH)
         reduce_twins(G, twins_G)
         reduce_twins(H, twins_H)
@@ -360,15 +369,16 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
         constantG = 1
         constantH = 1
         for i in twins_G:
-            constantG = constantG * math.factorial(len(i))
+            constantG = constantG * factorial(len(i))
         for j in twins_H:
-            constantH = constantH * math.factorial(len(j))
+            constantH = constantH * factorial(len(j))
         if constantG != constantH:
             # print("not iso")
             return False
         elif constantG > 0:
-            #TODO: this should be positive number, dont know why not
-            count = count_automorphisms(G, H, D, I, create_partition(G.vertices), create_partition(H.vertices), constantG, False)
+
+            count = count_automorphisms(G, H, D, I, create_partition(G.vertices), create_partition(H.vertices),
+                                        constantG, False)
             # print(count)
             if count > 0:
                 # print("iso")
@@ -395,7 +405,6 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
         last_D.change_color(newcol)
         last_I.change_color(newcol)
-
 
     # Refine the colors of G and H
 
@@ -486,10 +495,10 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
     # G.partition = G_partition_backup
     # H.partition = H_partition_backup
 
-    permutations=[]
+    permutations = []
     for y in H_partition_chosen_color:
         result = count_automorphisms(G, H, D + [G._v.index(x)], I + [H._v.index(y)], new_G_partition,
-                                               new_H_partition, constantGH,do_not_check_automorphism=do_not_check_automorphism)
+                                     new_H_partition, constantGH, do_not_check_automorphism=do_not_check_automorphism)
         if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
             if not result is None:  # if res is not None
                 # if not res: #if res is empty
@@ -505,8 +514,8 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
                 if D[-1] != I[-1]:  # if this iteration is not trivial
                     return permutations
         else:
-            nr_of_isomorphs+=result
-        if do_not_check_automorphism and nr_of_isomorphs>0:
+            nr_of_isomorphs += result
+        if do_not_check_automorphism and nr_of_isomorphs > 0:
             return 1
     if not do_not_check_automorphism and Settings.ALGEBRA_GROUPS:
         return permutations
@@ -515,7 +524,7 @@ def count_automorphisms(G: Graph, H: Graph, D, I, G_partition_backup, H_partitio
 
 
 def is_isomorphism(G: Graph, H: Graph):
-    return count_automorphisms(G,H,[],[],G.partition[:],H.partition[:],do_not_check_automorphism=True) > 0
+    return count_automorphisms(G, H, [], [], G.partition[:], H.partition[:], do_not_check_automorphism=True) > 0
 
 
 if __name__ == "__main__":
@@ -533,7 +542,7 @@ if __name__ == "__main__":
     G_partition_backup = create_partition(G1.vertices)
     H_partition_backup = create_partition(G2.vertices)
     print("ans:", count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup, False))
-    #print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
+    # print(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup))
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
@@ -542,7 +551,7 @@ if __name__ == "__main__":
     # copy to wherever needed
     # write_graph_to_dot_file(G1, "G1")
     # write_graph_to_dot_file(G2, "G2")
-    #render('dot', 'png', 'graphG1.dot')
-    #render('dot', 'png', 'graphG2.dot')
+    # render('dot', 'png', 'graphG1.dot')
+    # render('dot', 'png', 'graphG2.dot')
 
     # END DEBUGGING CODE

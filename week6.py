@@ -3,69 +3,70 @@ from week2 import *
 from week3 import *
 from week4 import *
 import time
-from graphviz import render
+
 from week5 import *
 from permv2 import *
 from basicpermutationgroup import *
 # global checked_memberships
 from main import *
 
-checked_memberships={}
-group_sizes={}
+checked_memberships = {}
+group_sizes = {}
 
-def membership_check(element,group,recursive=True):
+
+def membership_check(element, group, recursive=True):
     global checked_memberships
     # from main import Settings
     try:
-        return checked_memberships[(element,str(set(group)))]
+        return checked_memberships[(element, str(set(group)))]
     except KeyError:
         pass
     # print("membership check for " + str(element) + " in " + str(group))
     if recursive and element in group:
         # print("TRUE: element is simply in group")
-        checked_memberships[(element,str(set(group)))]=True
+        checked_memberships[(element, str(set(group)))] = True
         return True
-    if group==[] or group==[[]]:
+    if group == [] or group == [[]]:
         # print("FALSE: group is empty")
         return False
-    if element==permutation(group[0].n):
-        checked_memberships[(element, str(set(group)))]=True
+    if element == permutation(group[0].n):
+        checked_memberships[(element, str(set(group)))] = True
         # print("TRUE: trivial perm")
         return True
 
-    orbits=[None]*element.n
-    traversals=[None]*element.n
-    orbit_nrs=[]
+    orbits = [None] * element.n
+    traversals = [None] * element.n
+    orbit_nrs = []
     for nr in range(len(element.P)):
-        if element.P[nr]!=nr:
-            orb,trans=Orbit(group,nr,True)
-            orbits[nr]= orb
-            traversals[nr]= trans
-            orbit_nrs.append((nr,element.P[nr]))
-    non_trivial_orbit_nr=-1
+        if element.P[nr] != nr:
+            orb, trans = Orbit(group, nr, True)
+            orbits[nr] = orb
+            traversals[nr] = trans
+            orbit_nrs.append((nr, element.P[nr]))
+    non_trivial_orbit_nr = -1
     for orbit_and_image in orbit_nrs:
-        if len(orbits[orbit_and_image[0]])>1:
-            non_trivial_orbit_nr=orbit_and_image[0]
+        if len(orbits[orbit_and_image[0]]) > 1:
+            non_trivial_orbit_nr = orbit_and_image[0]
             break
-    if non_trivial_orbit_nr==-1:
+    if non_trivial_orbit_nr == -1:
         # print("FALSE: no non trivial orbit")
         return False
 
-    group_stabilizer=Stabilizer(group,non_trivial_orbit_nr)
+    group_stabilizer = Stabilizer(group, non_trivial_orbit_nr)
 
     for orbit_and_image in orbit_nrs:
-        orbit_nr=orbit_and_image[0]
-        image=orbit_and_image[1]
+        orbit_nr = orbit_and_image[0]
+        image = orbit_and_image[1]
         try:
-            image_orbit_index=orbits[orbit_nr].index(image)
+            image_orbit_index = orbits[orbit_nr].index(image)
         except ValueError:
             return False
-        traversal_perm=traversals[orbit_nr][image_orbit_index]
+        traversal_perm = traversals[orbit_nr][image_orbit_index]
         if traversal_perm is not None:
             # traversal_perm=traversals[orbit_nr][image]
-            composition_perm = -traversal_perm* element
+            composition_perm = -traversal_perm * element
             if membership_check(composition_perm, group_stabilizer):
-                checked_memberships[(element, str(set(group)))]=True
+                checked_memberships[(element, str(set(group)))] = True
                 return True
     return False
     # if element in group
@@ -78,62 +79,60 @@ def group_size(group):
         return group_sizes[str(set(group))]
     except KeyError:
         pass
-    nontriv_orbit=-1
-    i=0
-    while nontriv_orbit==-1:
-        orbit,transversals=Orbit(group,i,True)
+    nontriv_orbit = -1
+    i = 0
+    while nontriv_orbit == -1:
+        orbit, transversals = Orbit(group, i, True)
 
-        if len(orbit)>1:
-            nontriv_orbit=i
+        if len(orbit) > 1:
+            nontriv_orbit = i
         else:
             i += 1
-    if nontriv_orbit==-1:
-        return 1 #todo maybe turn 0
-    stab=Stabilizer(group,nontriv_orbit)
-    new_stab=[]
+    if nontriv_orbit == -1:
+        return 1
+    stab = Stabilizer(group, nontriv_orbit)
+    new_stab = []
     for stab_element in stab:
         # print("starting checking for " + str(stab_element))
-        if membership_check(stab_element,group):
+        if membership_check(stab_element, group):
             new_stab.append(stab_element)
 
-    if new_stab==[] or new_stab==[[]]:
-        final_stab_size=1
+    if new_stab == [] or new_stab == [[]]:
+        final_stab_size = 1
     else:
 
-        final_stab_size=group_size(new_stab)
+        final_stab_size = group_size(new_stab)
 
     # print("size of orbit: " + str(len(orbit)))
-    res=len(orbit)*final_stab_size
-    group_sizes[str(set(group))]=res
+    res = len(orbit) * final_stab_size
+    group_sizes[str(set(group))] = res
     return res
 
-def count_automorphisms_groups(G1, G2, D,I, G_partition_backup, H_partition_backup):
+
+def count_automorphisms_groups(G1, G2, D, I, G_partition_backup, H_partition_backup):
     from week4 import count_automorphisms
-    permutation_list=count_automorphisms(G1, G2, D,I, G_partition_backup, H_partition_backup)
+    permutation_list = count_automorphisms(G1, G2, D, I, G_partition_backup, H_partition_backup)
     # print(permutation_list)
     # print("--- finished finding unique permutations ---")
     if permutation_list is None:
         return 0
-    elif permutation_list==[] or permutation_list==[[]] or permutation_list==permutation(len(G1._v)):
+    elif permutation_list == [] or permutation_list == [[]] or permutation_list == permutation(len(G1._v)):
         return 1
-    elif isinstance(permutation_list,int):
+    elif isinstance(permutation_list, int):
         return permutation_list
     else:
         return group_size(permutation_list)
 
 
-
 if __name__ == '__main__':
-    G1, G2 = load_graphs("graphs/cubes5.grl", 0,0)
-
+    G1, G2 = load_graphs("graphs/cubes5.grl", 0, 0)
 
     # G1=create_graph_with_cycle(5)
     # G1=Graph(False,1)
     # G2=G1
 
-
-    if (G1==G2):
-        G2=copy_graph(G2)
+    if (G1 == G2):
+        G2 = copy_graph(G2)
     G1 = initialize_colors(G1)
     G2 = initialize_colors(G2)
 
@@ -143,19 +142,13 @@ if __name__ == '__main__':
 
     H_partition_backup = create_partition(G2.vertices)
     # print(is_isomorphism(G1,G2))
-    print("week 6 answer: "+ str(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup)))
+    print("week 6 answer: " + str(count_automorphisms_groups(G1, G2, [], [], G_partition_backup, H_partition_backup)))
     # print("real nr: "+ str(count_automorphisms(G1, G2, [], [], G_partition_backup, H_partition_backup)))
-
 
     write_graph_to_dot_file(G1, "G1")
     write_graph_to_dot_file(G2, "G2")
     # render('dot', 'png', 'graphG1.dot')
     # render('dot', 'png', 'graphG2.dot')
-
-
-
-
-
 
 # def generate_group(generators):
 #     res=generators[:]
@@ -172,8 +165,6 @@ if __name__ == '__main__':
 #         return res
 #     else:
 #         return generate_group_recursive(res)
-
-
 
 
 # def automorphisms_cycles(G: Graph, H: Graph, D, I, G_partition_backup, H_partition_backup):

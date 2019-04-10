@@ -11,23 +11,21 @@ class Node:
 
 
 class DoubleLinkedList:
-
-
     head = None
     tail = None
 
-
     def __init__(self):
-        self.length=0
+        self.length = 0
 
     def __len__(self):
         return self.length
+
     # string representation for easier debugging
     def __str__(self) -> str:
         current_node = self.head
         output = "DLL: {"
 
-        return "len: " + str(len(self)) + "  " + output[:len(output)-2] + "}"
+        return "len: " + str(len(self)) + "  " + output[:len(output) - 2] + "}"
 
     # return iterable object of DLL
     def __iter__(self):
@@ -60,10 +58,11 @@ class DoubleLinkedList:
             self.tail.next = new_node
             self.tail = new_node
 
-        self.length+=1
+        self.length += 1
         return new_node
 
     """ add element to the start of the DLL """
+
     def add_begin(self, data):
         new_node = Node(None, None, data)
 
@@ -73,10 +72,11 @@ class DoubleLinkedList:
             new_node = Node(self.head, None, data)
             self.head.prev = new_node
             self.head = new_node
-        self.length+=1
+        self.length += 1
         return new_node
 
     """ add an element after old_node (if this is a Node """
+
     def add_after(self, data, old_node):
         # if old_node is not an instance of node try finding it as data in the DLL
         if not isinstance(old_node, Node):
@@ -91,7 +91,7 @@ class DoubleLinkedList:
             old_node.next = new_node
 
             new_node.next.prev = new_node
-            self.length+=1
+            self.length += 1
             return new_node
         else:
             return "ERROR: could not find the item old_node in list"
@@ -112,7 +112,7 @@ class DoubleLinkedList:
             old_node.prev = new_node
 
             new_node.prev.next = new_node
-            self.length+=1
+            self.length += 1
             return new_node
         else:
             return "ERROR: could not find the item old_node in list"
@@ -136,7 +136,7 @@ class DoubleLinkedList:
 
             if removable_node.next is not None:
                 removable_node.next.prev = removable_node.prev
-            self.length-=1
+            self.length -= 1
         else:
             return "ERROR: could not find the item removable_node in list or list was already empty"
 
