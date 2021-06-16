@@ -2,7 +2,7 @@
 from graph import *
 from graph_factory import *
 from basic_automorphism_checker import *
-from preprocessing_twins_trees import *
+from preprocessing_twins_trees_dihedrals import *
 import time
 
 from hopcroft_DFA_minimization import *
@@ -111,7 +111,7 @@ def group_size(group):
 
 
 def count_automorphisms_groups(G1, G2, D, I, G_partition_backup, H_partition_backup):
-    from preprocessing_twins_trees import count_automorphisms
+    from preprocessing_twins_trees_dihedrals import count_automorphisms
     permutation_list = count_automorphisms(G1, G2, D, I, G_partition_backup, H_partition_backup)
     # print(permutation_list)
     # print("--- finished finding unique permutations ---")

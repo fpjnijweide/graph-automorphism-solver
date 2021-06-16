@@ -35,6 +35,5 @@ The setting TWIN_CHECK should be set to True when running the program with cogra
 ALGEBRA_GROUPS and FAST_REFINEMENT should both be set to False. When either ALGEBRA_GROUPS or FAST_REFINEMENT is True,
 TWIN_CHECK should be set to False, as it will have to effect on the execution of the program when the graph contains 
 twin groups. Also, with big tree graphs, TWIN_CHECK should be set to False, since it slows down when running with main.
-Running it with week4 on its own, it executes fast. (To do this: replace the graph name in the directory and replace the
-numbers for which graphs you want to compare. Then execute file week4.py)
+Running preprocessing_twins_trees_dihedrals.py on its own, is much faster (but you will need to edit the __main__ function)
 

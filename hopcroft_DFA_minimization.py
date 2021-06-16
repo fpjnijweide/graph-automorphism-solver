@@ -1,7 +1,7 @@
 # Uses hopcroft's DFA minimization for fast partition refinement (Hopcroft 1971 "An n log n algorithm for minimizing states in a finite automaton")
 from graph import *
 from basic_automorphism_checker import *
-from preprocessing_twins_trees import *
+from preprocessing_twins_trees_dihedrals import *
 import time
 
 

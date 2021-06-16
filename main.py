@@ -1,4 +1,4 @@
-from preprocessing_twins_trees import *
+from preprocessing_twins_trees_dihedrals import *
 from hopcroft_DFA_minimization import *
 from orbit_stabilizer_theorem import *
 filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]

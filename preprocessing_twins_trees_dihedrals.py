@@ -1,4 +1,4 @@
-# Preprocessing of twins and tree graphs etc.
+# Preprocessing of twins, dihedrals,  and tree graphs etc.
 from permutation import *
 from basicpermutationgroup import *
 
