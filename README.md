@@ -4,7 +4,7 @@ Can check if graphs are isomorphic, or count automorphisms of graphs.
 Uses advanced techniques such as the orbit-stabilizer theorem, Hopcroft's DFA minimization, and preprocessing of
 twins and tree graphs to find faster solutions.
 
-##Main programme
+## Main programme
 The programme can be started by running main.py. At the top of this file, 
 one can find the variable FILENAME and the class Settings.
 
@@ -12,7 +12,7 @@ To select a file to run the algorithm on, set FILENAME (at the top of main.py)
 to "graphs/~filename~" (include the .gr or .grl).
 
 
-##Options
+## Options
 To find out if graphs are isomorphs (not the automorphism counter problem), change the setting AUTOMORPHISM to False at the top of main.py.
 
 To run the automorphism counter problem, change the setting AUTOMORPHISM to True.
