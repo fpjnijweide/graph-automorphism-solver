@@ -1,8 +1,9 @@
-from permv2 import *
+# Preprocessing of twins and tree graphs etc.
+from permutation import *
 from basicpermutationgroup import *
 
-from week2 import *
-from week3 import *
+from graph_factory import *
+from basic_automorphism_checker import *
 
 from graph import *
 

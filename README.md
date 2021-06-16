@@ -1,4 +1,9 @@
-# Mod7 Graph project
+# Graph automorhpism finder
+
+Can check if graphs are isomorphic, or count automorphisms of graphs.
+Uses advanced techniques such as the orbit-stabilizer theorem, Hopcroft's DFA minimization, and preprocessing of
+twins and tree graphs to find faster solutions.
+
 ##Main programme
 The programme can be started by running main.py. At the top of this file, 
 one can find the variable FILENAME and the class Settings.
@@ -8,9 +13,9 @@ to "graphs/~filename~" (include the .gr or .grl).
 
 
 ##Options
-To run just the GI problem (not the #Aut problem), change the setting AUTOMORPHISM to False at the top of main.py.
+To find out if graphs are isomorphs (not the automorphism counter problem), change the setting AUTOMORPHISM to False at the top of main.py.
 
-To run the #Aut problem, change the setting AUTOMORPHISM to True.
+To run the automorphism counter problem, change the setting AUTOMORPHISM to True.
 
 The settings PREPROCESSING should always be set to True, unless one wants to compare the program's execution 
 time with and without preprocessing.

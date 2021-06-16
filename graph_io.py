@@ -1,13 +1,4 @@
-"""
-Includes functions for reading and writing graphs, in a very simple readable format.
-"""
-# Version: 30-01-2015, Paul Bonsma
-# Version: 29-01-2017, Pieter Bos
-
-# updated 30-01-2015: writeDOT also writes color information for edges.
-# updated 2-2-2015: writeDOT can also write directed graphs.
-# updated 5-2-2015: no black fill color used, when more than numcolors**2 vertices.
-# updated 29-1-2017: pep8 reformat, general improvements
+# module for reading/writing graphs, original authors P. Bonsma and P. Bos
 
 import sys
 from typing import IO, Tuple, List, Union
@@ -19,11 +10,6 @@ NUM_COLORS = 12
 
 
 def read_line(f: IO[str]) -> str:
-    """
-    Read a single non-comment line from a file
-    :param f: The file
-    :return: the line
-    """
     line = f.readline()
 
     while len(line) > 0 and line[0] == '#':
@@ -33,12 +19,6 @@ def read_line(f: IO[str]) -> str:
 
 
 def read_graph(graphclass, f: IO[str]) -> Tuple[Graph, List[str], bool]:
-    """
-    Read a graph from a file
-    :param graphclass: The class of the graph
-    :param f: The file
-    :return: The graph
-    """
     options = []
 
     while True:
@@ -80,12 +60,6 @@ def read_graph(graphclass, f: IO[str]) -> Tuple[Graph, List[str], bool]:
 
 
 def read_graph_list(graph_class, f: IO[str]) -> Tuple[List[Graph], List[str]]:
-    """
-    Read a list of graphs from a file
-    :param graph_class: The graph class
-    :param f: The file
-    :return: A list of graphs
-    """
     options = []
     graphs = []
     cont = True
@@ -99,13 +73,6 @@ def read_graph_list(graph_class, f: IO[str]) -> Tuple[List[Graph], List[str]]:
 
 
 def load_graph(f: IO[str], graph_class=Graph, read_list: bool = False) -> Union[Tuple[List[Graph], List[str]], Graph]:
-    """
-    Load a graph from a file
-    :param f: The file
-    :param graph_class: The class of the graph. You may subclass the default graph class and add your own here.
-    :param read_list: Specifies whether to read a list of graphs from the file, or just a single graph.
-    :return: The graph, or a list of graphs.
-    """
     if read_list:
         graph_list, options = read_graph_list(graph_class, f)
         return graph_list, options
@@ -115,32 +82,14 @@ def load_graph(f: IO[str], graph_class=Graph, read_list: bool = False) -> Union[
 
 
 def input_graph(graph_class=Graph, read_list: bool = False) -> Union[Tuple[List[Graph], List[str]], Graph]:
-    """
-    Load a graph from sys.stdin
-    :param graph_class: The class of the graph. You may subclass the default graph class and add your own here.
-    :param read_list: Specifies whether to read a list of graphs from the file, or just a single graph.
-    :return: The graph, or a list of graphs.
-    """
     return load_graph(f=sys.stdin, graph_class=graph_class, read_list=read_list)
 
 
 def write_line(f: IO[str], line: str):
-    """
-    Write a line to a file
-    :param f: The file
-    :param line: The line
-    """
     f.write(line + '\n')
 
 
 def write_graph_list(graph_list: List[Graph], f: IO[str], options=[]):
-    """
-    Write a graph list to a file.
-    :param graph_list: The list of graphs
-    :param f: the file
-    :param options: the (optional) options to write to the file.
-    """
-    # we may only write options that cannot be seen as an integer:
     for S in options:
         try:
             int(S)
@@ -170,12 +119,6 @@ def write_graph_list(graph_list: List[Graph], f: IO[str], options=[]):
 
 
 def save_graph(graph_list: Union[Graph, List[Graph]], f: IO[str], options=[]):
-    """
-    Write a graph, or a list of graphs to a file.
-    :param graph_list: The graph, or a list of graphs.
-    :param f: The file
-    :param options: the (optional) options to write to the file.
-    """
     if type(graph_list) is list:
         write_graph_list(graph_list, f, options)
     else:
@@ -183,11 +126,6 @@ def save_graph(graph_list: Union[Graph, List[Graph]], f: IO[str], options=[]):
 
 
 def print_graph(graph_list: Union[Graph, List[Graph]], options=[]):
-    """
-    Print a graph, or a list of graphs to sys.stdout
-    :param graph_list: The graph, or list of graphs.
-    :param options: The (optional) options to print.
-    """
     if type(graph_list) is list:
         write_graph_list(graph_list, sys.stdout, options)
     else:
@@ -195,13 +133,6 @@ def print_graph(graph_list: Union[Graph, List[Graph]], options=[]):
 
 
 def write_dot(graph: Graph, f: IO[str], directed=False):
-    """
-    Writes a given graph to a file in .dot format.
-    :param graph: The graph. If its vertices contain attributes `label`, `colortext` or `colornum`, these are also
-    included in the file. If its edges contain an attribute `weight`, these are also included in the file.
-    :param f: The file.
-    :param directed: Whether the graph should be drawn as a directed graph.
-    """
     if directed:
         f.write('digraph G {\n')
     else:

@@ -1,6 +1,6 @@
-from week4 import *
-from week5 import *
-from week6 import *
+from preprocessing_twins_trees import *
+from hopcroft_DFA_minimization import *
+from orbit_stabilizer_theorem import *
 filenames=["graphs/basic/basicAut1.gr","graphs/basic/basicAut2.gr","graphs/basic/basicGIAut.grl"]
 filenamesGI=["graphs/basic/basicGI1.grl","graphs/basic/basicGI2.grl","graphs/basic/basicGI3.grl"]
 FILENAME = "graphs/bigtrees3.grl"

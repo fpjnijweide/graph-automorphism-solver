@@ -1,3 +1,5 @@
+# double linked list class
+
 class Node:
     # class of the items in the DLL
     def __init__(self, next=None, prev=None, data=None):

@@ -1,11 +1,12 @@
+# Using generating sets to calculate Aut(G). with orbit-stabilizer theorem
 from graph import *
-from week2 import *
-from week3 import *
-from week4 import *
+from graph_factory import *
+from basic_automorphism_checker import *
+from preprocessing_twins_trees import *
 import time
 
-from week5 import *
-from permv2 import *
+from hopcroft_DFA_minimization import *
+from permutation import *
 from basicpermutationgroup import *
 # global checked_memberships
 from main import *
@@ -110,7 +111,7 @@ def group_size(group):
 
 
 def count_automorphisms_groups(G1, G2, D, I, G_partition_backup, H_partition_backup):
-    from week4 import count_automorphisms
+    from preprocessing_twins_trees import count_automorphisms
     permutation_list = count_automorphisms(G1, G2, D, I, G_partition_backup, H_partition_backup)
     # print(permutation_list)
     # print("--- finished finding unique permutations ---")
